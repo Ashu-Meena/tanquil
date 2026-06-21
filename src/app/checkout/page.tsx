@@ -11,6 +11,14 @@ const steps = ["Information", "Shipping", "Payment", "Review"];
 export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [transactionId, setTransactionId] = useState("");
+  const [paymentScreenshot, setPaymentScreenshot] = useState("");
+
+  const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPaymentScreenshot(URL.createObjectURL(e.target.files[0]));
+    }
+  };
 
   const cartItems = [
     {
@@ -134,7 +142,7 @@ export default function CheckoutPage() {
                               <p className="text-sm font-medium mb-4">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
                               <div className="bg-white p-4 rounded-xl shadow-sm border border-[#EFEFEF] mb-4">
                                 <Image 
-                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} 
+                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`)}`} 
                                   alt="UPI QR Code" 
                                   width={200} 
                                   height={200} 
@@ -142,7 +150,34 @@ export default function CheckoutPage() {
                                   unoptimized
                                 />
                               </div>
-                              <p className="text-xs text-[#666666] max-w-[250px]">Open any UPI app and scan the QR code to complete your purchase securely.</p>
+                              <p className="text-xs text-[#666666] max-w-[250px] mb-6">Open any UPI app and scan the QR code to complete your purchase securely.</p>
+                              
+                              <div className="w-full max-w-[300px] space-y-4 text-left">
+                                <div>
+                                  <label className="block text-xs font-medium text-[#111111] mb-1 uppercase tracking-wider">Transaction ID / UTR No.</label>
+                                  <input 
+                                    type="text" 
+                                    placeholder="Enter 12-digit UTR" 
+                                    value={transactionId}
+                                    onChange={(e) => setTransactionId(e.target.value)}
+                                    className="w-full bg-white border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] transition-colors rounded-sm" 
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-xs font-medium text-[#111111] mb-1 uppercase tracking-wider">Payment Screenshot</label>
+                                  <input 
+                                    type="file" 
+                                    accept="image/*"
+                                    onChange={handleScreenshotUpload}
+                                    className="w-full bg-white border border-[#EFEFEF] p-2 text-xs focus:outline-none focus:border-[#C7A17A] transition-colors rounded-sm file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer" 
+                                  />
+                                  {paymentScreenshot && (
+                                    <p className="text-xs text-[#2F855A] mt-2 flex items-center gap-1 font-medium">
+                                      <Check className="w-3 h-3" /> Screenshot attached
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </motion.div>
                         )}
