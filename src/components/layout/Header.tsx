@@ -54,7 +54,7 @@ export default function Header() {
         {/* Center: Brand Logo */}
         <div className="flex-1 flex justify-center">
           <Link href="/" className="font-serif text-2xl lg:text-3xl tracking-widest uppercase hover:opacity-80 transition-opacity">
-            Tanquil
+            Tranquil
           </Link>
         </div>
 
@@ -89,7 +89,7 @@ export default function Header() {
             className="fixed inset-0 z-[60] bg-white text-[#111111] flex flex-col"
           >
             <div className="flex items-center justify-between p-6 border-b border-[#EFEFEF]">
-              <span className="font-serif text-2xl tracking-widest uppercase">Tanquil</span>
+              <span className="font-serif text-2xl tracking-widest uppercase">Tranquil</span>
               <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="hover:rotate-90 transition-transform">
                 <X className="w-6 h-6" />
               </button>

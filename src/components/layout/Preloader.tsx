@@ -32,7 +32,7 @@ export default function Preloader() {
               transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
               className="font-serif text-5xl md:text-7xl tracking-widest uppercase text-[#111111]"
             >
-              Tanquil
+              Tranquil
             </motion.h1>
           </div>
           

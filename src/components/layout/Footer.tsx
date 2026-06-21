@@ -91,7 +91,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16 text-sm">
           {/* Brand */}
           <div>
-            <h4 className="font-serif text-2xl tracking-widest uppercase mb-6 text-white">Tanquil</h4>
+            <h4 className="font-serif text-2xl tracking-widest uppercase mb-6 text-white">Tranquil</h4>
             <p className="text-[#666666] mb-6 leading-relaxed">
               Designed to be remembered. Luxury pieces for women who love standing out.
             </p>
@@ -99,13 +99,13 @@ export default function Footer() {
               <a href="https://instagram.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
                 <InstagramIcon className="w-4 h-4" />
               </a>
-              <a href="https://pinterest.com/tanquil_official" target="_blank" rel="noreferrer" aria-label="Pinterest" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
+              <a href="https://pinterest.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Pinterest" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
                 <PinterestIcon className="w-4 h-4" />
               </a>
-              <a href="https://youtube.com/@tanquil_official" target="_blank" rel="noreferrer" aria-label="YouTube" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
+              <a href="https://youtube.com/@tranquil.co.in" target="_blank" rel="noreferrer" aria-label="YouTube" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
                 <YouTubeIcon className="w-4 h-4" />
               </a>
-              <a href="https://facebook.com/tanquilofficial" target="_blank" rel="noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
+              <a href="https://facebook.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
                 <FacebookIcon className="w-4 h-4" />
               </a>
             </div>
@@ -149,7 +149,7 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="pt-8 border-t border-[#333333] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#666666]">
-          <p>&copy; {new Date().getFullYear()} Tanquil. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Tranquil. All Rights Reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>

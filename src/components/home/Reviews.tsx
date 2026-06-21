@@ -49,7 +49,7 @@ export default function Reviews() {
             viewport={{ once: true }}
             className="font-serif text-4xl lg:text-5xl text-[#111111] mb-4"
           >
-            Tanquil Muses
+            Tranquil Muses
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
