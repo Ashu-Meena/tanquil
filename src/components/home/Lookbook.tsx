@@ -42,7 +42,7 @@ export default function Lookbook() {
             transition={{ delay: 0.1 }}
             className="text-[#666666] uppercase tracking-widest text-sm"
           >
-            @tanquil_official
+            @tranquil.co.in
           </motion.p>
         </div>
 

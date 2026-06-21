@@ -69,7 +69,7 @@ export default function Footer() {
             <div className="flex justify-between items-end mb-6">
               <div>
                 <h3 className="font-serif text-2xl mb-1">Follow Us</h3>
-                <a href="https://instagram.com/tanquil_official" target="_blank" rel="noreferrer" className="text-[#666666] hover:text-[#C7A17A] transition-colors text-sm">@tanquil_official</a>
+                <a href="https://instagram.com/tranquil.co.in" target="_blank" rel="noreferrer" className="text-[#666666] hover:text-[#C7A17A] transition-colors text-sm">@tranquil.co.in</a>
               </div>
               <InstagramIcon className="w-6 h-6 text-[#C7A17A]" />
             </div>
@@ -96,7 +96,7 @@ export default function Footer() {
               Designed to be remembered. Luxury pieces for women who love standing out.
             </p>
             <div className="flex gap-4">
-              <a href="https://instagram.com/tanquil_official" target="_blank" rel="noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
+              <a href="https://instagram.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
                 <InstagramIcon className="w-4 h-4" />
               </a>
               <a href="https://pinterest.com/tanquil_official" target="_blank" rel="noreferrer" aria-label="Pinterest" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
