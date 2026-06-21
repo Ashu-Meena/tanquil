@@ -143,7 +143,7 @@ export default function CheckoutPage() {
               ))}
             </div>
 
-            <div className="min-h-[400px]">
+            <div>
               <AnimatePresence mode="wait">
                 {currentStep === 0 && (
                   <motion.div
