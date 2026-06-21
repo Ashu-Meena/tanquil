@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Lock, CreditCard, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { useCartStore } from "@/store/useCartStore";
 
 const steps = ["Information", "Shipping", "Payment", "Review"];
 
