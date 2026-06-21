@@ -24,7 +24,7 @@ export default function CheckoutPage() {
   ];
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = 0; // Free shipping over 10k or just promo
+  let shipping = 0; // Free shipping over 10k or just promo
   const total = subtotal + shipping;
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
