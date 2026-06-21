@@ -14,6 +14,28 @@ export default function CheckoutPage() {
   const [transactionId, setTransactionId] = useState("");
   const [paymentScreenshot, setPaymentScreenshot] = useState("");
 
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const savedUser = {
+    email: "ashu@tranquil.co.in",
+    name: "Ashu Meena",
+    phone: "+91 98765 43210"
+  };
+
+  const savedAddresses = [
+    {
+      id: "addr_1",
+      name: "Home",
+      address: "123 Luxury Lane, Apt 4B",
+      city: "Mumbai",
+      state: "Maharashtra",
+      pin: "400001",
+      isDefault: true
+    }
+  ];
+
+  const [selectedAddress, setSelectedAddress] = useState(savedAddresses[0].id);
+
   const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setPaymentScreenshot(URL.createObjectURL(e.target.files[0]));
@@ -75,10 +97,22 @@ export default function CheckoutPage() {
                     className="space-y-6"
                   >
                     <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Contact Information</h2>
-                    <input type="email" placeholder="Email Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                    <label className="flex items-center gap-2 text-sm text-[#666666]">
-                      <input type="checkbox" className="accent-[#C7A17A]" /> Email me with news and offers
-                    </label>
+                    {isLoggedIn ? (
+                      <div className="bg-white border border-[#EFEFEF] p-6 flex justify-between items-center rounded-sm">
+                        <div>
+                          <p className="text-sm font-medium text-[#111111] mb-1">{savedUser.name}</p>
+                          <p className="text-sm text-[#666666]">{savedUser.email}</p>
+                        </div>
+                        <button className="text-xs uppercase tracking-widest text-[#C7A17A] font-medium hover:underline" onClick={() => setIsLoggedIn(false)}>Log Out</button>
+                      </div>
+                    ) : (
+                      <>
+                        <input type="email" placeholder="Email Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <label className="flex items-center gap-2 text-sm text-[#666666]">
+                          <input type="checkbox" className="accent-[#C7A17A]" /> Email me with news and offers
+                        </label>
+                      </>
+                    )}
                   </motion.div>
                 )}
 
@@ -91,20 +125,47 @@ export default function CheckoutPage() {
                     className="space-y-6"
                   >
                     <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Shipping Address</h2>
-                    <div className="grid grid-cols-2 gap-4">
-                      <input type="text" placeholder="First Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                      <input type="text" placeholder="Last Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                    </div>
-                    <input type="text" placeholder="Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                    <input type="text" placeholder="Apartment, suite, etc. (optional)" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <input type="text" placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                      <input type="text" placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <input type="text" placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                      <input type="tel" placeholder="Phone" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                    </div>
+                    {isLoggedIn ? (
+                      <div className="space-y-4">
+                        {savedAddresses.map(addr => (
+                          <div 
+                            key={addr.id} 
+                            className={`border p-6 cursor-pointer transition-colors rounded-sm ${selectedAddress === addr.id ? 'border-[#C7A17A] bg-[#FAF8F5]' : 'border-[#EFEFEF] bg-white hover:border-[#CCCCCC]'}`} 
+                            onClick={() => setSelectedAddress(addr.id)}
+                          >
+                            <div className="flex justify-between items-start mb-2">
+                              <div className="flex items-center gap-3">
+                                <input type="radio" checked={selectedAddress === addr.id} readOnly className="accent-[#C7A17A]" />
+                                <span className="font-medium text-sm text-[#111111]">{addr.name}</span>
+                                {addr.isDefault && <span className="text-[10px] uppercase tracking-wider bg-[#EFEFEF] px-2 py-1 rounded-sm text-[#666666]">Default</span>}
+                              </div>
+                            </div>
+                            <p className="text-sm text-[#666666] ml-7">{addr.address}, {addr.city}, {addr.state} - {addr.pin}</p>
+                            <p className="text-sm text-[#666666] ml-7 mt-1">{savedUser.phone}</p>
+                          </div>
+                        ))}
+                        <button className="text-sm text-[#C7A17A] hover:text-[#111111] transition-colors mt-4 flex items-center gap-2 font-medium">
+                          + Add a new address
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-2 gap-4">
+                          <input type="text" placeholder="First Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" placeholder="Last Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        </div>
+                        <input type="text" placeholder="Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <input type="text" placeholder="Apartment, suite, etc. (optional)" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <div className="grid grid-cols-2 gap-4">
+                          <input type="text" placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <input type="text" placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="tel" placeholder="Phone" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        </div>
+                      </>
+                    )}
                   </motion.div>
                 )}
 
