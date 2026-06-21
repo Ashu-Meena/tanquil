@@ -94,17 +94,9 @@ export default function HeroSection() {
           <MagneticButton>
             <Link
               href="/collections/new"
-              className="bg-white text-[#111111] px-10 py-4 uppercase tracking-widest text-sm font-medium hover:bg-[#C7A17A] hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block"
+              className="bg-white text-[#111111] px-12 py-5 uppercase tracking-widest text-sm font-bold hover:bg-[#C7A17A] hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block shadow-xl"
             >
               Shop New Arrivals
-            </Link>
-          </MagneticButton>
-          <MagneticButton>
-            <Link
-              href="/collections/all"
-              className="bg-transparent border border-white text-white px-10 py-4 uppercase tracking-widest text-sm font-medium hover:bg-white hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block"
-            >
-              Explore Collections
             </Link>
           </MagneticButton>
         </motion.div>
