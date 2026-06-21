@@ -54,9 +54,9 @@ export default function Header() {
             <Menu className="w-6 h-6" />
           </button>
           <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium">
-            <Link href="/collections/new" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">New In</Link>
-            <Link href="/collections/clothing" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Clothing</Link>
-            <Link href="/collections/dresses" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Dresses</Link>
+            <Link href="/collections/new" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">New Arrivals</Link>
+            <Link href="/collections/clothing" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">All Clothing</Link>
+            <Link href="/collections/dresses" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Dresses & Gowns</Link>
           </nav>
         </div>
 
@@ -106,9 +106,9 @@ export default function Header() {
               </button>
             </div>
             <nav className="flex flex-col p-8 gap-8 mt-10">
-              <Link href="/collections/new" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">New In</Link>
-              <Link href="/collections/clothing" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Clothing</Link>
-              <Link href="/collections/dresses" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Dresses</Link>
+              <Link href="/collections/new" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">New Arrivals</Link>
+              <Link href="/collections/clothing" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">All Clothing</Link>
+              <Link href="/collections/dresses" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Dresses & Gowns</Link>
               <Link href="/collections/partywear" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Party Wear</Link>
               <Link href="/collections/sale" className="font-serif text-4xl text-[#C7A17A] hover:translate-x-3 transition-transform" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
             </nav>

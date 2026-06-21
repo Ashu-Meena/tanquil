@@ -94,7 +94,7 @@ export default function HeroSection() {
           <MagneticButton>
             <Link
               href="/collections/new"
-              className="bg-white text-[#111111] px-10 py-4 uppercase tracking-widest text-sm font-medium hover:bg-[#C7A17A] hover:text-white transition-colors duration-300 w-full sm:w-auto text-center inline-block"
+              className="bg-white text-[#111111] px-10 py-4 uppercase tracking-widest text-sm font-medium hover:bg-[#C7A17A] hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block"
             >
               Shop New Arrivals
             </Link>
