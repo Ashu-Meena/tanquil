@@ -134,7 +134,7 @@ export default function CheckoutPage() {
                               <p className="text-sm font-medium mb-4">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
                               <div className="bg-white p-4 rounded-xl shadow-sm border border-[#EFEFEF] mb-4">
                                 <Image 
-                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=tranquil@upi&pn=Tranquil&am=${total}&cu=INR`} 
+                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} 
                                   alt="UPI QR Code" 
                                   width={200} 
                                   height={200} 
