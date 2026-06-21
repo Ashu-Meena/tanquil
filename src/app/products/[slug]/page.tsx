@@ -108,12 +108,12 @@ export default function ProductDetailPage() {
             </div>
             
             {/* Main Image */}
-            <div className="relative w-full aspect-[3/4] md:h-[calc(100vh-200px)] bg-[#FAF8F5] cursor-zoom-in group overflow-hidden">
+            <div className="relative w-full aspect-[3/4] md:h-[calc(100vh-200px)] md:aspect-auto bg-[#FAF8F5] cursor-zoom-in group overflow-hidden">
               <Image 
                 src={selectedImage} 
                 alt={product.name} 
                 fill 
-                className="object-cover group-hover:scale-125 transition-transform duration-500 ease-out origin-center" 
+                className="object-contain group-hover:scale-110 transition-transform duration-500 ease-out origin-center" 
                 priority
               />
             </div>
