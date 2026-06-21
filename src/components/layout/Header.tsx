@@ -11,16 +11,21 @@ import AnnouncementBar from "./AnnouncementBar";
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const cartItems = useCartStore((state) => state.items);
   const openCart = useCartStore((state) => state.openCart);
   const openSearch = useSearchStore((state) => state.openSearch);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex flex-col">
@@ -71,9 +76,11 @@ export default function Header() {
           </Link>
           <button onClick={openCart} aria-label="Cart" className="hover:text-[#CDAA5D] transition-colors relative">
             <ShoppingBag className="w-5 h-5" />
-            <span className="absolute -top-1.5 -right-1.5 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-              0
-            </span>
+            {mounted && totalItems > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {totalItems}
+              </span>
+            )}
           </button>
         </div>
       </div>

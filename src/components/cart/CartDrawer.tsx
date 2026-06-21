@@ -5,36 +5,21 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function CartDrawer() {
-  const { isOpen, closeCart } = useCartStore();
+  const { isOpen, closeCart, items: cartItems, removeItem, updateQuantity } = useCartStore();
+  const [mounted, setMounted] = useState(false);
 
-  // Placeholder data for the cart
-  const cartItems = [
-    {
-      id: 1,
-      name: "Satin Slip Midi Dress",
-      price: 4999,
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80",
-      color: "Champagne",
-      size: "M",
-      quantity: 1,
-    },
-    {
-      id: 2,
-      name: "Embellished Corset Top",
-      price: 3499,
-      image: "https://images.unsplash.com/photo-1588117260148-b47818741c74?w=400&q=80",
-      color: "Black",
-      size: "S",
-      quantity: 1,
-    }
-  ];
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const freeShippingThreshold = 10000;
   const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
-  const remaining = freeShippingThreshold - subtotal;
+  const remaining = Math.max(0, freeShippingThreshold - subtotal);
+  const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <AnimatePresence>
@@ -60,7 +45,7 @@ export default function CartDrawer() {
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-[#EFEFEF]">
-              <h2 className="font-serif text-2xl tracking-wide">Your Cart (2)</h2>
+              <h2 className="font-serif text-2xl tracking-wide">Your Cart {mounted ? `(${totalItemsCount})` : ''}</h2>
               <button onClick={closeCart} className="hover:rotate-90 transition-transform p-2 -mr-2">
                 <X className="w-6 h-6" />
               </button>
@@ -89,39 +74,48 @@ export default function CartDrawer() {
 
             {/* Cart Items */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex gap-4 group">
-                  <div className="relative w-24 h-32 bg-[#FAF8F5] overflow-hidden flex-shrink-0">
-                    <Image 
-                      src={item.image} 
-                      alt={item.name} 
-                      fill 
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="flex flex-col flex-1 py-1 justify-between">
-                    <div>
-                      <div className="flex justify-between items-start gap-2 mb-1">
-                        <Link href={`/products/${item.id}`} onClick={closeCart} className="font-medium hover:text-[#C7A17A] transition-colors line-clamp-2">
-                          {item.name}
-                        </Link>
-                        <p className="font-medium">₹{item.price.toLocaleString('en-IN')}</p>
-                      </div>
-                      <p className="text-sm text-[#666666] mb-2">{item.color} / {item.size}</p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center border border-[#EFEFEF]">
-                        <button className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">-</button>
-                        <span className="px-3 py-1 text-sm">{item.quantity}</span>
-                        <button className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">+</button>
-                      </div>
-                      <button className="text-[#666666] hover:text-[#E63946] transition-colors text-sm underline underline-offset-4">
-                        Remove
-                      </button>
-                    </div>
-                  </div>
+              {!mounted ? null : cartItems.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                  <p className="text-[#666666]">Your cart is currently empty.</p>
+                  <button onClick={closeCart} className="bg-[#111111] text-white px-6 py-3 text-sm uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
+                    Continue Shopping
+                  </button>
                 </div>
-              ))}
+              ) : (
+                cartItems.map((item) => (
+                  <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4 group">
+                    <div className="relative w-24 h-32 bg-[#FAF8F5] overflow-hidden flex-shrink-0">
+                      <Image 
+                        src={item.image} 
+                        alt={item.name} 
+                        fill 
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                    <div className="flex flex-col flex-1 py-1 justify-between">
+                      <div>
+                        <div className="flex justify-between items-start gap-2 mb-1">
+                          <Link href={`/products/${item.id}`} onClick={closeCart} className="font-medium hover:text-[#C7A17A] transition-colors line-clamp-2">
+                            {item.name}
+                          </Link>
+                          <p className="font-medium">₹{item.price.toLocaleString('en-IN')}</p>
+                        </div>
+                        <p className="text-sm text-[#666666] mb-2">{item.color} / {item.size}</p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center border border-[#EFEFEF]">
+                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity - 1)} className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">-</button>
+                          <span className="px-3 py-1 text-sm">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">+</button>
+                        </div>
+                        <button onClick={() => removeItem(item.id, item.color, item.size)} className="text-[#666666] hover:text-[#E63946] transition-colors text-sm underline underline-offset-4">
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
 
             {/* Footer */}
@@ -151,8 +145,14 @@ export default function CartDrawer() {
               </p>
               <Link 
                 href="/checkout" 
-                onClick={closeCart}
-                className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors flex items-center justify-center gap-2 group"
+                onClick={(e) => {
+                  if (cartItems.length === 0) {
+                    e.preventDefault();
+                    return;
+                  }
+                  closeCart();
+                }}
+                className={`w-full py-4 uppercase tracking-widest text-sm font-medium transition-colors flex items-center justify-center gap-2 group ${cartItems.length === 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#111111] hover:bg-[#C7A17A] text-white'}`}
               >
                 Proceed to Checkout
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

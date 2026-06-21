@@ -18,6 +18,13 @@ export default function CheckoutPage() {
   const [paymentScreenshotPreview, setPaymentScreenshotPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  
+  const { items: cartItems, clearCart } = useCartStore();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
@@ -93,6 +100,7 @@ export default function CheckoutPage() {
         await new Promise(r => setTimeout(r, 1500));
       }
       
+      clearCart();
       router.push('/checkout/success');
     } catch (err) {
       console.error(err);
@@ -102,20 +110,8 @@ export default function CheckoutPage() {
     }
   };
 
-  const cartItems = [
-    {
-      id: 1,
-      name: "Satin Slip Midi Dress",
-      price: 4999,
-      image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80",
-      color: "Champagne",
-      size: "M",
-      quantity: 1,
-    }
-  ];
-
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  let shipping = 0; // Free shipping over 10k or just promo
+  let shipping = subtotal >= 10000 ? 0 : 500; // Free shipping over 10k or standard 500
   const total = subtotal + shipping;
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
@@ -424,21 +420,25 @@ export default function CheckoutPage() {
               <h2 className="font-serif text-2xl text-[#111111] mb-6">Order Summary</h2>
               
               <div className="space-y-6 mb-8">
-                {cartItems.map(item => (
-                  <div key={item.id} className="flex gap-4">
-                    <div className="relative w-20 h-28 bg-[#FAF8F5] flex-shrink-0">
-                      <Image src={item.image} alt={item.name} fill className="object-cover" />
-                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#666666] text-white text-[10px] flex items-center justify-center rounded-full">
-                        {item.quantity}
-                      </span>
+                {mounted && cartItems.length === 0 ? (
+                  <p className="text-sm text-[#666666]">Your cart is empty.</p>
+                ) : (
+                  cartItems.map(item => (
+                    <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4">
+                      <div className="relative w-20 h-28 bg-[#FAF8F5] flex-shrink-0">
+                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                        <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#666666] text-white text-[10px] flex items-center justify-center rounded-full">
+                          {item.quantity}
+                        </span>
+                      </div>
+                      <div className="flex flex-col justify-center">
+                        <h3 className="text-sm font-medium mb-1 line-clamp-1">{item.name}</h3>
+                        <p className="text-xs text-[#666666] mb-2">{item.color} / {item.size}</p>
+                        <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">₹{item.price.toLocaleString('en-IN')}</p>
+                      </div>
                     </div>
-                    <div className="flex flex-col justify-center">
-                      <h3 className="text-sm font-medium mb-1 line-clamp-1">{item.name}</h3>
-                      <p className="text-xs text-[#666666] mb-2">{item.color} / {item.size}</p>
-                      <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">₹{item.price.toLocaleString('en-IN')}</p>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
               {/* Discount Code */}

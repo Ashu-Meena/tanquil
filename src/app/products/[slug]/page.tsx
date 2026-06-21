@@ -68,10 +68,18 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   
-  const { openCart } = useCartStore();
+  const { addItem, openCart } = useCartStore();
 
   const handleAddToCart = () => {
-    // In a real app, we'd add the item to the cart state here
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0],
+      color: selectedColor.name,
+      size: selectedSize,
+      quantity,
+    });
     openCart();
   };
 
