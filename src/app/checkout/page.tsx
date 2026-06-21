@@ -10,6 +10,7 @@ const steps = ["Information", "Shipping", "Payment", "Review"];
 
 export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState("upi");
 
   const cartItems = [
     {
@@ -109,29 +110,67 @@ export default function CheckoutPage() {
                   >
                     <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Payment Method</h2>
                     <p className="text-sm text-[#666666] flex items-center gap-2">
-                      <Lock className="w-4 h-4" /> All transactions are secure and encrypted.
+                      <Lock className="w-4 h-4" /> Scan the QR code to pay instantly via UPI.
                     </p>
                     <div className="bg-white border border-[#EFEFEF] rounded-sm overflow-hidden">
-                      <label className="flex items-center gap-3 p-4 border-b border-[#EFEFEF] cursor-pointer hover:bg-[#FAF8F5] transition-colors">
-                        <input type="radio" name="payment" defaultChecked className="accent-[#C7A17A]" />
-                        <CreditCard className="w-5 h-5 text-[#666666]" />
-                        <span>Credit / Debit Card</span>
-                      </label>
-                      <div className="p-4 bg-[#FAF8F5] border-b border-[#EFEFEF]">
-                        <p className="text-sm text-[#666666] text-center py-4">You will be securely redirected to our payment gateway.</p>
-                      </div>
-                      
-                      <label className="flex items-center gap-3 p-4 border-b border-[#EFEFEF] cursor-pointer hover:bg-[#FAF8F5] transition-colors">
-                        <input type="radio" name="payment" className="accent-[#C7A17A]" />
+                      <label 
+                        className="flex items-center gap-3 p-4 border-b border-[#EFEFEF] cursor-pointer hover:bg-[#FAF8F5] transition-colors"
+                        onClick={() => setPaymentMethod("upi")}
+                      >
+                        <input type="radio" name="payment" checked={paymentMethod === "upi"} onChange={() => setPaymentMethod("upi")} className="accent-[#C7A17A]" />
                         <Wallet className="w-5 h-5 text-[#666666]" />
-                        <span>UPI / Net Banking</span>
+                        <span>Pay via UPI (GPay, PhonePe, Paytm)</span>
                       </label>
                       
-                      <label className="flex items-center gap-3 p-4 cursor-pointer hover:bg-[#FAF8F5] transition-colors">
-                        <input type="radio" name="payment" className="accent-[#C7A17A]" />
+                      <AnimatePresence>
+                        {paymentMethod === "upi" && (
+                          <motion.div 
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="p-8 bg-[#FAF8F5] border-b border-[#EFEFEF] flex flex-col items-center justify-center text-center">
+                              <p className="text-sm font-medium mb-4">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
+                              <div className="bg-white p-4 rounded-xl shadow-sm border border-[#EFEFEF] mb-4">
+                                <Image 
+                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=tranquil@upi&pn=Tranquil&am=${total}&cu=INR`} 
+                                  alt="UPI QR Code" 
+                                  width={200} 
+                                  height={200} 
+                                  className="rounded-lg"
+                                  unoptimized
+                                />
+                              </div>
+                              <p className="text-xs text-[#666666] max-w-[250px]">Open any UPI app and scan the QR code to complete your purchase securely.</p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                      
+                      <label 
+                        className="flex items-center gap-3 p-4 cursor-pointer hover:bg-[#FAF8F5] transition-colors border-t border-[#EFEFEF]"
+                        onClick={() => setPaymentMethod("cod")}
+                      >
+                        <input type="radio" name="payment" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="accent-[#C7A17A]" />
                         <Truck className="w-5 h-5 text-[#666666]" />
                         <span>Cash on Delivery (COD)</span>
                       </label>
+                      
+                      <AnimatePresence>
+                        {paymentMethod === "cod" && (
+                          <motion.div 
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="p-6 bg-[#FAF8F5] border-t border-[#EFEFEF]">
+                              <p className="text-sm text-[#666666] text-center">Pay with cash when your order is delivered to your doorstep.</p>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   </motion.div>
                 )}
@@ -159,7 +198,7 @@ export default function CheckoutPage() {
                       </div>
                       <div className="flex justify-between">
                         <div className="text-[#666666]">Payment</div>
-                        <div className="text-[#111111]">Credit / Debit Card</div>
+                        <div className="text-[#111111]">{paymentMethod === "upi" ? "UPI QR Code" : "Cash on Delivery"}</div>
                         <button onClick={() => setCurrentStep(2)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                     </div>
