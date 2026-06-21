@@ -59,4 +59,3 @@ body::-webkit-scrollbar-thumb:hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-@media (pointer: fine) { * { cursor: none !important; } }  
