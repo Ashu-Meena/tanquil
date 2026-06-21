@@ -213,7 +213,22 @@ export default function CheckoutPage() {
                               </div>
                               <p className="text-xs text-[#666666] max-w-[250px] mb-6">Open any UPI app and scan the QR code to complete your purchase securely.</p>
                               
-                              <div className="w-full max-w-[300px] space-y-4 text-left">
+                              <div className="w-full max-w-[300px] flex flex-col gap-3 mb-8">
+                                <a href={`phonepe://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-[#5E328A] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#4d2972] transition-colors shadow-sm">
+                                  Pay using PhonePe
+                                </a>
+                                <a href={`paytmmp://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-[#002970] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#001d52] transition-colors shadow-sm">
+                                  Pay using Paytm
+                                </a>
+                                <a href={`tez://upi/pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm">
+                                  Pay using Google Pay
+                                </a>
+                                <a href={`upi://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-[#111111] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden mt-2">
+                                  Other UPI Apps
+                                </a>
+                              </div>
+                              
+                              <div className="w-full max-w-[300px] space-y-4 text-left border-t border-[#EFEFEF] pt-6">
                                 <div>
                                   <label className="block text-xs font-medium text-[#111111] mb-1 uppercase tracking-wider">Transaction ID / UTR No.</label>
                                   <input 
