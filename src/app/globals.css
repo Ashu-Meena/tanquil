@@ -59,3 +59,13 @@ body::-webkit-scrollbar-thumb:hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Fix for inputs in system dark mode */
+input, textarea, select {
+  color: #111111;
+  caret-color: #C7A17A;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #999999;
+}
