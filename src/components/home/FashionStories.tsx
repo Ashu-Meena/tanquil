@@ -31,7 +31,7 @@ export default function FashionStories() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-4xl lg:text-5xl text-[#111111] mb-4"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
           >
             Fashion Stories
           </motion.h2>
@@ -79,7 +79,7 @@ export default function FashionStories() {
                 className="w-full lg:w-2/5 flex flex-col justify-center"
               >
                 <span className="text-[#C7A17A] text-xs uppercase tracking-[0.3em] font-medium mb-6 block">Editorial</span>
-                <h3 className="font-serif text-4xl lg:text-5xl text-[#111111] mb-6 leading-tight">
+                <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-6 leading-tight">
                   {story.title}
                 </h3>
                 <p className="text-[#666666] leading-relaxed mb-10 text-lg">

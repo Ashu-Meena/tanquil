@@ -30,7 +30,7 @@ export default function Lookbook() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-4xl lg:text-5xl text-[#111111] mb-4 flex justify-center items-center gap-3"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4 flex justify-center items-center gap-3"
           >
             <InstagramIcon className="w-8 h-8 md:w-10 md:h-10 text-[#C7A17A]" />
             Instagram Gallery

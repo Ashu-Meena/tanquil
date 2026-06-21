@@ -40,7 +40,7 @@ export default function WhyChooseUs() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-4xl lg:text-5xl text-[#C7A17A] mb-4"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#C7A17A] mb-4"
           >
             The Tranquil Experience
           </motion.h2>
