@@ -202,7 +202,7 @@ export default function CheckoutPage() {
                             <div className="p-8 bg-[#FAF8F5] border-b border-[#EFEFEF] flex flex-col items-center justify-center text-center">
                               <div className="bg-[#FFF8E7] border border-[#F2D08E] text-[#B07B18] p-4 rounded-md mb-6 max-w-[350px] text-xs leading-relaxed text-left">
                                 <span className="font-bold block mb-1">Important:</span> 
-                                After completing your payment, you <strong>must return to this page</strong> to enter your Transaction Number and upload a payment screenshot for confirmation.
+                                After completing your payment, you <strong>must return to this page</strong> to enter your Transaction Number and upload a payment screenshot. Then proceed to the next step and press <strong>Place Order</strong> to successfully complete your purchase.
                               </div>
                               <p className="text-sm font-medium mb-4">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
                               <div className="bg-white p-4 rounded-xl shadow-sm border border-[#EFEFEF] mb-4">
