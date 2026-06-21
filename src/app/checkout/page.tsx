@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Lock, CreditCard, Wallet, Truck, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Lock, CreditCard, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 const steps = ["Information", "Shipping", "Payment", "Review"];
 
@@ -12,7 +14,10 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [transactionId, setTransactionId] = useState("");
-  const [paymentScreenshot, setPaymentScreenshot] = useState("");
+  const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
+  const [paymentScreenshotPreview, setPaymentScreenshotPreview] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
@@ -38,7 +43,62 @@ export default function CheckoutPage() {
 
   const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setPaymentScreenshot(URL.createObjectURL(e.target.files[0]));
+      setPaymentScreenshot(e.target.files[0]);
+      setPaymentScreenshotPreview(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    if (paymentMethod === 'upi' && (!transactionId || !paymentScreenshot)) {
+      alert("Please enter Transaction ID and upload screenshot.");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        let screenshotUrl = "";
+        
+        if (paymentScreenshot) {
+          const fileExt = paymentScreenshot.name.split('.').pop();
+          const fileName = `${Math.random()}.${fileExt}`;
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('payment_screenshots')
+            .upload(fileName, paymentScreenshot);
+            
+          if (uploadData) {
+            const { data } = supabase.storage.from('payment_screenshots').getPublicUrl(fileName);
+            screenshotUrl = data.publicUrl;
+          }
+        }
+
+        const { error } = await supabase.from('orders').insert({
+          customer_name: savedUser.name,
+          customer_email: savedUser.email,
+          customer_phone: savedUser.phone,
+          shipping_address: savedAddresses[0],
+          items: cartItems,
+          subtotal,
+          shipping_fee: shipping,
+          total,
+          payment_method: paymentMethod,
+          transaction_id: transactionId,
+          screenshot_url: screenshotUrl,
+          status: 'pending_verification'
+        });
+
+        if (error) throw error;
+      } else {
+        // Fallback simulate backend processing delay
+        await new Promise(r => setTimeout(r, 1500));
+      }
+      
+      router.push('/checkout/success');
+    } catch (err) {
+      console.error(err);
+      alert("Error placing order. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -251,7 +311,7 @@ export default function CheckoutPage() {
                                     onChange={handleScreenshotUpload}
                                     className="w-full bg-white border border-[#EFEFEF] p-2 text-xs focus:outline-none focus:border-[#C7A17A] transition-colors rounded-sm file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer" 
                                   />
-                                  {paymentScreenshot && (
+                                  {paymentScreenshotPreview && (
                                     <p className="text-xs text-[#2F855A] mt-2 flex items-center gap-1 font-medium">
                                       <Check className="w-3 h-3" /> Screenshot attached
                                     </p>
@@ -344,9 +404,12 @@ export default function CheckoutPage() {
                 </button>
               ) : (
                 <button 
-                  className="bg-[#C7A17A] hover:bg-[#111111] text-white px-8 py-4 uppercase tracking-widest text-sm font-medium transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
+                  onClick={handlePlaceOrder}
+                  disabled={isSubmitting}
+                  className="bg-[#C7A17A] hover:bg-[#111111] text-white px-8 py-4 uppercase tracking-widest text-sm font-medium transition-colors w-full sm:w-auto flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <Check className="w-4 h-4" /> Place Order
+                  {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} 
+                  {isSubmitting ? "Processing..." : "Place Order"}
                 </button>
               )}
             </div>
