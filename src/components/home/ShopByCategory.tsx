@@ -35,7 +35,7 @@ export default function ShopByCategory() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-6">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
@@ -43,7 +43,7 @@ export default function ShopByCategory() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="relative aspect-[3/4] overflow-hidden group"
+              className="relative aspect-square md:aspect-[3/4] overflow-hidden group"
             >
               <Link href={category.link} className="absolute inset-0 z-20" aria-label={`Shop ${category.title}`} />
               <Image 

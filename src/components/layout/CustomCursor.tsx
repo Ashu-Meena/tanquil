@@ -50,7 +50,7 @@ export default function CustomCursor() {
     <>
       {/* Main Cursor Dot */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-[#C7A17A] rounded-full pointer-events-none z-[9999]"
+        className="hidden md:block fixed top-0 left-0 w-4 h-4 bg-[#C7A17A] rounded-full pointer-events-none z-[9999]"
         animate={{
           x: mousePosition.x - 8,
           y: mousePosition.y - 8,

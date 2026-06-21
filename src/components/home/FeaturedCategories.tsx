@@ -46,7 +46,7 @@ export default function FeaturedCategories() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="relative aspect-[3/4] group overflow-hidden cursor-pointer bg-white"
+                className="relative aspect-square md:aspect-[3/4] group overflow-hidden cursor-pointer bg-white"
               >
                 <Image
                   src={category.image}

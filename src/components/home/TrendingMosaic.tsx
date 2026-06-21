@@ -68,7 +68,7 @@ export default function TrendingMosaic() {
         </div>
 
         {/* Pinterest Inspired Asymmetrical Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-6">
           {collections.map((col, index) => (
             <motion.div
               key={col.id}

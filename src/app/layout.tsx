@@ -48,7 +48,6 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
         <CustomCursor />
         <Preloader />
-        <AnnouncementBar />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

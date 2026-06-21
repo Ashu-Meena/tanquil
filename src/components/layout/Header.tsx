@@ -6,6 +6,7 @@ import { Search, Heart, User, ShoppingBag, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/useCartStore";
 import { useSearchStore } from "@/store/useSearchStore";
+import AnnouncementBar from "./AnnouncementBar";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,13 +23,17 @@ export default function Header() {
   }, []);
 
   return (
-    <header
-      className={`fixed left-0 w-full z-50 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-        isScrolled
-          ? "top-0 bg-white/70 backdrop-blur-lg border-b border-white/20 py-3 text-[#111111] shadow-sm"
-          : "top-8 bg-transparent py-6 text-white hover:bg-white/90 hover:backdrop-blur-md hover:text-[#111111]"
-      }`}
-    >
+    <header className="fixed top-0 left-0 w-full z-50 flex flex-col">
+      <div className={`w-full overflow-hidden transition-all duration-500 ease-in-out ${isScrolled ? 'h-0' : 'h-8'}`}>
+        <AnnouncementBar />
+      </div>
+      <div
+        className={`w-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          isScrolled
+            ? "bg-white/70 backdrop-blur-lg border-b border-white/20 py-4 text-[#111111] shadow-sm"
+            : "bg-transparent py-4 lg:py-6 text-white hover:bg-white/90 hover:backdrop-blur-md hover:text-[#111111]"
+        }`}
+      >
       <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
         {/* Left: Mobile Menu Toggle / Desktop Menu (minimal) */}
         <div className="flex-1 flex items-center">
@@ -89,19 +94,21 @@ export default function Header() {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <nav className="flex flex-col p-6 gap-6 text-lg font-medium tracking-wide">
-              <Link href="/collections/new" onClick={() => setIsMobileMenuOpen(false)} className="hover:translate-x-2 transition-transform">New In</Link>
-              <Link href="/collections/clothing" onClick={() => setIsMobileMenuOpen(false)} className="hover:translate-x-2 transition-transform">Clothing</Link>
-              <Link href="/collections/dresses" onClick={() => setIsMobileMenuOpen(false)} className="hover:translate-x-2 transition-transform">Dresses</Link>
-              <Link href="/collections/partywear" onClick={() => setIsMobileMenuOpen(false)} className="hover:translate-x-2 transition-transform">Party Wear</Link>
-              <Link href="/collections/sale" className="text-[#E63946] hover:translate-x-2 transition-transform" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
+            <nav className="flex flex-col p-8 gap-8 mt-10">
+              <Link href="/collections/new" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">New In</Link>
+              <Link href="/collections/clothing" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Clothing</Link>
+              <Link href="/collections/dresses" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Dresses</Link>
+              <Link href="/collections/partywear" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Party Wear</Link>
+              <Link href="/collections/sale" className="font-serif text-4xl text-[#C7A17A] hover:translate-x-3 transition-transform" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
             </nav>
-            <div className="mt-auto p-6 bg-[#FAF8F5] border-t border-[#EFEFEF] flex justify-around">
-              <Link href="/account" className="flex flex-col items-center gap-2 text-sm text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                <User className="w-5 h-5" />
-                Account
-              </Link>
-              <Link href="/account/wishlist" className="flex flex-col items-center gap-2 text-sm text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+            <div className="mt-auto p-8 bg-[#FAF8F5] border-t border-[#EFEFEF] flex justify-between items-center">
+              <div className="flex gap-8">
+                <Link href="/account" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <User className="w-5 h-5" />
+                  Account
+                </Link>
+              </div>
+              <Link href="/account/wishlist" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                 <Heart className="w-5 h-5" />
                 Wishlist
               </Link>
@@ -109,6 +116,7 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </header>
   );
 }
