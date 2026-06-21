@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingBag, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/useCartStore";
@@ -9,6 +10,7 @@ import { useSearchStore } from "@/store/useSearchStore";
 import AnnouncementBar from "./AnnouncementBar";
 
 export default function Header() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -26,6 +28,8 @@ export default function Header() {
   }, []);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const isHomePage = pathname === '/';
+  const forceSolidHeader = !isHomePage;
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex flex-col">
@@ -34,8 +38,8 @@ export default function Header() {
       </div>
       <div
         className={`w-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-          isScrolled
-            ? "bg-white/70 backdrop-blur-lg border-b border-white/20 py-4 text-[#111111] shadow-sm"
+          isScrolled || forceSolidHeader
+            ? "bg-white/70 backdrop-blur-lg border-b border-[#EFEFEF] py-4 text-[#111111] shadow-sm"
             : "bg-transparent py-4 lg:py-6 text-white hover:bg-white/90 hover:backdrop-blur-md hover:text-[#111111]"
         }`}
       >
