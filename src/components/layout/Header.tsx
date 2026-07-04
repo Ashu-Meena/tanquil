@@ -27,69 +27,79 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const isHomePage = pathname === '/';
   const forceSolidHeader = !isHomePage;
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 flex flex-col">
-      <div className={`w-full overflow-hidden transition-all duration-500 ease-in-out ${isScrolled ? 'h-0' : 'h-8'}`}>
-        <AnnouncementBar />
-      </div>
-      <div
-        className={`w-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-          isScrolled || forceSolidHeader
-            ? "bg-white/70 backdrop-blur-lg border-b border-[#EFEFEF] py-4 text-[#111111] shadow-sm"
-            : "bg-transparent py-4 lg:py-6 text-white hover:bg-white/90 hover:backdrop-blur-md hover:text-[#111111]"
-        }`}
-      >
-      <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
-        {/* Left: Mobile Menu Toggle / Desktop Menu (minimal) */}
-        <div className="flex-1 flex items-center">
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 -ml-2 lg:hidden"
-            aria-label="Menu"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-          <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium">
-            <Link href="/collections/new" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">New Arrivals</Link>
-            <Link href="/collections/clothing" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">All Clothing</Link>
-            <Link href="/collections/dresses" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Dresses & Gowns</Link>
-          </nav>
+    <>
+      <header className="fixed top-0 left-0 w-full z-50 flex flex-col">
+        <div className={`w-full overflow-hidden transition-all duration-500 ease-in-out ${isScrolled ? 'h-0' : 'h-8'}`}>
+          <AnnouncementBar />
         </div>
+        <div
+          className={`w-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+            isScrolled || forceSolidHeader
+              ? "bg-white/70 backdrop-blur-lg border-b border-[#EFEFEF] py-4 text-[#111111] shadow-sm"
+              : "bg-transparent py-4 lg:py-6 text-white hover:bg-white/90 hover:backdrop-blur-md hover:text-[#111111]"
+          }`}
+        >
+        <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
+          {/* Left: Mobile Menu Toggle / Desktop Menu */}
+          <div className="flex-1 flex items-center">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 -ml-2 lg:hidden"
+              aria-label="Menu"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium">
+              <Link href="/collections/new" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">New Arrivals</Link>
+              <Link href="/collections/clothing" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">All Clothing</Link>
+              <Link href="/collections/dresses" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Dresses & Gowns</Link>
+              <Link href="/collections/partywear" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Party Wear</Link>
+              <Link href="/collections/sale" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px] text-[#C7A17A]">Sale</Link>
+            </nav>
+          </div>
 
-        {/* Center: Brand Logo */}
-        <div className="flex-1 flex justify-center">
-          <Link href="/" className="font-serif text-2xl lg:text-3xl tracking-widest uppercase hover:opacity-80 transition-opacity">
-            Tranquil
-          </Link>
+          {/* Center: Brand Logo */}
+          <div className="flex-1 flex justify-center">
+            <Link href="/" className="font-serif text-2xl lg:text-3xl tracking-widest uppercase hover:opacity-80 transition-opacity">
+              Tranquil
+            </Link>
+          </div>
+
+          {/* Right: Actions */}
+          <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6">
+            <button onClick={openSearch} aria-label="Search" className="hover:text-[#CDAA5D] transition-colors">
+              <Search className="w-5 h-5" />
+            </button>
+            <Link href="/account/wishlist" aria-label="Wishlist" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
+              <Heart className="w-5 h-5" />
+            </Link>
+            <Link href="/account" aria-label="Account" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
+              <User className="w-5 h-5" />
+            </Link>
+            <button onClick={openCart} aria-label="Cart" className="hover:text-[#CDAA5D] transition-colors relative">
+              <ShoppingBag className="w-5 h-5" />
+              {mounted && totalItems > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
-
-        {/* Right: Actions */}
-        <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6">
-          <button onClick={openSearch} aria-label="Search" className="hover:text-[#CDAA5D] transition-colors">
-            <Search className="w-5 h-5" />
-          </button>
-          <Link href="/account/wishlist" aria-label="Wishlist" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
-            <Heart className="w-5 h-5" />
-          </Link>
-          <Link href="/account" aria-label="Account" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
-            <User className="w-5 h-5" />
-          </Link>
-          <button onClick={openCart} aria-label="Cart" className="hover:text-[#CDAA5D] transition-colors relative">
-            <ShoppingBag className="w-5 h-5" />
-            {mounted && totalItems > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                {totalItems}
-              </span>
-            )}
-          </button>
         </div>
-      </div>
+      </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay — sibling of header, not nested inside it */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -127,7 +137,6 @@ export default function Header() {
           </motion.div>
         )}
       </AnimatePresence>
-      </div>
-    </header>
+    </>
   );
 }

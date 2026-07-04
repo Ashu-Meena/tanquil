@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const announcements = [
-  "✨ Free Shipping Above ₹999",
+  "✨ Free Shipping Above ₹10,000",
   "✨ COD Available",
   "✨ Extra 10% Off On Prepaid Orders"
 ];

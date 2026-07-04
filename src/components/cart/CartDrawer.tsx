@@ -6,20 +6,32 @@ import { X, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { SHIPPING_THRESHOLD } from "@/lib/constants";
 
 export default function CartDrawer() {
   const { isOpen, closeCart, items: cartItems, removeItem, updateQuantity } = useCartStore();
   const [mounted, setMounted] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountMessage, setDiscountMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const freeShippingThreshold = 10000;
-  const progress = Math.min((subtotal / freeShippingThreshold) * 100, 100);
-  const remaining = Math.max(0, freeShippingThreshold - subtotal);
+  const progress = Math.min((subtotal / SHIPPING_THRESHOLD) * 100, 100);
+  const remaining = Math.max(0, SHIPPING_THRESHOLD - subtotal);
   const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  const handleApplyDiscount = () => {
+    if (!discountCode.trim()) {
+      setDiscountMessage({ type: "error", text: "Please enter a discount code." });
+    } else {
+      // TODO: Connect to real discount code validation
+      setDiscountMessage({ type: "error", text: `"${discountCode.toUpperCase()}" is not a valid code.` });
+    }
+    setTimeout(() => setDiscountMessage(null), 3000);
+  };
 
   return (
     <AnimatePresence>
@@ -98,7 +110,7 @@ export default function CartDrawer() {
                           <Link href={`/products/${item.id}`} onClick={closeCart} className="font-medium hover:text-[#C7A17A] transition-colors line-clamp-2">
                             {item.name}
                           </Link>
-                          <p className="font-medium">₹{item.price.toLocaleString('en-IN')}</p>
+                          <p className="font-medium whitespace-nowrap">₹{item.price.toLocaleString('en-IN')}</p>
                         </div>
                         <p className="text-sm text-[#666666] mb-2">{item.color} / {item.size}</p>
                       </div>
@@ -108,8 +120,12 @@ export default function CartDrawer() {
                           <span className="px-3 py-1 text-sm">{item.quantity}</span>
                           <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">+</button>
                         </div>
-                        <button onClick={() => removeItem(item.id, item.color, item.size)} className="text-[#666666] hover:text-[#E63946] transition-colors text-sm underline underline-offset-4">
-                          Remove
+                        <button
+                          onClick={() => removeItem(item.id, item.color, item.size)}
+                          className="text-[#999999] hover:text-[#E63946] transition-colors p-1"
+                          title="Remove item"
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </div>
@@ -125,13 +141,24 @@ export default function CartDrawer() {
                 <div className="flex gap-2">
                   <input 
                     type="text" 
-                    placeholder="Discount code" 
+                    placeholder="Discount code"
+                    value={discountCode}
+                    onChange={e => setDiscountCode(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && handleApplyDiscount()}
                     className="flex-1 border border-[#EFEFEF] px-4 py-2 text-sm focus:outline-none focus:border-[#C7A17A] uppercase"
                   />
-                  <button className="bg-[#111111] text-white px-4 py-2 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
+                  <button
+                    onClick={handleApplyDiscount}
+                    className="bg-[#111111] text-white px-4 py-2 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors"
+                  >
                     Apply
                   </button>
                 </div>
+                {discountMessage && (
+                  <p className={`text-xs mt-2 ${discountMessage.type === "error" ? "text-[#E63946]" : "text-[#2F855A]"}`}>
+                    {discountMessage.text}
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-between items-center mb-6">

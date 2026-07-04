@@ -30,8 +30,8 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Luxury Fashion E-commerce",
-  description: "Premium luxury fashion and statement clothing.",
+  title: "Tranquil | Luxury Fashion",
+  description: "Premium luxury fashion and statement clothing designed to make you unforgettable.",
 };
 
 export default function RootLayout({

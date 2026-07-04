@@ -4,8 +4,9 @@ import BestSellers from "@/components/home/BestSellers";
 import ShopByCategory from "@/components/home/ShopByCategory";
 import NewCollection from "@/components/home/NewCollection";
 import FashionStories from "@/components/home/FashionStories";
-import Lookbook from "@/components/home/Lookbook"; // Acts as Instagram Gallery
+import Lookbook from "@/components/home/Lookbook";
 import Reviews from "@/components/home/Reviews";
+import WhyChooseUs from "@/components/home/WhyChooseUs";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <FashionStories />
       <Lookbook />
       <Reviews />
+      <WhyChooseUs />
     </>
   );
 }

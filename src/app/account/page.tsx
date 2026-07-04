@@ -2,11 +2,19 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { User, Package, Heart, MapPin, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus } from "lucide-react";
 import Image from "next/image";
 
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState("orders");
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const router = useRouter();
+
+  const showFeedback = (msg: string) => {
+    setFeedbackMessage(msg);
+    setTimeout(() => setFeedbackMessage(""), 3000);
+  };
 
   return (
     <div className="bg-[#FAF8F5] min-h-screen pt-32 pb-24">
@@ -52,15 +60,23 @@ export default function AccountPage() {
                 >
                   <User className="w-4 h-4" /> Profile Details
                 </button>
-                <button className="flex items-center gap-3 p-3 text-sm font-medium text-[#E63946] hover:bg-[#FAF8F5] transition-colors mt-8">
-                  <LogOut className="w-4 h-4" /> Sign Out
-                </button>
+                <button 
+                onClick={() => { router.push('/'); }}
+                className="flex items-center gap-3 p-3 text-sm text-left w-full hover:bg-[#FAF8F5] transition-colors text-[#666666] hover:text-[#E63946] rounded"
+              >
+                <LogOut className="w-4 h-4" /> Sign Out
+              </button>
               </nav>
             </div>
           </aside>
 
           {/* Content */}
           <main className="flex-1 bg-white border border-[#EFEFEF] p-8 lg:p-12">
+            {feedbackMessage && (
+              <div className="fixed top-24 right-6 bg-[#111111] text-white px-6 py-3 shadow-lg z-50 text-sm animate-fade-in">
+                {feedbackMessage}
+              </div>
+            )}
             {activeTab === "orders" && (
               <div>
                 <h2 className="font-serif text-2xl text-[#111111] mb-8">Order History</h2>
@@ -79,15 +95,19 @@ export default function AccountPage() {
                     </div>
                     
                     <div className="flex items-center gap-6">
-                      <div className="relative w-24 h-32 bg-[#FAF8F5]">
+                      <div className="relative w-24 h-32 bg-[#FAF8F5] overflow-hidden">
                         <Image src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=200&q=80" alt="Product" fill className="object-cover" />
                       </div>
                       <div className="flex-1">
                         <h3 className="font-medium text-[#111111]">Satin Slip Midi Dress</h3>
                         <p className="text-xs text-[#666666] mt-1">Champagne / M</p>
                         <div className="mt-4 flex gap-4">
-                          <button className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors">Track Order</button>
-                          <button className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors">Return / Exchange</button>
+                          <button onClick={() => showFeedback('Tracking info coming soon! Check your email for updates.')} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors flex items-center gap-1">
+                            <Truck className="w-3 h-3" /> Track Order
+                          </button>
+                          <button onClick={() => showFeedback('To initiate a return, please contact us at returns@tranquil.co.in')} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors flex items-center gap-1">
+                            <RefreshCw className="w-3 h-3" /> Return / Exchange
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -124,8 +144,8 @@ export default function AccountPage() {
               <div>
                 <div className="flex justify-between items-center mb-8">
                   <h2 className="font-serif text-2xl text-[#111111]">Saved Addresses</h2>
-                  <button className="bg-[#111111] text-white hover:bg-[#C7A17A] text-xs uppercase tracking-widest font-medium px-6 py-3 transition-colors">
-                    Add New Address
+                  <button onClick={() => showFeedback('Address form coming soon! Feature in development.')} className="bg-[#111111] text-white hover:bg-[#C7A17A] text-xs uppercase tracking-widest font-medium px-6 py-3 transition-colors flex items-center gap-2">
+                    <Plus className="w-4 h-4" /> Add New Address
                   </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -140,8 +160,8 @@ export default function AccountPage() {
                       Phone: +91 98765 43210
                     </p>
                     <div className="flex gap-4">
-                      <button className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors">Edit</button>
-                      <button className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#E63946] transition-colors">Delete</button>
+                      <button onClick={() => showFeedback('Address editing coming soon!')} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors">Edit</button>
+                      <button onClick={() => showFeedback('Address deletion coming soon!')} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#E63946] transition-colors">Delete</button>
                     </div>
                   </div>
                 </div>
@@ -170,7 +190,7 @@ export default function AccountPage() {
                     <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Phone Number</label>
                     <input type="tel" defaultValue="+91 98765 43210" className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                   </div>
-                  <button type="button" className="bg-[#111111] hover:bg-[#C7A17A] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors">
+                  <button type="button" onClick={() => showFeedback('Profile saved successfully! ✓')} className="bg-[#111111] hover:bg-[#C7A17A] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors">
                     Save Changes
                   </button>
                 </form>

@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Lock, CreditCard, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2 } from "lucide-react";
+import { Lock, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useCartStore } from "@/store/useCartStore";
+import { SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from "@/lib/constants";
 
 const steps = ["Information", "Shipping", "Payment", "Review"];
 
@@ -18,6 +19,9 @@ export default function CheckoutPage() {
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [paymentScreenshotPreview, setPaymentScreenshotPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showNewAddressForm, setShowNewAddressForm] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discountMsg, setDiscountMsg] = useState("");
   const router = useRouter();
   
   const { items: cartItems, clearCart } = useCartStore();
@@ -26,6 +30,22 @@ export default function CheckoutPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Redirect if cart is empty after mount
+  useEffect(() => {
+    if (mounted && cartItems.length === 0) {
+      router.push('/collections/all');
+    }
+  }, [mounted, cartItems.length, router]);
+
+  const handleApplyDiscount = () => {
+    if (!discountCode.trim()) {
+      setDiscountMsg("Please enter a discount code.");
+    } else {
+      setDiscountMsg(`"${discountCode.toUpperCase()}" is not a valid discount code.`);
+    }
+    setTimeout(() => setDiscountMsg(""), 3000);
+  };
 
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
@@ -112,7 +132,7 @@ export default function CheckoutPage() {
   };
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  let shipping = subtotal >= 10000 ? 0 : 500; // Free shipping over 10k or standard 500
+  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
   const total = subtotal + shipping;
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
@@ -201,9 +221,37 @@ export default function CheckoutPage() {
                             <p className="text-sm text-[#666666] ml-7 mt-1">{savedUser.phone}</p>
                           </div>
                         ))}
-                        <button className="text-sm text-[#C7A17A] hover:text-[#111111] transition-colors mt-4 flex items-center gap-2 font-medium">
-                          + Add a new address
+                        <button
+                          onClick={() => setShowNewAddressForm(!showNewAddressForm)}
+                          className="text-sm text-[#C7A17A] hover:text-[#111111] transition-colors mt-4 flex items-center gap-2 font-medium"
+                        >
+                          <Plus className="w-4 h-4" /> {showNewAddressForm ? 'Cancel' : 'Add a new address'}
                         </button>
+                        <AnimatePresence>
+                          {showNewAddressForm && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden"
+                            >
+                              <div className="mt-4 space-y-4 border border-[#EFEFEF] p-4 rounded-sm">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <input type="text" placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" placeholder="Street Address" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                  <input type="text" placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                </div>
+                                <button className="bg-[#111111] text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
+                                  Save Address
+                                </button>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </div>
                     ) : (
                       <>
@@ -360,12 +408,12 @@ export default function CheckoutPage() {
                     <div className="bg-white border border-[#EFEFEF] p-6 text-sm">
                       <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
                         <div className="text-[#666666]">Contact</div>
-                        <div className="text-[#111111]">user@example.com</div>
+                        <div className="text-[#111111]">{savedUser.email}</div>
                         <button onClick={() => setCurrentStep(0)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                       <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
                         <div className="text-[#666666]">Ship to</div>
-                        <div className="text-[#111111]">123 Fashion Ave, Mumbai, 400001</div>
+                        <div className="text-[#111111] text-right max-w-[200px]">{savedAddresses[0].address}, {savedAddresses[0].city}, {savedAddresses[0].pin}</div>
                         <button onClick={() => setCurrentStep(1)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                       <div className="flex justify-between">
@@ -443,9 +491,19 @@ export default function CheckoutPage() {
               </div>
 
               {/* Discount Code */}
-              <div className="flex gap-2 mb-8 border-t border-[#EFEFEF] pt-6">
-                <input type="text" placeholder="Discount Code" className="flex-1 bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                <button className="bg-[#111111] hover:bg-[#C7A17A] text-white px-6 uppercase tracking-widest text-xs font-medium transition-colors">Apply</button>
+              <div className="mb-8 border-t border-[#EFEFEF] pt-6">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="Discount Code"
+                    value={discountCode}
+                    onChange={e => setDiscountCode(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleApplyDiscount()}
+                    className="flex-1 bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm"
+                  />
+                  <button onClick={handleApplyDiscount} className="bg-[#111111] hover:bg-[#C7A17A] text-white px-6 uppercase tracking-widest text-xs font-medium transition-colors">Apply</button>
+                </div>
+                {discountMsg && <p className="text-xs text-[#E63946] mt-2">{discountMsg}</p>}
               </div>
 
               {/* Totals */}

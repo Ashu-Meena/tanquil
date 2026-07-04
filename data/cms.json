@@ -1,0 +1,57 @@
+{
+  "content": {
+    "announcement": {
+      "text": "Free Shipping on orders above ₹10,000"
+    },
+    "hero": {
+      "headline": "Modern Luxury, Redefined",
+      "subheadline": "Discover the new collection of elegant evening wear and statement pieces.",
+      "buttonText": "Shop The Collection",
+      "buttonLink": "/collections/all",
+      "imageUrl": "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2000&auto=format&fit=crop"
+    },
+    "footer": {
+      "description": "Redefining luxury fashion for the modern Indian woman. Elegant silhouettes, premium fabrics, and impeccable craftsmanship.",
+      "email": "hello@tranquil.co.in",
+      "phone": "+91 98765 43210",
+      "instagram": "https://instagram.com/tranquil",
+      "facebook": "https://facebook.com/tranquil"
+    }
+  },
+  "products": [
+    {
+      "id": "prod-1",
+      "name": "Satin Slip Midi Dress",
+      "price": 4999,
+      "category": "Dresses",
+      "description": "Cut from heavy, lustrous satin, this slip dress drapes beautifully over your frame.",
+      "images": [
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200",
+        "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200&auto=format&fit=crop&sig=1"
+      ],
+      "colors": [
+        { "name": "Champagne", "hex": "#C7A17A" },
+        { "name": "Black", "hex": "#111111" }
+      ],
+      "sizes": ["XS", "S", "M", "L", "XL"],
+      "details": ["100% Polyester Satin", "Cowl neckline", "Dry clean only"]
+    },
+    {
+      "id": "prod-2",
+      "name": "Embellished Corset Top",
+      "price": 3499,
+      "category": "Tops",
+      "description": "A stunning corset top featuring delicate hand-embellishments and a structured bodice.",
+      "images": [
+        "https://images.unsplash.com/photo-1588117260148-b47818741c74?q=80&w=1200",
+        "https://images.unsplash.com/photo-1588117305388-c2631a279f82?q=80&w=1200"
+      ],
+      "colors": [
+        { "name": "Black", "hex": "#111111" },
+        { "name": "White", "hex": "#FFFFFF" }
+      ],
+      "sizes": ["XS", "S", "M", "L"],
+      "details": ["Poly-blend stretch fabric", "Internal boning", "Dry clean only"]
+    }
+  ]
+}
