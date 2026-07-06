@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, Menu, LogOut, Settings } from "lucide-react";
 import AdminSearch from "./AdminSearch";
+import { useAdminStore } from "@/store/useAdminStore";
 
 export function AdminHeader() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+  const toggleMobileSidebar = useAdminStore(state => state.toggleMobileSidebar);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -23,7 +25,10 @@ export function AdminHeader() {
   return (
     <header className="h-16 bg-white border-b border-[#EFEFEF] flex items-center justify-between px-4 md:px-6 sticky top-0 z-10">
       <div className="flex items-center gap-4">
-        <button className="md:hidden text-[#666666] hover:text-[#111111]">
+        <button 
+          className="md:hidden text-[#666666] hover:text-[#111111]"
+          onClick={toggleMobileSidebar}
+        >
           <Menu className="w-6 h-6" />
         </button>
         <AdminSearch />

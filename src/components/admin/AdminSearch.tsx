@@ -81,16 +81,16 @@ export default function AdminSearch() {
   };
 
   return (
-    <div className="relative hidden md:flex items-center" ref={ref}>
-      <div className="flex items-center bg-[#FAF8F5] px-3 py-1.5 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors relative z-20">
-        <Search className="w-4 h-4 text-[#999999] mr-2" />
+    <div className="relative flex items-center w-full md:w-auto ml-2 md:ml-0" ref={ref}>
+      <div className="flex items-center bg-[#FAF8F5] px-3 py-1.5 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors relative z-20 w-full">
+        <Search className="w-4 h-4 text-[#999999] mr-2 shrink-0" />
         <input 
           type="text" 
-          placeholder="Search anything..." 
+          placeholder="Search..." 
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => { if (query.length > 1) setIsOpen(true); }}
-          className="bg-transparent border-none outline-none text-sm w-64 text-[#111111] placeholder:text-[#999999]"
+          className="bg-transparent border-none outline-none text-sm w-32 md:w-64 text-[#111111] placeholder:text-[#999999]"
         />
         {loading && <Loader2 className="w-4 h-4 text-[#C7A17A] animate-spin absolute right-3" />}
       </div>

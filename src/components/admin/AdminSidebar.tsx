@@ -15,9 +15,11 @@ import {
   FileText,
   Tag,
   LogOut,
-  Package
+  Package,
+  X
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { useAdminStore } from "@/store/useAdminStore";
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -39,6 +41,7 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const supabase = createClient();
+  const { isMobileSidebarOpen, closeMobileSidebar } = useAdminStore();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -47,12 +50,31 @@ export function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 bg-white border-r border-[#EFEFEF] min-h-screen flex-col hidden md:flex sticky top-0 h-screen">
-      <div className="p-6 border-b border-[#EFEFEF]">
-        <Link href="/admin" className="font-serif text-2xl text-[#111111] tracking-widest uppercase">
-          Tranquil<span className="text-[#C7A17A] text-xs align-top font-sans normal-case tracking-normal ml-1">Admin</span>
-        </Link>
-      </div>
+    <>
+      {/* Mobile Overlay */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+          onClick={closeMobileSidebar}
+        />
+      )}
+
+      <aside 
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#EFEFEF] flex-col transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-screen md:flex md:translate-x-0 ${
+          isMobileSidebarOpen ? "translate-x-0 flex" : "-translate-x-full hidden"
+        }`}
+      >
+        <div className="p-6 border-b border-[#EFEFEF] flex justify-between items-center">
+          <Link href="/admin" className="font-serif text-2xl text-[#111111] tracking-widest uppercase" onClick={closeMobileSidebar}>
+            Tranquil<span className="text-[#C7A17A] text-xs align-top font-sans normal-case tracking-normal ml-1">Admin</span>
+          </Link>
+          <button 
+            className="md:hidden text-[#666666] hover:text-[#111111]"
+            onClick={closeMobileSidebar}
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
       
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto no-scrollbar">
         {navItems.map((item) => {
@@ -63,6 +85,7 @@ export function AdminSidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={closeMobileSidebar}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-sm text-sm transition-colors ${
                 isActive 
                   ? "bg-[#FAF8F5] text-[#C7A17A] font-medium" 
@@ -86,5 +109,6 @@ export function AdminSidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }
