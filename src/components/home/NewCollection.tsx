@@ -4,56 +4,24 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import ProductCard from "../product/ProductCard";
 
-const initialProducts = [
-  {
-    id: 101,
-    name: "Pleated Chiffon Midi",
-    price: 4299,
-    images: [
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600",
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600"
-    ],
-    isNew: true
-  },
-  {
-    id: 102,
-    name: "Embroidered Mesh Top",
-    price: 2499,
-    images: [
-      "https://images.unsplash.com/photo-1588117260148-b47818741c74?q=80&w=600",
-      "https://images.unsplash.com/photo-1588117305388-c2631a279f82?q=80&w=600"
-    ]
-  },
-  {
-    id: 103,
-    name: "Satin Draped Gown",
-    price: 8999,
-    images: [
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=600",
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=600"
-    ],
-    isNew: true
-  },
-  {
-    id: 104,
-    name: "Ruched Silk Skirt",
-    price: 3299,
-    images: [
-      "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=600",
-      "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=600"
-    ]
-  }
-];
+interface Product {
+  id: string | number;
+  name: string;
+  price: number;
+  images: string[];
+  isNew?: boolean;
+  isSale?: boolean;
+}
 
-export default function NewCollection() {
-  const [products, setProducts] = useState(initialProducts);
+export default function NewCollection({ initialData = [] }: { initialData?: Product[] }) {
+  const [products, setProducts] = useState<Product[]>(initialData);
   const [loading, setLoading] = useState(false);
 
   const loadMore = () => {
     setLoading(true);
     // Simulate infinite loading
     setTimeout(() => {
-      setProducts([...products, ...initialProducts.map(p => ({ ...p, id: p.id + Math.random() }))]);
+      setProducts([...products, ...initialData.map(p => ({ ...p, id: p.id + String(Math.random()) }))]);
       setLoading(false);
     }, 1500);
   };

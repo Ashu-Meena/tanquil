@@ -4,14 +4,16 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-const categories = [
-  { id: 1, title: "Dresses", image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1000", link: "/collections/dresses" },
-  { id: 2, title: "Corsets", image: "https://images.unsplash.com/photo-1588117260148-b47818741c74?q=80&w=1000", link: "/collections/corsets" },
-  { id: 3, title: "Co-Ords", image: "https://images.unsplash.com/photo-1515347619362-e610058bdaee?q=80&w=1000", link: "/collections/coord" },
-  { id: 4, title: "Accessories", image: "https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=1000", link: "/collections/accessories" },
-];
+interface Category {
+  id: string | number;
+  title: string;
+  image: string;
+  link: string;
+}
 
-export default function ShopByCategory() {
+export default function ShopByCategory({ categories }: { categories: Category[] }) {
+  if (!categories || categories.length === 0) return null;
+
   return (
     <section className="py-24 bg-[#FAF8F5]">
       <div className="container mx-auto px-6 lg:px-12">

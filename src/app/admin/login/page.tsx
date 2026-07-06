@@ -2,84 +2,87 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Eye, EyeOff } from "lucide-react";
+import { createClient } from "@/utils/supabase/client";
+import { ArrowRight, Loader2, Lock } from "lucide-react";
 
 export default function AdminLogin() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!password) return;
+  const supabase = createClient();
 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
     setError("");
 
-    try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      if (res.ok) {
-        // Success! Middleware will now allow access
-        router.push("/admin");
-        router.refresh(); // Ensure we get fresh data
-      } else {
-        const data = await res.json();
-        setError(data.error || "Invalid password.");
-      }
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-    } finally {
+    if (authError) {
+      setError(authError.message);
       setLoading(false);
+      return;
     }
+
+    // After login, router.refresh() triggers middleware to check if user is admin
+    router.push("/admin");
+    router.refresh();
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center px-6">
-      <div className="bg-white border border-[#EFEFEF] shadow-lg p-10 w-full max-w-md text-center">
-        <div className="w-16 h-16 bg-[#111111] rounded-full flex items-center justify-center mx-auto mb-6">
-          <Lock className="w-7 h-7 text-[#C7A17A]" />
-        </div>
-        <h1 className="font-serif text-3xl text-[#111111] mb-2">Admin Secure Access</h1>
-        <p className="text-[#666666] text-sm mb-8">This area is protected. Please enter the master password.</p>
-        
-        <form onSubmit={handleLogin}>
-          <div className="relative mb-4">
-            <input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Admin Password"
-              disabled={loading}
-              className="w-full border border-[#EFEFEF] px-4 py-3 pr-12 focus:outline-none focus:border-[#C7A17A] text-sm disabled:opacity-50 disabled:bg-gray-100"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              disabled={loading}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#666666] disabled:opacity-50"
-            >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
+    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-white p-8 border border-[#EFEFEF] shadow-sm rounded-sm">
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 bg-[#111111] text-[#C7A17A] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Lock className="w-5 h-5" />
           </div>
-          
-          {error && <p className="text-xs text-red-500 mb-4">{error}</p>}
+          <h1 className="font-serif text-3xl text-[#111111] tracking-widest uppercase">Tranquil Admin</h1>
+          <p className="text-[#666666] text-sm mt-2">Sign in to access the control panel</p>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 text-red-600 p-3 rounded-sm text-sm mb-6 border border-red-100">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-[#111111] mb-1">Admin Email</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-[#EFEFEF] p-3 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] transition-colors"
+              placeholder="admin@tranquil.com"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[#111111] mb-1">Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-[#EFEFEF] p-3 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] transition-colors"
+              placeholder="••••••••"
+            />
+          </div>
           
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-3 uppercase tracking-widest text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full flex items-center justify-center gap-2 bg-[#111111] hover:bg-[#C7A17A] text-white py-3.5 uppercase tracking-widest text-sm font-medium transition-colors rounded-sm disabled:opacity-50 mt-4"
           >
-            {loading ? (
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            ) : null}
-            Sign In
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Secure Login"}
+            {!loading && <ArrowRight className="w-4 h-4" />}
           </button>
         </form>
       </div>

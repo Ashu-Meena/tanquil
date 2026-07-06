@@ -6,36 +6,25 @@ import Image from "next/image";
 import Link from "next/link";
 import MagneticButton from "../ui/MagneticButton";
 
-const slides = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=2000",
-    title: "Luxury Crafted For Every Occasion",
-    subtitle: "Designed to make you unforgettable.",
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=2000",
-    title: "Elegance In Every Detail",
-    subtitle: "Explore our latest editorial curations.",
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1589465885857-44edb59bbff2?q=80&w=2000",
-    title: "Statement Pieces That Inspire",
-    subtitle: "Embrace the art of standing out.",
-  }
-];
+interface Slide {
+  id: string | number;
+  image_url: string;
+  title: string;
+  subtitle: string;
+}
 
-export default function HeroSection() {
+export default function HeroSection({ slides }: { slides: Slide[] }) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    if (!slides || slides.length === 0) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides]);
+
+  if (!slides || slides.length === 0) return null;
 
   return (
     <section className="relative w-full h-[100dvh] lg:h-[100vh] overflow-hidden bg-[#111111]">
@@ -56,7 +45,7 @@ export default function HeroSection() {
             transition={{ duration: 6, ease: "linear" }}
           >
             <Image
-              src={slides[currentSlide].image}
+              src={slides[currentSlide].image_url}
               alt="Luxury Fashion"
               fill
               className="object-cover object-center opacity-70"

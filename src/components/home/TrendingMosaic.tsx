@@ -5,45 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const collections = [
-  {
-    id: 1,
-    title: "Summer Edit",
-    slug: "summer",
-    image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800",
-    className: "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto",
-  },
-  {
-    id: 2,
-    title: "Party Wear",
-    slug: "partywear",
-    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=800",
-    className: "col-span-1 row-span-1 aspect-square",
-  },
-  {
-    id: 3,
-    title: "Date Night",
-    slug: "dresses",
-    image: "https://images.unsplash.com/photo-1588117260148-b47818741c74?q=80&w=800",
-    className: "col-span-1 row-span-1 aspect-square",
-  },
-  {
-    id: 4,
-    title: "Vacation Collection",
-    slug: "new",
-    image: "https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=800",
-    className: "col-span-1 row-span-1 aspect-[3/4]",
-  },
-  {
-    id: 5,
-    title: "Birthday Looks",
-    slug: "partywear",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800",
-    className: "col-span-1 md:col-span-2 row-span-1 aspect-[16/9] md:aspect-[21/9]",
-  }
-];
+interface Collection {
+  id: string | number;
+  title: string;
+  slug: string;
+  image: string;
+  className: string;
+}
 
-export default function TrendingMosaic() {
+export default function TrendingMosaic({ collections }: { collections: Collection[] }) {
+  if (!collections || collections.length === 0) return null;
+
   return (
     <section className="py-24 bg-white">
       <div className="container mx-auto px-6 lg:px-12">

@@ -2,15 +2,23 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const announcements = [
-  "✨ Free Shipping Above ₹10,000",
-  "✨ COD Available",
-  "✨ Extra 10% Off On Prepaid Orders"
-];
+import { supabase } from "@/lib/supabase";
 
 export default function AnnouncementBar() {
+  const [announcements, setAnnouncements] = useState<string[]>([
+    "✨ Welcome to Tranquil"
+  ]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    async function fetchAnnouncements() {
+      const { data } = await supabase.from('store_settings').select('value').eq('key', 'announcement').single();
+      if (data?.value?.messages && data.value.messages.length > 0) {
+        setAnnouncements(data.value.messages);
+      }
+    }
+    fetchAnnouncements();
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {

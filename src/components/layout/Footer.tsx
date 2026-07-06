@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight, Mail } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -31,6 +34,19 @@ const YouTubeIcon = ({ className }: { className?: string }) => (
 );
 
 export default function Footer() {
+  const pathname = usePathname();
+  const [storeInfo, setStoreInfo] = useState<any>(null);
+
+  useEffect(() => {
+    async function fetchInfo() {
+      const { data } = await supabase.from('store_settings').select('value').eq('key', 'store_info').single();
+      if (data?.value) setStoreInfo(data.value);
+    }
+    fetchInfo();
+  }, []);
+
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <footer className="bg-[#111111] text-white pt-20 pb-10">
       <div className="container mx-auto px-6 lg:px-12">
@@ -96,18 +112,16 @@ export default function Footer() {
               Designed to be remembered. Luxury pieces for women who love standing out.
             </p>
             <div className="flex gap-4">
-              <a href="https://instagram.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
-                <InstagramIcon className="w-4 h-4" />
-              </a>
-              <a href="https://pinterest.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Pinterest" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
-                <PinterestIcon className="w-4 h-4" />
-              </a>
-              <a href="https://youtube.com/@tranquil.co.in" target="_blank" rel="noreferrer" aria-label="YouTube" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
-                <YouTubeIcon className="w-4 h-4" />
-              </a>
-              <a href="https://facebook.com/tranquil.co.in" target="_blank" rel="noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
-                <FacebookIcon className="w-4 h-4" />
-              </a>
+              {storeInfo?.instagram && (
+                <a href={storeInfo.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
+                  <InstagramIcon className="w-4 h-4" />
+                </a>
+              )}
+              {storeInfo?.facebook && (
+                <a href={storeInfo.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full border border-[#333333] flex items-center justify-center hover:border-[#C7A17A] hover:text-[#C7A17A] transition-colors">
+                  <FacebookIcon className="w-4 h-4" />
+                </a>
+              )}
             </div>
           </div>
 

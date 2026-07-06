@@ -5,57 +5,18 @@ import Link from "next/link";
 import ProductCard from "../product/ProductCard";
 import { ArrowRight } from "lucide-react";
 
-const bestSellers = [
-  {
-    id: 1,
-    name: "Embellished Corset Top",
-    price: 3499,
-    images: [
-      "https://images.unsplash.com/photo-1588117260148-b47818741c74?q=80&w=600",
-      "https://images.unsplash.com/photo-1588117305388-c2631a279f82?q=80&w=600"
-    ],
-    isNew: true
-  },
-  {
-    id: 2,
-    name: "Satin Slip Midi Dress",
-    price: 4999,
-    images: [
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600",
-      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=600"
-    ]
-  },
-  {
-    id: 3,
-    name: "Draped Halter Gown",
-    price: 6999,
-    images: [
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=600",
-      "https://images.unsplash.com/photo-1566174053879-31528523f8ae?q=80&w=600"
-    ]
-  },
-  {
-    id: 4,
-    name: "Sequin Mini Skirt",
-    price: 2999,
-    images: [
-      "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=600",
-      "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=600"
-    ],
-    isSale: true
-  },
-  {
-    id: 5,
-    name: "Velvet Wrap Dress",
-    price: 5499,
-    images: [
-      "https://images.unsplash.com/photo-1515347619362-e610058bdaee?q=80&w=600",
-      "https://images.unsplash.com/photo-1515347619362-e610058bdaee?q=80&w=600"
-    ]
-  }
-];
+interface Product {
+  id: string | number;
+  name: string;
+  price: number;
+  images: string[];
+  isNew?: boolean;
+  isSale?: boolean;
+}
 
-export default function BestSellers() {
+export default function BestSellers({ products }: { products: Product[] }) {
+  if (!products || products.length === 0) return null;
+
   return (
     <section className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
@@ -88,7 +49,7 @@ export default function BestSellers() {
         </div>
 
         <div className="flex overflow-x-auto gap-4 md:gap-6 pb-10 no-scrollbar snap-x">
-          {bestSellers.map((product, index) => (
+          {products.map((product, index) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, x: 50 }}
