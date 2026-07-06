@@ -115,9 +115,9 @@ export default function ProductsPage() {
                   />
                 </th>
                 <th className="px-6 py-4 font-medium">Product</th>
-                <th className="px-6 py-4 font-medium">SKU</th>
-                <th className="px-6 py-4 font-medium">Category</th>
-                <th className="px-6 py-4 font-medium">Inventory</th>
+                <th className="px-6 py-4 font-medium hidden md:table-cell">SKU</th>
+                <th className="px-6 py-4 font-medium hidden md:table-cell">Category</th>
+                <th className="px-6 py-4 font-medium hidden md:table-cell">Inventory</th>
                 <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
@@ -159,13 +159,13 @@ export default function ProductsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#666666]">
+                    <td className="px-6 py-4 text-[#666666] hidden md:table-cell">
                       {product.sku || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 text-[#666666] capitalize">
+                    <td className="px-6 py-4 text-[#666666] capitalize hidden md:table-cell">
                       {product.categories?.name || 'Uncategorized'}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 hidden md:table-cell">
                       {product.stock_quantity > 10 ? (
                         <span className="text-green-600">{product.stock_quantity} in stock</span>
                       ) : product.stock_quantity > 0 ? (

@@ -213,9 +213,9 @@ export default function OrdersPage() {
                   />
                 </th>
                 <th className="px-6 py-4 font-medium">Order ID</th>
-                <th className="px-6 py-4 font-medium">Date</th>
+                <th className="px-6 py-4 font-medium hidden md:table-cell">Date</th>
                 <th className="px-6 py-4 font-medium">Customer</th>
-                <th className="px-6 py-4 font-medium">Total</th>
+                <th className="px-6 py-4 font-medium hidden md:table-cell">Total</th>
                 <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
@@ -248,14 +248,14 @@ export default function OrdersPage() {
                           #{order.id.slice(0, 8).toUpperCase()}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-[#666666] cursor-pointer" onClick={() => openModal(order)}>
+                      <td className="px-6 py-4 text-[#666666] cursor-pointer hidden md:table-cell" onClick={() => openModal(order)}>
                         {order.created_at ? new Date(order.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
                       </td>
                       <td className="px-6 py-4">
                         <p className="font-medium text-[#111111]">{order.customer_name}</p>
                         <p className="text-xs text-[#666666]">{order.customer_email}</p>
                       </td>
-                      <td className="px-6 py-4 font-medium text-[#111111]">₹{order.total_amount?.toLocaleString('en-IN')}</td>
+                      <td className="px-6 py-4 font-medium text-[#111111] hidden md:table-cell">₹{order.total_amount?.toLocaleString('en-IN')}</td>
                       <td className="px-6 py-4">
                         <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${statusDef.color}`}>
                           {statusDef.label}

@@ -97,8 +97,8 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           />
         </Link>
 
-        {/* Hover Actions Panel */}
-        <div className="absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
+        {/* Hover Actions Panel (Desktop Only) */}
+        <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
           <div className="bg-white/95 backdrop-blur-md p-3 rounded-sm shadow-xl">
             <div className="flex justify-between items-center mb-3">
               <span className={`text-[10px] uppercase tracking-widest ${sizeError ? 'text-[#E63946] font-medium' : 'text-[#666666]'}`}>
@@ -141,6 +141,14 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           <span className="font-sans font-medium text-sm text-[#111111]">₹{product.price.toLocaleString('en-IN')}</span>
           {product.isSale && <span className="text-[#666666] line-through text-xs">₹{(product.price * 1.2).toLocaleString('en-IN')}</span>}
         </div>
+        
+        {/* Mobile-only Quick View/Add Button */}
+        <Link 
+          href={`/products/${product.id}`}
+          className="md:hidden mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors"
+        >
+          View Options
+        </Link>
       </div>
     </div>
   );
