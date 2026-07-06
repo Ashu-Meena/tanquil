@@ -2,13 +2,30 @@ import { ReactNode } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Metadata } from "next";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Tranquil Admin Panel",
   description: "Secure management for Tranquil store",
 };
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
+  const supabase = await createClient();
+  
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/admin/login");
+  }
+
+  // Check if admin
+  const { data: profile } = await supabase.from('profiles').select('is_admin, role').eq('id', user.id).single();
+
+  if (!profile || (!profile.is_admin && profile.role !== 'super_admin')) {
+    redirect("/admin/login");
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">
       <AdminSidebar />

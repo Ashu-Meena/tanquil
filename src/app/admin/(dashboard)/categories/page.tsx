@@ -116,9 +116,9 @@ export default function CategoriesPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-3">
-                        <button className="text-[#999999] hover:text-[#111111] transition-colors">
+                        <Link href={`/admin/categories/${category.id}`} className="text-[#999999] hover:text-[#111111] transition-colors">
                           <Edit className="w-4 h-4" />
-                        </button>
+                        </Link>
                         <button onClick={() => deleteCategory(category.id)} className="text-[#999999] hover:text-red-500 transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>
