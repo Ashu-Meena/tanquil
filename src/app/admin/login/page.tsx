@@ -36,13 +36,13 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white p-8 border border-[#EFEFEF] shadow-sm rounded-sm">
-        <div className="text-center mb-8">
+    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-4 md:p-6">
+      <div className="w-full max-w-md bg-white p-6 md:p-8 border border-[#EFEFEF] shadow-sm rounded-sm">
+        <div className="text-center mb-6 md:mb-8">
           <div className="w-12 h-12 bg-[#111111] text-[#C7A17A] rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-5 h-5" />
           </div>
-          <h1 className="font-serif text-3xl text-[#111111] tracking-widest uppercase">Tranquil Admin</h1>
+          <h1 className="font-serif text-2xl md:text-3xl text-[#111111] tracking-widest uppercase">Tranquil Admin</h1>
           <p className="text-[#666666] text-sm mt-2">Sign in to access the control panel</p>
         </div>
 
