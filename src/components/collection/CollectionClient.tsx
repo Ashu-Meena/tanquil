@@ -78,7 +78,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
   // Extract unique categories from products
   const availableCategories = Array.from(new Set(initialProducts.map(p => p.category)));
 
-  const FilterSidebar = () => (
+  const renderFilterSidebar = () => (
     <div className="space-y-10">
       {hasActiveFilters && (
         <button
@@ -255,7 +255,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
         <div className="flex flex-col lg:flex-row gap-12">
           {/* Sidebar Filters (Desktop) */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <FilterSidebar />
+            {renderFilterSidebar()}
           </aside>
 
           {/* Product Grid */}
@@ -318,7 +318,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
                 </button>
               </div>
               <div className="p-6">
-                <FilterSidebar />
+                {renderFilterSidebar()}
               </div>
               <div className="p-6 border-t border-[#EFEFEF] mt-auto sticky bottom-0 bg-white">
                 <button

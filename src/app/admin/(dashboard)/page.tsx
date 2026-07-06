@@ -176,7 +176,7 @@ export default function AdminDashboard() {
                 <Tooltip 
                   contentStyle={{ backgroundColor: '#111111', borderColor: '#111111', color: '#fff', borderRadius: '2px', fontSize: '12px' }}
                   itemStyle={{ color: '#C7A17A' }}
-                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
+                  formatter={(value: any) => [`₹${Number(value).toLocaleString()}`, 'Revenue']}
                 />
                 <Area type="monotone" dataKey="total" stroke="#C7A17A" strokeWidth={2} fillOpacity={1} fill="url(#colorTotal)" />
               </AreaChart>

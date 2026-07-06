@@ -125,7 +125,11 @@ export default function InventoryPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
-                          {isLowStock && <AlertTriangle className="w-4 h-4 text-orange-500" title="Low Stock" />}
+                          {isLowStock && (
+                            <span title="Low Stock">
+                              <AlertTriangle className="w-4 h-4 text-orange-500" />
+                            </span>
+                          )}
                           <input 
                             type="number" 
                             value={variant.stock_quantity}
