@@ -250,7 +250,7 @@ export default function CheckoutPage() {
         }
 
         clearCart();
-        router.push('/checkout/success');
+        router.push(`/checkout/success?order=${orderNumber}`);
       } else {
         // Fallback simulate backend processing delay
         await new Promise(r => setTimeout(r, 1500));

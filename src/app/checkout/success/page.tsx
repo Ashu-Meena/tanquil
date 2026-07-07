@@ -3,8 +3,13 @@
 import Link from "next/link";
 import { CheckCircle2, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
+  const searchParams = useSearchParams();
+  const orderNumber = searchParams.get("order");
+
   return (
     <div className="min-h-[80vh] bg-[#FAF8F5] flex items-center justify-center pt-36 pb-20">
       <div className="container mx-auto px-6 max-w-lg text-center">
@@ -18,6 +23,11 @@ export default function CheckoutSuccessPage() {
         </motion.div>
         
         <h1 className="font-serif text-4xl text-[#111111] mb-4">Order Received!</h1>
+        {orderNumber && (
+          <p className="text-[#C7A17A] font-medium tracking-widest text-sm uppercase mb-4">
+            Order #{orderNumber}
+          </p>
+        )}
         <p className="text-[#666666] mb-8 leading-relaxed">
           Thank you for your purchase. Your order is currently <strong className="text-[#111111]">Pending Verification</strong>. Our team will verify your UPI payment screenshot and transaction ID shortly. You will receive an email confirmation once approved.
         </p>
@@ -39,5 +49,13 @@ export default function CheckoutSuccessPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[80vh] bg-[#FAF8F5] flex items-center justify-center pt-36 pb-20">Loading...</div>}>
+      <SuccessContent />
+    </Suspense>
   );
 }
