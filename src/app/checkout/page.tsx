@@ -187,11 +187,13 @@ export default function CheckoutPage() {
           };
         }
 
-        // 1. Generate Order Number
+        // 1. Generate Order Number & ID
         const orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+        const orderId = crypto.randomUUID();
 
         // 2. Insert Order
-        const { data: newOrder, error } = await supabase.from('orders').insert({
+        const { error } = await supabase.from('orders').insert({
+          id: orderId,
           order_number: orderNumber,
           customer_name: isLoggedIn && userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() || email : `${firstName} ${lastName}`.trim() || email,
           customer_email: isLoggedIn && userProfile ? userProfile.email : email,
@@ -204,13 +206,13 @@ export default function CheckoutPage() {
           transaction_id: transactionId,
           screenshot_url: screenshotUrl,
           status: 'pending'
-        }).select().single();
+        });
 
         if (error) throw error;
         
         // 3. Insert Order Items
         const orderItems = cartItems.map(item => ({
-          order_id: newOrder.id,
+          order_id: orderId,
           product_id: item.id,
           product_name: item.name,
           quantity: item.quantity,
