@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [paymentScreenshotPreview, setPaymentScreenshotPreview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderCompleted, setOrderCompleted] = useState(false);
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [discountMsg, setDiscountMsg] = useState("");
@@ -32,12 +33,12 @@ export default function CheckoutPage() {
     setMounted(true);
   }, []);
 
-  // Redirect if cart is empty after mount
+  // Redirect if cart is empty after mount, unless order is completed
   useEffect(() => {
-    if (mounted && cartItems.length === 0) {
+    if (mounted && cartItems.length === 0 && !orderCompleted) {
       router.push('/collections/all');
     }
-  }, [mounted, cartItems.length, router]);
+  }, [mounted, cartItems.length, router, orderCompleted]);
 
   const handleApplyDiscount = async () => {
     if (!discountCode.trim()) {
@@ -249,11 +250,13 @@ export default function CheckoutPage() {
           console.error("Failed to send order email:", emailErr);
         }
 
+        setOrderCompleted(true);
         clearCart();
         router.push(`/checkout/success?order=${orderNumber}`);
       } else {
         // Fallback simulate backend processing delay
         await new Promise(r => setTimeout(r, 1500));
+        setOrderCompleted(true);
         clearCart();
         router.push('/checkout/success');
       }
