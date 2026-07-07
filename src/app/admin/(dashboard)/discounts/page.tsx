@@ -12,6 +12,7 @@ interface Coupon {
   min_order_value: number;
   is_active: boolean;
   used_count: number;
+  is_free_shipping?: boolean;
 }
 
 export default function DiscountsPage() {
@@ -25,7 +26,8 @@ export default function DiscountsPage() {
     discount_type: "percentage",
     discount_value: 10,
     min_order_value: 0,
-    is_active: true
+    is_active: true,
+    is_free_shipping: false
   });
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function DiscountsPage() {
     }
 
     setShowDrawer(false);
-    setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true });
+    setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
     setSaving(false);
     fetchCoupons();
   };
@@ -81,7 +83,7 @@ export default function DiscountsPage() {
         </div>
         <button 
           onClick={() => {
-            setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true });
+            setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
             setShowDrawer(true);
           }}
           className="flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm"
@@ -141,6 +143,7 @@ export default function DiscountsPage() {
                       {coupon.discount_type === 'percentage' 
                         ? `${coupon.discount_value}% OFF`
                         : `₹${coupon.discount_value} OFF`}
+                      {coupon.is_free_shipping && <span className="block text-[10px] text-[#2F855A] mt-1">+ Free Shipping</span>}
                     </td>
                     <td className="p-4 text-[#666666] hidden md:table-cell">
                       {coupon.min_order_value > 0 ? `Min purchase ₹${coupon.min_order_value}` : 'No minimum'}
@@ -235,6 +238,16 @@ export default function DiscountsPage() {
                   onChange={e => setFormData({...formData, is_active: e.target.checked})}
                 />
                 <label htmlFor="active-toggle" className="text-sm font-medium text-[#111111]">Active and available for use</label>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  id="shipping-toggle"
+                  checked={formData.is_free_shipping || false}
+                  onChange={e => setFormData({...formData, is_free_shipping: e.target.checked})}
+                />
+                <label htmlFor="shipping-toggle" className="text-sm font-medium text-[#111111]">Grants Free Shipping</label>
               </div>
             </div>
 

@@ -8,7 +8,6 @@ import { Lock, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2, Plus } 
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { useCartStore } from "@/store/useCartStore";
-import { SHIPPING_THRESHOLD, STANDARD_SHIPPING_FEE } from "@/lib/constants";
 
 const steps = ["Information", "Shipping", "Payment", "Review"];
 
@@ -22,6 +21,8 @@ export default function CheckoutPage() {
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [discountMsg, setDiscountMsg] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [isFreeShippingCouponApplied, setIsFreeShippingCouponApplied] = useState(false);
   const router = useRouter();
   
   const { items: cartItems, clearCart } = useCartStore();
@@ -38,36 +39,107 @@ export default function CheckoutPage() {
     }
   }, [mounted, cartItems.length, router]);
 
-  const handleApplyDiscount = () => {
+  const handleApplyDiscount = async () => {
     if (!discountCode.trim()) {
       setDiscountMsg("Please enter a discount code.");
-    } else {
-      setDiscountMsg(`"${discountCode.toUpperCase()}" is not a valid discount code.`);
+      setAppliedCoupon(null);
+      setIsFreeShippingCouponApplied(false);
+      return;
+    } 
+    
+    if (discountCode.toUpperCase() === "FREESHIP") {
+      setDiscountMsg("Free shipping applied! ✓");
+      setAppliedCoupon(null);
+      setIsFreeShippingCouponApplied(true);
+      setTimeout(() => setDiscountMsg(""), 3000);
+      return;
     }
-    setTimeout(() => setDiscountMsg(""), 3000);
+
+    try {
+      const { data, error } = await supabase.from('coupons')
+        .select('*')
+        .eq('code', discountCode.toUpperCase())
+        .eq('is_active', true)
+        .single();
+        
+      if (error || !data) {
+        setDiscountMsg(`"${discountCode.toUpperCase()}" is not a valid or active discount code.`);
+        setAppliedCoupon(null);
+        setIsFreeShippingCouponApplied(false);
+      } else {
+        const currentSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        if (currentSubtotal < data.min_order_value) {
+          setDiscountMsg(`Minimum order value for this coupon is ₹${data.min_order_value}`);
+          setAppliedCoupon(null);
+          setIsFreeShippingCouponApplied(false);
+        } else {
+          setAppliedCoupon(data);
+          setIsFreeShippingCouponApplied(!!data.is_free_shipping);
+          setDiscountMsg(`${data.code} applied! ✓`);
+        }
+      }
+    } catch (err) {
+      setDiscountMsg("Error applying discount.");
+    }
+    
+    setTimeout(() => {
+      setDiscountMsg("");
+    }, 4000);
   };
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<string>("");
 
-  const savedUser = {
-    email: "ashu@tranquil.co.in",
-    name: "Ashu Meena",
-    phone: "+91 98765 43210"
-  };
+  // Form states for guest checkout / new address
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [pinCode, setPinCode] = useState("");
 
-  const savedAddresses = [
-    {
-      id: "addr_1",
-      name: "Home",
-      address: "123 Luxury Lane, Apt 4B",
-      city: "Mumbai",
-      state: "Maharashtra",
-      pin: "400001",
-      isDefault: true
+  const [shippingSettings, setShippingSettings] = useState({ free_shipping_threshold: 10000, flat_rate: 250 });
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+
+  useEffect(() => {
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setIsLoggedIn(true);
+        // Fetch profile
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+        if (profile) {
+          setUserProfile(profile);
+          setFirstName(profile.first_name || "");
+          setLastName(profile.last_name || "");
+          setEmail(profile.email || "");
+          setPhone(profile.phone || "");
+        } else {
+          setEmail(session.user.email || "");
+        }
+        
+        // Fetch addresses
+        const { data: addresses } = await supabase.from('addresses').select('*').eq('user_id', session.user.id).order('is_default', { ascending: false });
+        if (addresses && addresses.length > 0) {
+          setSavedAddresses(addresses);
+          setSelectedAddress(addresses[0].id);
+        }
+      }
+      
+      const { data: settings } = await supabase.from('store_settings').select('value').eq('key', 'shipping').single();
+      if (settings?.value) {
+        setShippingSettings(settings.value);
+      }
+      
+      setIsLoadingAuth(false);
     }
-  ];
-
-  const [selectedAddress, setSelectedAddress] = useState(savedAddresses[0].id);
+    checkAuth();
+  }, []);
 
   const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -100,11 +172,26 @@ export default function CheckoutPage() {
           }
         }
 
+        let shippingAddr = null;
+        if (isLoggedIn && selectedAddress && !showNewAddressForm) {
+          shippingAddr = savedAddresses.find(a => a.id === selectedAddress);
+        } else {
+          shippingAddr = {
+            name: `${firstName} ${lastName}`.trim(),
+            address_line1: addressLine1,
+            address_line2: addressLine2,
+            city,
+            state,
+            postal_code: pinCode,
+            phone
+          };
+        }
+
         const { error } = await supabase.from('orders').insert({
-          customer_name: savedUser.name,
-          customer_email: savedUser.email,
-          customer_phone: savedUser.phone,
-          shipping_address: savedAddresses[0],
+          customer_name: isLoggedIn && userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() || email : `${firstName} ${lastName}`.trim() || email,
+          customer_email: isLoggedIn && userProfile ? userProfile.email : email,
+          customer_phone: isLoggedIn && userProfile ? userProfile.phone : phone,
+          shipping_address: shippingAddr,
           items: cartItems,
           subtotal,
           shipping_fee: shipping,
@@ -116,13 +203,42 @@ export default function CheckoutPage() {
         });
 
         if (error) throw error;
+        
+        // Send Order Confirmation Email
+        const orderEmail = isLoggedIn && userProfile ? userProfile.email : email;
+        const orderName = isLoggedIn && userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() || email : `${firstName} ${lastName}`.trim() || email;
+        
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: orderEmail,
+              subject: 'Order Confirmation - Tranquil',
+              html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #111;">
+                  <h1 style="text-align: center; font-weight: normal; margin-bottom: 30px;">TRANQUIL</h1>
+                  <p>Hi ${orderName},</p>
+                  <p>Thank you for your order! We've received it and will process it shortly.</p>
+                  <p><strong>Total:</strong> ₹${total.toLocaleString()}</p>
+                  <p>We will notify you once your order has been dispatched.</p>
+                  <p style="margin-top: 40px; font-size: 12px; color: #666;">Tranquil Team</p>
+                </div>
+              `
+            })
+          });
+        } catch (emailErr) {
+          console.error("Failed to send order email:", emailErr);
+        }
+
+        clearCart();
+        router.push('/checkout/success');
       } else {
         // Fallback simulate backend processing delay
         await new Promise(r => setTimeout(r, 1500));
+        clearCart();
+        router.push('/checkout/success');
       }
-      
-      clearCart();
-      router.push('/checkout/success');
     } catch (err) {
       console.error(err);
       alert("Error placing order. Please try again.");
@@ -132,14 +248,24 @@ export default function CheckoutPage() {
   };
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_FEE;
-  const total = subtotal + shipping;
+  let discountAmount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_type === 'percentage') {
+      discountAmount = (subtotal * appliedCoupon.discount_value) / 100;
+    } else {
+      discountAmount = appliedCoupon.discount_value;
+    }
+  }
+  const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
+  
+  const shipping = isFreeShippingCouponApplied || subtotalAfterDiscount >= shippingSettings.free_shipping_threshold ? 0 : shippingSettings.flat_rate;
+  const total = subtotalAfterDiscount + shipping;
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
 
   return (
-    <div className="bg-[#FAF8F5] min-h-screen pt-24 pb-20">
+    <div className="bg-[#FAF8F5] min-h-screen pt-36 pb-20">
       <div className="container mx-auto px-6 lg:px-12">
         <Link href="/" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors mb-8">
           <ChevronLeft className="w-4 h-4" /> Return to Shop
@@ -174,17 +300,19 @@ export default function CheckoutPage() {
                     className="space-y-6"
                   >
                     <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Contact Information</h2>
-                    {isLoggedIn ? (
+                    {isLoadingAuth ? (
+                      <div className="flex justify-center p-4"><Loader2 className="w-6 h-6 animate-spin text-[#C7A17A]" /></div>
+                    ) : isLoggedIn && userProfile ? (
                       <div className="bg-white border border-[#EFEFEF] p-6 flex justify-between items-center rounded-sm">
                         <div>
-                          <p className="text-sm font-medium text-[#111111] mb-1">{savedUser.name}</p>
-                          <p className="text-sm text-[#666666]">{savedUser.email}</p>
+                          <p className="text-sm font-medium text-[#111111] mb-1">{userProfile.first_name} {userProfile.last_name}</p>
+                          <p className="text-sm text-[#666666]">{userProfile.email}</p>
                         </div>
                         <button className="text-xs uppercase tracking-widest text-[#C7A17A] font-medium hover:underline" onClick={() => setIsLoggedIn(false)}>Log Out</button>
                       </div>
                     ) : (
                       <>
-                        <input type="email" placeholder="Email Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <input type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                         <label className="flex items-center gap-2 text-sm text-[#666666]">
                           <input type="checkbox" className="accent-[#C7A17A]" /> Email me with news and offers
                         </label>
@@ -214,11 +342,11 @@ export default function CheckoutPage() {
                               <div className="flex items-center gap-3">
                                 <input type="radio" checked={selectedAddress === addr.id} readOnly className="accent-[#C7A17A]" />
                                 <span className="font-medium text-sm text-[#111111]">{addr.name}</span>
-                                {addr.isDefault && <span className="text-[10px] uppercase tracking-wider bg-[#EFEFEF] px-2 py-1 rounded-sm text-[#666666]">Default</span>}
+                                {addr.is_default && <span className="text-[10px] uppercase tracking-wider bg-[#EFEFEF] px-2 py-1 rounded-sm text-[#666666]">Default</span>}
                               </div>
                             </div>
-                            <p className="text-sm text-[#666666] ml-7">{addr.address}, {addr.city}, {addr.state} - {addr.pin}</p>
-                            <p className="text-sm text-[#666666] ml-7 mt-1">{savedUser.phone}</p>
+                            <p className="text-sm text-[#666666] ml-7">{addr.address_line1}, {addr.address_line2 ? addr.address_line2 + ', ' : ''}{addr.city}, {addr.state} - {addr.postal_code}</p>
+                            <p className="text-sm text-[#666666] ml-7 mt-1">{addr.phone || userProfile?.phone}</p>
                           </div>
                         ))}
                         <button
@@ -238,12 +366,12 @@ export default function CheckoutPage() {
                               <div className="mt-4 space-y-4 border border-[#EFEFEF] p-4 rounded-sm">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <input type="text" placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <input type="text" placeholder="Street Address" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                  <input type="text" placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <input type="text" placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <input type="text" placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                 </div>
                                 <button className="bg-[#111111] text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
                                   Save Address
@@ -256,18 +384,18 @@ export default function CheckoutPage() {
                     ) : (
                       <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" placeholder="First Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <input type="text" placeholder="Last Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                         </div>
-                        <input type="text" placeholder="Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                        <input type="text" placeholder="Apartment, suite, etc. (optional)" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <input type="text" placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <input type="tel" placeholder="Phone" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                         </div>
                       </>
                     )}
@@ -408,12 +536,21 @@ export default function CheckoutPage() {
                     <div className="bg-white border border-[#EFEFEF] p-6 text-sm">
                       <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
                         <div className="text-[#666666]">Contact</div>
-                        <div className="text-[#111111]">{savedUser.email}</div>
+                        <div className="text-[#111111]">{isLoggedIn && userProfile ? userProfile.email : email}</div>
                         <button onClick={() => setCurrentStep(0)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                       <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
                         <div className="text-[#666666]">Ship to</div>
-                        <div className="text-[#111111] text-right max-w-[200px]">{savedAddresses[0].address}, {savedAddresses[0].city}, {savedAddresses[0].pin}</div>
+                        <div className="text-[#111111] text-right max-w-[200px]">
+                          {isLoggedIn && selectedAddress && !showNewAddressForm ? (
+                            (() => {
+                              const addr = savedAddresses.find(a => a.id === selectedAddress);
+                              return addr ? `${addr.address_line1}, ${addr.city}, ${addr.postal_code}` : '';
+                            })()
+                          ) : (
+                            `${addressLine1}, ${city}, ${pinCode}`
+                          )}
+                        </div>
                         <button onClick={() => setCurrentStep(1)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                       <div className="flex justify-between">
@@ -499,11 +636,11 @@ export default function CheckoutPage() {
                     value={discountCode}
                     onChange={e => setDiscountCode(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleApplyDiscount()}
-                    className="flex-1 bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm"
+                    className="flex-1 bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm uppercase"
                   />
                   <button onClick={handleApplyDiscount} className="bg-[#111111] hover:bg-[#C7A17A] text-white px-6 uppercase tracking-widest text-xs font-medium transition-colors">Apply</button>
                 </div>
-                {discountMsg && <p className="text-xs text-[#E63946] mt-2">{discountMsg}</p>}
+                {discountMsg && <p className={`text-xs mt-2 ${discountMsg.includes('✓') ? 'text-[#2F855A]' : 'text-[#E63946]'}`}>{discountMsg}</p>}
               </div>
 
               {/* Totals */}
@@ -512,6 +649,12 @@ export default function CheckoutPage() {
                   <span>Subtotal</span>
                   <span className="text-[#111111] font-medium font-[family-name:var(--font-montserrat)]">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
+                {appliedCoupon && (
+                  <div className="flex justify-between text-[#2F855A]">
+                    <span>Discount ({appliedCoupon.code})</span>
+                    <span className="font-medium font-[family-name:var(--font-montserrat)]">-₹{discountAmount.toLocaleString('en-IN')}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-[#666666]">
                   <span>Shipping</span>
                   {shipping === 0 ? (

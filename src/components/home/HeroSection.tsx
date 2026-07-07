@@ -101,6 +101,16 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
           />
         ))}
       </div>
+
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 right-8 z-20 flex flex-col items-center gap-3">
+        <span className="text-[10px] uppercase tracking-widest text-white/70 transform rotate-90 translate-y-6">Scroll</span>
+        <motion.div 
+          animate={{ y: [0, 10, 0] }} 
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="w-[1px] h-12 bg-gradient-to-b from-white/70 to-transparent mt-8"
+        />
+      </div>
     </section>
   );
 }

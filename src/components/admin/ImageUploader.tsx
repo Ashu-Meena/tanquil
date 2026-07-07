@@ -57,6 +57,12 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
     }
   };
 
+  const isVideo = (url: string) => {
+    if (!url) return false;
+    const baseUrl = url.split('?')[0];
+    return baseUrl.match(/\.(mp4|mov|webm|ogg|m4v)$/i) !== null;
+  };
+
   return (
     <div className={`w-full ${className}`}>
       <label className="flex items-center gap-2 text-sm font-medium text-[#111111] mb-2">
@@ -71,7 +77,7 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
           type="file" 
           ref={fileInputRef} 
           onChange={handleUpload} 
-          accept="image/*" 
+          accept="image/*,video/*" 
           className="hidden" 
         />
         
@@ -82,11 +88,22 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
           </div>
         ) : value ? (
           <div className="relative w-full h-full group">
-            <img 
-              src={value} 
-              alt="Uploaded Preview" 
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            {isVideo(value) ? (
+              <video 
+                src={value} 
+                muted 
+                loop 
+                playsInline
+                autoPlay
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : (
+              <img 
+                src={value} 
+                alt="Uploaded Preview" 
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            )}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
               <button 
                 onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}

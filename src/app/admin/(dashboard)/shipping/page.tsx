@@ -1,25 +1,52 @@
 "use client";
 
-import { useState } from "react";
-import { Save, Truck, Plus, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Truck } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function ShippingPage() {
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   
-  // Dummy state for UI demonstration
-  const [zones, setZones] = useState([
-    { id: 1, name: "Domestic (India)", rate: 0, conditions: "Free shipping on all domestic orders." },
-    { id: 2, name: "International (Rest of World)", rate: 2500, conditions: "Standard international shipping rate." }
-  ]);
+  const [shippingSettings, setShippingSettings] = useState({
+    free_shipping_threshold: 10000,
+    flat_rate: 250
+  });
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    setFetching(true);
+    const { data, error } = await supabase
+      .from('store_settings')
+      .select('value')
+      .eq('key', 'shipping')
+      .single();
+    
+    if (data && data.value) {
+      setShippingSettings(data.value);
+    }
+    setFetching(false);
+  };
   
-  const handleSave = (e: React.FormEvent) => {
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    const { error } = await supabase
+      .from('store_settings')
+      .update({ value: shippingSettings })
+      .eq('key', 'shipping');
+      
+    setLoading(false);
+    if (!error) {
       alert("Shipping settings saved successfully!");
-    }, 1000);
+    } else {
+      alert("Error saving settings");
+    }
   };
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -43,34 +70,48 @@ export default function ShippingPage() {
             <h2 className="font-serif text-xl text-[#111111]">Shipping Zones</h2>
             <p className="text-sm text-[#666666]">Manage regions you ship to and their respective rates.</p>
           </div>
-          <button className="flex items-center gap-2 text-sm font-medium text-[#C7A17A] hover:text-[#B38D66]">
-            <Plus className="w-4 h-4" /> Add Zone
-          </button>
         </div>
 
-        <div className="space-y-4">
-          {zones.map((zone) => (
-            <div key={zone.id} className="border border-[#EFEFEF] rounded-sm p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="flex items-start gap-4">
-                <div className="bg-[#FAF8F5] p-3 rounded-sm text-[#C7A17A]">
-                  <Truck className="w-5 h-5" />
+        <div className="space-y-4 mt-6">
+          {fetching ? (
+            <div className="p-4 text-center text-[#666666]">Loading...</div>
+          ) : (
+            <div className="space-y-6">
+              <div className="border border-[#EFEFEF] rounded-sm p-6 space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="bg-[#FAF8F5] p-3 rounded-sm text-[#C7A17A]">
+                    <Truck className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-[#111111]">Standard Domestic Shipping</h3>
+                    <p className="text-sm text-[#666666] mb-4">Set the flat rate for shipping and the threshold for free shipping.</p>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-[#111111]">Flat Rate (₹)</label>
+                        <input 
+                          type="number" 
+                          value={shippingSettings.flat_rate}
+                          onChange={(e) => setShippingSettings({...shippingSettings, flat_rate: Number(e.target.value)})}
+                          className="w-full border border-[#EFEFEF] p-2.5 rounded-sm text-sm focus:outline-none focus:border-[#C7A17A]" 
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-sm font-medium text-[#111111]">Free Shipping Threshold (₹)</label>
+                        <input 
+                          type="number" 
+                          value={shippingSettings.free_shipping_threshold}
+                          onChange={(e) => setShippingSettings({...shippingSettings, free_shipping_threshold: Number(e.target.value)})}
+                          className="w-full border border-[#EFEFEF] p-2.5 rounded-sm text-sm focus:outline-none focus:border-[#C7A17A]" 
+                        />
+                        <p className="text-xs text-[#666666] mt-1">Orders above this amount will get free shipping.</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-[#111111]">{zone.name}</h3>
-                  <p className="text-sm text-[#666666]">{zone.conditions}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-6 w-full sm:w-auto">
-                <div className="text-right flex-1 sm:flex-none">
-                  <p className="text-sm text-[#666666]">Rate</p>
-                  <p className="font-medium text-[#111111]">{zone.rate === 0 ? "Free" : `₹${zone.rate}`}</p>
-                </div>
-                <button className="text-red-500 hover:text-red-600 transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </button>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
 

@@ -1,11 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const stories = [
+const defaultStories = [
   {
     id: 1,
     title: "Summer In Italy",
@@ -22,7 +23,17 @@ const stories = [
   }
 ];
 
-export default function FashionStories() {
+interface Story {
+  id: string | number;
+  title: string;
+  description: string;
+  image: string;
+  align: string;
+}
+
+export default function FashionStories({ stories: initialStories }: { stories?: Story[] }) {
+  const displayStories = initialStories && initialStories.length > 0 ? initialStories : defaultStories;
+
   return (
     <section className="py-32 bg-white overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
@@ -47,54 +58,67 @@ export default function FashionStories() {
         </div>
 
         <div className="space-y-32">
-          {stories.map((story, index) => (
-            <div 
-              key={story.id} 
-              className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-24 ${story.align === 'right' ? 'lg:flex-row-reverse' : ''}`}
-            >
-              {/* Image Block */}
-              <motion.div 
-                initial={{ opacity: 0, x: story.align === 'left' ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="w-full lg:w-3/5"
+          {displayStories.map((story, index) => {
+            const containerRef = useRef(null);
+            const { scrollYProgress } = useScroll({
+              target: containerRef,
+              offset: ["start end", "end start"]
+            });
+            const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+            
+            return (
+              <div 
+                key={story.id} 
+                ref={containerRef}
+                className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-24 ${story.align === 'right' ? 'lg:flex-row-reverse' : ''}`}
               >
-                <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden group">
-                  <Image 
-                    src={story.image} 
-                    alt={story.title} 
-                    fill 
-                    className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]"
-                  />
-                </div>
-              </motion.div>
-
-              {/* Text Block */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="w-full lg:w-2/5 flex flex-col justify-center"
-              >
-                <span className="text-[#C7A17A] text-xs uppercase tracking-[0.3em] font-medium mb-6 block">Editorial</span>
-                <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-6 leading-tight">
-                  {story.title}
-                </h3>
-                <p className="text-[#666666] leading-relaxed mb-10 text-lg">
-                  {story.description}
-                </p>
-                <Link 
-                  href="/collections/editorial" 
-                  className="inline-flex items-center gap-3 text-[#111111] uppercase tracking-widest text-sm font-medium hover:text-[#C7A17A] transition-colors group self-start"
+                {/* Image Block */}
+                <motion.div 
+                  initial={{ opacity: 0, x: story.align === 'left' ? -50 : 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                  className="w-full lg:w-3/5"
                 >
-                  Read The Story 
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                </Link>
-              </motion.div>
-            </div>
-          ))}
+                  <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden group">
+                    <motion.div style={{ y: y1 }} className="absolute inset-[-15%] w-[130%] h-[130%]">
+                      <Image 
+                        src={story.image} 
+                        alt={story.title} 
+                        fill 
+                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                      />
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Text Block */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.2 }}
+                  className="w-full lg:w-2/5 flex flex-col justify-center"
+                >
+                  <span className="text-[#C7A17A] text-xs uppercase tracking-[0.3em] font-medium mb-6 block">Editorial</span>
+                  <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-6 leading-tight">
+                    {story.title}
+                  </h3>
+                  <p className="text-[#666666] leading-relaxed mb-10 text-lg">
+                    {story.description}
+                  </p>
+                  <Link 
+                    href="/collections/editorial" 
+                    className="inline-flex items-center gap-3 text-[#111111] uppercase tracking-widest text-sm font-medium hover:text-[#C7A17A] transition-colors group self-start"
+                  >
+                    Read The Story 
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                  </Link>
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

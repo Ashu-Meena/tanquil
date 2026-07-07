@@ -26,23 +26,52 @@ export default async function Home() {
     subtitle: s.subtitle
   })) || [];
 
-  const trendingEdits = sections?.filter(s => s.section_type === 'trending').map((s, index) => {
-    // Map to the classes expected by TrendingMosaic based on position
-    const classes = [
-      "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto",
-      "col-span-1 row-span-1 aspect-square",
-      "col-span-1 row-span-1 aspect-square",
-      "col-span-1 row-span-1 aspect-[3/4]",
-      "col-span-1 md:col-span-2 row-span-1 aspect-[16/9] md:aspect-[21/9]"
-    ];
+  const trendingEdits = sections?.filter(s => s.section_type === 'trending').map((s, index, arr) => {
+    // Dynamic styling based on total number of items to ensure no empty spaces
+    let className = "col-span-1 row-span-1 aspect-square"; // fallback
+    
+    if (arr.length === 1) {
+      className = "col-span-1 md:col-span-4 row-span-2 aspect-[16/9] md:aspect-[21/9]";
+    } else if (arr.length === 2) {
+      className = "col-span-1 md:col-span-2 row-span-2 aspect-[4/5]";
+    } else if (arr.length === 3) {
+      if (index === 0) className = "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto";
+      else className = "col-span-1 md:col-span-2 row-span-1 aspect-[16/9]";
+    } else if (arr.length === 4) {
+      if (index === 0) className = "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-[4/5]";
+      else if (index === 1 || index === 2) className = "col-span-1 md:col-span-1 row-span-1 aspect-square";
+      else if (index === 3) className = "col-span-1 md:col-span-2 row-span-1 aspect-[16/9] md:aspect-[21/9]";
+    } else {
+      // 5 or more items
+      if (index === 0) className = "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-[4/5]";
+      else if (index % 5 === 4) className = "col-span-1 md:col-span-2 row-span-1 aspect-[16/9] md:aspect-[21/9]";
+      else className = "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    }
+
     return {
       id: s.id,
       title: s.title,
       slug: s.subtitle || 'all',
       image: s.image_url,
-      className: classes[index % classes.length]
+      className
     };
   }) || [];
+
+  const editorialStories = sections?.filter(s => s.section_type === 'editorial').map(s => ({
+    id: s.id,
+    title: s.title,
+    description: s.subtitle,
+    image: s.image_url,
+    align: s.button_text || 'left'
+  })) || [];
+
+  const testimonials = sections?.filter(s => s.section_type === 'testimonial').map(s => ({
+    id: s.id,
+    name: s.title,
+    text: s.subtitle,
+    product: s.button_text,
+    image: s.image_url
+  })) || [];
 
   // Fetch Categories
   const { data: categories } = await supabase
@@ -69,11 +98,34 @@ export default async function Home() {
 
   const mappedProducts = products?.map(p => ({
     id: p.id,
+    slug: p.slug,
     name: p.name,
     price: p.price,
     images: p.product_images?.map((img: any) => img.url) || [],
     isNew: p.is_featured,
     isSale: p.compare_at_price > p.price
+  })) || [];
+  const instagramItems = sections?.filter(s => s.section_type === 'instagram').slice(0, 4).map((s, index) => ({
+    id: s.id,
+    url: s.image_url,
+    link: s.button_link || 'https://instagram.com/tranquil.co.in',
+    height: index % 2 === 0 ? 'h-[400px]' : 'h-[500px]'
+  })) || [];
+
+  // Fetch Reviews
+  const { data: dbReviews } = await supabase
+    .from("reviews")
+    .select("id, rating, title, comment, profiles(first_name, last_name, avatar_url), products(name)")
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(4);
+
+  const realReviews = dbReviews?.map((r: any) => ({
+    id: r.id,
+    name: r.profiles ? `${r.profiles.first_name || ''} ${r.profiles.last_name || ''}`.trim() || 'Anonymous' : 'Anonymous',
+    text: r.comment,
+    product: r.products?.name,
+    image: r.profiles?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200"
   })) || [];
 
   return (
@@ -83,9 +135,9 @@ export default async function Home() {
       <BestSellers products={mappedProducts} />
       <ShopByCategory categories={mappedCategories} />
       <NewCollection initialData={mappedProducts} />
-      <FashionStories />
-      <Lookbook />
-      <Reviews />
+      {editorialStories.length > 0 ? <FashionStories stories={editorialStories} /> : <FashionStories />}
+      <Lookbook items={instagramItems} />
+      {realReviews.length > 0 ? <Reviews reviews={realReviews} /> : <Reviews />}
       <WhyChooseUs />
     </>
   );

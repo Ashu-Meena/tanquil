@@ -7,36 +7,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
-const allProducts = [
-  {
-    id: 1,
-    name: "Draped Halter Gown",
-    price: 6999,
-    image: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=400&q=80",
-  },
-  {
-    id: 2,
-    name: "Feather Trim Mini Dress",
-    price: 5499,
-    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=400&q=80",
-  },
-  {
-    id: 3,
-    name: "Satin Slip Midi Dress",
-    price: 4999,
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80",
-  },
-  {
-    id: 4,
-    name: "Embellished Corset Top",
-    price: 3499,
-    image: "https://images.unsplash.com/photo-1588117260148-b47818741c74?w=400&q=80",
-  },
-];
+import { supabase } from "@/lib/supabase";
+
+interface SearchProduct {
+  id: string;
+  name: string;
+  price: number;
+  slug: string;
+  image: string;
+}
 
 export default function SearchModal() {
   const { isOpen, closeSearch } = useSearchStore();
   const [query, setQuery] = useState("");
+
+  const [results, setResults] = useState<SearchProduct[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const trendingSearches = [
     "Satin Dresses",
@@ -46,9 +32,59 @@ export default function SearchModal() {
     "Sequin Tops"
   ];
 
-  const filtered = query.trim().length > 0
-    ? allProducts.filter(p => p.name.toLowerCase().includes(query.toLowerCase()))
-    : allProducts.slice(0, 2);
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const fetchResults = async () => {
+      if (query.trim().length === 0) {
+        // Fetch suggested (trending) products when empty
+        setIsSearching(true);
+        const { data } = await supabase
+          .from("products")
+          .select("id, name, price, slug, product_images(url)")
+          .eq("is_trending", true)
+          .eq("status", "active")
+          .limit(4);
+          
+        if (data) {
+          setResults(data.map(p => ({
+            id: p.id,
+            name: p.name,
+            slug: p.slug,
+            price: p.price,
+            image: p.product_images?.[0]?.url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
+          })));
+        }
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+      const { data } = await supabase
+        .from("products")
+        .select("id, name, price, slug, product_images(url)")
+        .ilike("name", `%${query}%`)
+        .eq("status", "active")
+        .limit(6);
+        
+      if (data) {
+        setResults(data.map(p => ({
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          price: p.price,
+          image: p.product_images?.[0]?.url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
+        })));
+      }
+      setIsSearching(false);
+    };
+
+    const debounceTimer = setTimeout(() => {
+      fetchResults();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [query, isOpen]);
 
   // Close on Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -151,12 +187,16 @@ export default function SearchModal() {
                     )}
                   </div>
 
-                  {filtered.length === 0 ? (
+                  {isSearching ? (
+                    <div className="flex justify-center items-center py-20">
+                      <div className="w-8 h-8 border-2 border-[#111111] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  ) : results.length === 0 ? (
                     <p className="text-[#666666]">No products found for &quot;{query}&quot;.</p>
                   ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                      {filtered.map((product) => (
-                        <Link key={product.id} href={`/products/${product.id}`} onClick={closeSearch} className="group cursor-pointer">
+                      {results.map((product) => (
+                        <Link key={product.id} href={`/products/${product.slug}`} onClick={closeSearch} className="group cursor-pointer">
                           <div className="aspect-[3/4] relative bg-[#FAF8F5] mb-4 overflow-hidden">
                             <Image 
                               src={product.image} 

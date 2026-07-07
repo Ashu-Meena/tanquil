@@ -24,6 +24,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
 
   const mappedProducts = products?.map((p: any) => ({
     id: p.id,
+    slug: p.slug,
     name: p.name,
     price: p.price,
     images: p.product_images?.map((img: any) => img.url) || [],

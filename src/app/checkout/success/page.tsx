@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 export default function CheckoutSuccessPage() {
   return (
-    <div className="min-h-[80vh] bg-[#FAF8F5] flex items-center justify-center pt-24 pb-20">
+    <div className="min-h-[80vh] bg-[#FAF8F5] flex items-center justify-center pt-36 pb-20">
       <div className="container mx-auto px-6 max-w-lg text-center">
         <motion.div
           initial={{ scale: 0 }}

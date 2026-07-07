@@ -9,6 +9,7 @@ import { useCartStore } from "@/store/useCartStore";
 
 interface CardProduct {
   id: string | number;
+  slug?: string;
   name: string;
   price: number;
   images: string[];
@@ -54,7 +55,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const handleQuickView = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    window.location.href = `/products/${product.id}`;
+    window.location.href = `/products/${product.slug || product.id}`;
   };
 
   return (
@@ -88,12 +89,22 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           <Eye className="w-4 h-4" />
         </button>
 
-        <Link href={`/products/${product.id}`} className="block w-full h-full">
+        <Link href={`/products/${product.slug || product.id}`} className="block w-full h-full">
+          {product.images[1] && (
+            <Image 
+              src={product.images[1]}
+              alt={`${product.name} Alternate`}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className={`object-cover transition-opacity duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isHovered ? 'opacity-100' : 'opacity-0'} z-10`}
+            />
+          )}
           <Image 
-            src={isHovered && product.images[1] ? product.images[1] : product.images[0]}
+            src={product.images[0]}
             alt={product.name}
             fill
-            className="object-cover transition-opacity duration-500 ease-in-out"
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className={`object-cover transition-opacity duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'}`}
           />
         </Link>
 
@@ -134,7 +145,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
       
       {/* Product Details */}
       <div className="flex flex-col text-center">
-        <Link href={`/products/${product.id}`} className="font-serif text-[#111111] text-lg hover:text-[#C7A17A] transition-colors mb-1">
+        <Link href={`/products/${product.slug || product.id}`} className="font-serif text-[#111111] text-lg hover:text-[#C7A17A] transition-colors mb-1">
           {product.name}
         </Link>
         <div className="flex justify-center items-center gap-3">
@@ -144,7 +155,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         
         {/* Mobile-only Quick View/Add Button */}
         <Link 
-          href={`/products/${product.id}`}
+          href={`/products/${product.slug || product.id}`}
           className="md:hidden mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors"
         >
           View Options

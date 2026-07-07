@@ -7,6 +7,7 @@ import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SearchModal from "@/components/search/SearchModal";
 import Preloader from "@/components/layout/Preloader";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -52,6 +53,7 @@ export default function RootLayout({
         <CartDrawer />
         <SearchModal />
       </body>
+      <GoogleAnalytics gaId="G-XYZ1234567" />
     </html>
   );
 }

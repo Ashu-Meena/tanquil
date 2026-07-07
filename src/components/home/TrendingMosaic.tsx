@@ -3,77 +3,110 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 interface Collection {
   id: string | number;
   title: string;
   slug: string;
   image: string;
-  className: string;
 }
+
+const getBentoClass = (index: number, total: number) => {
+  if (total === 4) {
+    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto min-h-[400px]"; // Left large feature
+    if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-[16/9]"; // Top right wide
+    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-square"; // Bottom right 1
+    if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-square"; // Bottom right 2
+  }
+  if (total === 3) {
+    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto min-h-[400px]"; // Left large
+    if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[21/9]"; // Top right
+    if (index === 2) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[21/9]"; // Bottom right
+  }
+  if (total === 5) {
+    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[4/5]"; 
+    if (index === 1) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    if (index === 4) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+  }
+  return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+};
 
 export default function TrendingMosaic({ collections }: { collections: Collection[] }) {
   if (!collections || collections.length === 0) return null;
 
   return (
-    <section className="py-24 bg-white">
+    <section className="py-24 bg-[#FAF8F5]">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div>
+          <div className="max-w-2xl">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
+              className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#111111] mb-6 leading-tight"
             >
-              Trending Edits
+              The Editorial <span className="italic text-[#C7A17A]">Edits</span>
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="font-serif italic text-xl text-[#666666]"
+              className="text-[#666666] leading-relaxed max-w-lg"
             >
-              Curated collections for your lifestyle
+              Discover our most coveted pieces, curated into distinctive aesthetics to elevate your everyday wardrobe.
             </motion.p>
           </div>
-          <Link href="/collections/all" className="uppercase tracking-widest text-xs font-medium text-[#111111] hover:text-[#C7A17A] flex items-center gap-2 transition-colors border-b border-[#111111] hover:border-[#C7A17A] pb-1">
-            View All Edits <ArrowRight className="w-4 h-4" />
+          <Link href="/collections/all" className="group flex items-center justify-center w-32 h-32 rounded-full border border-[#EFEFEF] bg-white hover:bg-[#111111] hover:border-[#111111] transition-all duration-500 flex-shrink-0">
+            <span className="text-[10px] uppercase tracking-widest font-medium text-[#111111] group-hover:text-white transition-colors text-center leading-relaxed">
+              View All <br/> Collections
+            </span>
           </Link>
         </div>
 
-        {/* Pinterest Inspired Asymmetrical Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
           {collections.map((col, index) => (
             <Link
               key={col.id}
               href={`/collections/${col.slug}`}
+              className={`relative overflow-hidden group rounded-sm bg-[#EFEFEF] ${getBentoClass(index, collections.length)}`}
               aria-label={`Shop ${col.title}`}
             >
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.6 }}
-                className={`relative overflow-hidden group cursor-pointer bg-[#FAF8F5] ${col.className}`}
+                transition={{ delay: index * 0.1, duration: 0.8, ease: "easeOut" }}
+                className="w-full h-full relative"
               >
                 <Image 
                   src={col.image} 
                   alt={col.title} 
                   fill 
-                  className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]" 
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover group-hover:scale-[1.03] transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]" 
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
                 
-                {/* Floating Glass Label */}
-                <div className="absolute inset-x-6 bottom-6 flex justify-between items-end">
-                  <div className="bg-white/20 backdrop-blur-md px-6 py-4 border border-white/30 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                    <h3 className="font-serif text-2xl text-white mb-1">{col.title}</h3>
-                    <span className="text-white/90 text-[10px] uppercase tracking-widest font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 flex items-center gap-2">
-                      Explore <ArrowRight className="w-3 h-3" />
+                {/* Elegant Overlay */}
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
+                
+                {/* Content */}
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 flex items-end justify-between">
+                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    <span className="text-[#C7A17A] text-[10px] font-bold uppercase tracking-[0.3em] mb-3 block opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                      Collection {String(index + 1).padStart(2, '0')}
                     </span>
+                    <h3 className="font-serif text-3xl md:text-4xl text-white font-light tracking-wide">{col.title}</h3>
+                  </div>
+                  
+                  {/* Floating Action Button */}
+                  <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out delay-100 group-hover:bg-white group-hover:text-[#111111] text-white">
+                    <ArrowUpRight className="w-5 h-5" />
                   </div>
                 </div>
               </motion.div>

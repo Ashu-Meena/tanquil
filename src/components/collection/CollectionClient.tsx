@@ -160,7 +160,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
   );
 
   return (
-    <div className="bg-white min-h-screen pt-20">
+    <div className="bg-white min-h-screen pt-32">
       {/* Banner */}
       <div className="relative w-full h-[40vh] md:h-[50vh] bg-[#FAF8F5]">
         <Image 

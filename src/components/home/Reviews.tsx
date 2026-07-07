@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Star, BadgeCheck } from "lucide-react";
 
-const reviews = [
+const defaultReviews = [
   {
     id: 1,
     name: "Aanya S.",
@@ -29,15 +29,25 @@ const reviews = [
   }
 ];
 
-export default function Reviews() {
+interface Review {
+  id: string | number;
+  name: string;
+  image: string;
+  text: string;
+  product: string;
+}
+
+export default function Reviews({ reviews: initialReviews }: { reviews?: Review[] }) {
   const [currentReview, setCurrentReview] = useState(0);
+
+  const displayReviews = initialReviews && initialReviews.length > 0 ? initialReviews : defaultReviews;
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentReview((prev) => (prev + 1) % reviews.length);
+      setCurrentReview((prev) => (prev + 1) % displayReviews.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [displayReviews.length]);
 
   return (
     <section className="py-24 bg-[#FAF8F5] overflow-hidden">
@@ -81,20 +91,20 @@ export default function Reviews() {
                   <Star className="w-5 h-5 fill-current" />
                 </div>
                 <p className="text-[#111111] font-serif text-xl md:text-2xl leading-relaxed mb-8 italic text-center">
-                  "{reviews[currentReview].text}"
+                  "{displayReviews[currentReview].text}"
                 </p>
               </div>
               
               <div className="flex items-center justify-center gap-4 mt-auto">
                 <div className="relative w-14 h-14 rounded-full overflow-hidden bg-[#EFEFEF]">
-                  <Image src={reviews[currentReview].image} alt={reviews[currentReview].name} fill className="object-cover" />
+                  <Image src={displayReviews[currentReview].image} alt={displayReviews[currentReview].name} fill className="object-cover" />
                 </div>
                 <div className="text-left">
                   <div className="flex items-center gap-1 text-[#111111] font-medium tracking-wide">
-                    {reviews[currentReview].name}
+                    {displayReviews[currentReview].name}
                     <BadgeCheck className="w-4 h-4 text-[#C7A17A]" />
                   </div>
-                  <span className="text-[#666666] text-xs uppercase tracking-widest">{reviews[currentReview].product}</span>
+                  <span className="text-[#666666] text-xs uppercase tracking-widest">{displayReviews[currentReview].product}</span>
                 </div>
               </div>
             </motion.div>
@@ -102,7 +112,7 @@ export default function Reviews() {
         </div>
 
         <div className="flex gap-3 mt-12">
-          {reviews.map((_, i) => (
+          {displayReviews.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentReview(i)}

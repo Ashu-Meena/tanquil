@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, Volume2, VolumeX } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 
 const InstagramIcon = ({ className }: { className?: string }) => (
@@ -33,72 +33,129 @@ const YouTubeIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+const isVideo = (url: string) => {
+  if (!url) return false;
+  const baseUrl = url.split('?')[0];
+  return baseUrl.match(/\.(mp4|mov|webm|ogg|m4v)$/i) !== null;
+};
+
+const FooterMediaItem = ({ post }: { post: any }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const video = isVideo(post.image_url);
+
+  const handleMouseEnter = () => {
+    if (video && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (video && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsMuted(!isMuted);
+  };
+
+  return (
+    <div 
+      className="aspect-[9/16] bg-[#1A1A1A] relative overflow-hidden group cursor-pointer block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {video ? (
+        <>
+          <video
+            ref={videoRef}
+            src={post.image_url}
+            muted={isMuted}
+            loop
+            playsInline
+            autoPlay
+            className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100"
+          />
+          <button 
+            onClick={toggleMute}
+            className="absolute top-2 right-2 z-20 bg-black/50 p-1.5 rounded-full text-white md:hidden"
+          >
+            {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+          </button>
+        </>
+      ) : (
+        <img 
+          src={post.image_url} 
+          alt="Instagram Feed" 
+          className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" 
+        />
+      )}
+      
+      <a 
+        href={post.button_link || "https://instagram.com/tranquil.co.in"} 
+        target="_blank" 
+        rel="noreferrer" 
+        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"
+      >
+        <InstagramIcon className="w-6 h-6 text-white" />
+      </a>
+    </div>
+  );
+};
+
 export default function Footer() {
   const pathname = usePathname();
   const [storeInfo, setStoreInfo] = useState<any>(null);
+  const [instagramPosts, setInstagramPosts] = useState<any[]>([]);
 
   useEffect(() => {
     async function fetchInfo() {
       const { data } = await supabase.from('store_settings').select('value').eq('key', 'store_info').single();
       if (data?.value) setStoreInfo(data.value);
+
+      const { data: instaData } = await supabase
+        .from('homepage_sections')
+        .select('image_url, button_link')
+        .eq('section_type', 'instagram')
+        .eq('is_active', true)
+        .order('display_order', { ascending: true })
+        .limit(4);
+      if (instaData) setInstagramPosts(instaData);
     }
     fetchInfo();
   }, []);
 
+
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="bg-[#111111] text-white pt-20 pb-10">
+    <footer className="bg-[#111111] text-white pt-12 pb-10">
       <div className="container mx-auto px-6 lg:px-12">
-        {/* Top Section: Newsletter & Instagram Preview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20 border-b border-[#333333] pb-16">
-          {/* Newsletter */}
-          <div className="flex flex-col justify-center">
+        <div className="flex flex-col items-center text-center mb-12 border-b border-[#333333] pb-12">
+          {/* WhatsApp Community */}
+          <div className="flex flex-col items-center max-w-2xl">
             <h2 className="font-serif text-3xl lg:text-4xl mb-4 text-[#C7A17A]">Join Our Fashion Circle</h2>
-            <p className="text-[#666666] mb-8 max-w-md">
-              Subscribe to get 10% off your first purchase, exclusive access to new arrivals, and styling tips.
+            <p className="text-[#666666] mb-8">
+              Join our WhatsApp Community to get 10% off your first purchase, exclusive access to new arrivals, and styling tips.
             </p>
-            <form className="flex flex-col sm:flex-row gap-4" onSubmit={(e) => e.preventDefault()}>
-              <div className="relative flex-1">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#666666]" />
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="w-full bg-[#1A1A1A] text-white border border-[#333333] rounded-none py-4 pl-12 pr-4 focus:outline-none focus:border-[#C7A17A] transition-colors"
-                  required
-                />
-              </div>
+            <div className="flex justify-center">
               <MagneticButton>
-                <button
-                  type="submit"
-                  className="bg-[#C7A17A] hover:bg-[#CDAA5D] text-white px-8 py-4 uppercase tracking-widest text-sm font-medium transition-colors flex items-center justify-center gap-2 group"
+                <a
+                  href="https://wa.me/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-8 py-4 uppercase tracking-widest text-sm font-medium transition-colors flex items-center justify-center gap-3 rounded-full"
                 >
-                  Subscribe
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+                  </svg>
+                  Join WhatsApp
+                </a>
               </MagneticButton>
-            </form>
-          </div>
-
-          {/* Instagram Feed Preview */}
-          <div>
-            <div className="flex justify-between items-end mb-6">
-              <div>
-                <h3 className="font-serif text-2xl mb-1">Follow Us</h3>
-                <a href="https://instagram.com/tranquil.co.in" target="_blank" rel="noreferrer" className="text-[#666666] hover:text-[#C7A17A] transition-colors text-sm">@tranquil.co.in</a>
-              </div>
-              <InstagramIcon className="w-6 h-6 text-[#C7A17A]" />
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="aspect-square bg-[#1A1A1A] relative overflow-hidden group cursor-pointer">
-                  {/* Placeholder for Instagram Images */}
-                  <img src={`https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80&auto=format&fit=crop`} alt="Instagram Feed" className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <InstagramIcon className="w-6 h-6 text-white" />
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </div>

@@ -8,12 +8,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/useCartStore";
 import { useSearchStore } from "@/store/useSearchStore";
 import AnnouncementBar from "./AnnouncementBar";
+import { supabase } from "@/lib/supabase";
 
 export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
   const cartItems = useCartStore((state) => state.items);
   const openCart = useCartStore((state) => state.openCart);
   const openSearch = useSearchStore((state) => state.openSearch);
@@ -24,6 +26,13 @@ export default function Header() {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
+
+    const fetchCategories = async () => {
+      const { data } = await supabase.from('categories').select('id, name, slug').eq('is_active', true).order('display_order', { ascending: true });
+      if (data) setCategories(data);
+    };
+    fetchCategories();
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -45,10 +54,10 @@ export default function Header() {
           <AnnouncementBar />
         </div>
         <div
-          className={`w-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+          className={`w-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] border-b ${
             isScrolled || forceSolidHeader
-              ? "bg-white/70 backdrop-blur-lg border-b border-[#EFEFEF] py-4 text-[#111111] shadow-sm"
-              : "bg-transparent py-4 lg:py-6 text-white hover:bg-white/90 hover:backdrop-blur-md hover:text-[#111111]"
+              ? "bg-white/30 backdrop-blur-2xl border-white/40 py-4 text-[#111111] shadow-[0_4px_30px_rgba(0,0,0,0.05)]"
+              : "bg-transparent border-transparent py-4 lg:py-6 text-white hover:bg-white/20 hover:backdrop-blur-xl hover:border-white/30 hover:text-[#111111]"
           }`}
         >
         <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
@@ -62,11 +71,12 @@ export default function Header() {
               <Menu className="w-6 h-6" />
             </button>
             <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium">
-              <Link href="/collections/new" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">New Arrivals</Link>
-              <Link href="/collections/clothing" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">All Clothing</Link>
-              <Link href="/collections/dresses" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Dresses & Gowns</Link>
-              <Link href="/collections/partywear" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">Party Wear</Link>
-              <Link href="/collections/sale" className="hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px] text-[#C7A17A]">Sale</Link>
+              <Link href="/collections/all" className="whitespace-nowrap hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">All Clothing</Link>
+              {categories.map((cat) => (
+                <Link key={cat.id} href={`/collections/${cat.slug}`} className="whitespace-nowrap hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">
+                  {cat.name}
+                </Link>
+              ))}
             </nav>
           </div>
 
@@ -118,11 +128,17 @@ export default function Header() {
               </button>
             </div>
             <nav className="flex flex-col p-8 gap-8 mt-10">
-              <Link href="/collections/new" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">New Arrivals</Link>
-              <Link href="/collections/clothing" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">All Clothing</Link>
-              <Link href="/collections/dresses" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Dresses & Gowns</Link>
-              <Link href="/collections/partywear" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">Party Wear</Link>
-              <Link href="/collections/sale" className="font-serif text-4xl text-[#C7A17A] hover:translate-x-3 transition-transform" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
+              <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">All Clothing</Link>
+              {categories.map((cat) => (
+                <Link 
+                  key={cat.id} 
+                  href={`/collections/${cat.slug}`} 
+                  onClick={() => setIsMobileMenuOpen(false)} 
+                  className="font-serif text-4xl hover:translate-x-3 transition-transform"
+                >
+                  {cat.name}
+                </Link>
+              ))}
             </nav>
             <div className="mt-auto p-8 bg-[#FAF8F5] border-t border-[#EFEFEF] flex justify-between items-center">
               <div className="flex gap-8">

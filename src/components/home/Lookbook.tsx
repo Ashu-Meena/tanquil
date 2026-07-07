@@ -1,9 +1,9 @@
 "use client";
 
+import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { ShoppingBag } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -13,16 +13,106 @@ const InstagramIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const lookbookItems = [
-  { id: 1, type: 'photo', url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600", height: "h-[400px]", product: "Satin Midi", slug: "dresses" },
-  { id: 2, type: 'video', url: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=600", height: "h-[550px]", product: "Velvet Gown", slug: "dresses" },
-  { id: 3, type: 'photo', url: "https://images.unsplash.com/photo-1589465885857-44edb59bbff2?q=80&w=600", height: "h-[350px]", product: "Silk Co-ord", slug: "coord" },
-  { id: 4, type: 'photo', url: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600", height: "h-[500px]", product: "Lace Top", slug: "new" },
-  { id: 5, type: 'photo', url: "https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=600", height: "h-[450px]", product: "Sequin Skirt", slug: "partywear" },
-  { id: 6, type: 'video', url: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?q=80&w=600", height: "h-[400px]", product: "Party Dress", slug: "partywear" },
+interface LookbookItem {
+  id: string | number;
+  url: string;
+  height: string;
+  link: string;
+}
+
+const defaultItems: LookbookItem[] = [
+  { id: 'def-1', url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600', link: 'https://instagram.com/tranquil.co.in', height: 'h-[400px]' },
+  { id: 'def-2', url: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600', link: 'https://instagram.com/tranquil.co.in', height: 'h-[500px]' },
+  { id: 'def-3', url: 'https://images.unsplash.com/photo-1550614000-4b95d46664d3?q=80&w=600', link: 'https://instagram.com/tranquil.co.in', height: 'h-[400px]' },
+  { id: 'def-4', url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=600', link: 'https://instagram.com/tranquil.co.in', height: 'h-[500px]' },
 ];
 
-export default function Lookbook() {
+const isVideo = (url: string) => {
+  if (!url) return false;
+  const baseUrl = url.split('?')[0];
+  return baseUrl.match(/\.(mp4|mov|webm|ogg|m4v)$/i) !== null;
+};
+
+const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const video = isVideo(item.url);
+
+  const handleMouseEnter = () => {
+    if (video && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (video && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsMuted(!isMuted);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-full bg-[#EFEFEF]`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {video ? (
+        <>
+          <video
+            ref={videoRef}
+            src={item.url}
+            muted={isMuted}
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+          />
+          <button 
+            onClick={toggleMute}
+            className="absolute top-4 right-4 z-20 bg-black/50 p-2 rounded-full text-white md:hidden"
+          >
+            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+        </>
+      ) : (
+        <Image 
+          src={item.url}
+          alt={`Lookbook ${item.id}`}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+        />
+      )}
+
+      <a
+        href={item.link}
+        target="_blank"
+        rel="noreferrer"
+        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center z-10"
+        aria-label={`View on Instagram`}
+      >
+        <div className="bg-white text-[#111111] hover:bg-[#C7A17A] hover:text-white rounded-full p-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+          <InstagramIcon className="w-5 h-5" />
+        </div>
+        <span className="text-white mt-3 font-medium uppercase tracking-widest text-xs transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
+          View Post
+        </span>
+      </a>
+    </motion.div>
+  );
+};
+
+export default function Lookbook({ items }: { items?: LookbookItem[] }) {
+  const displayItems = items && items.length > 0 ? items : defaultItems;
   return (
     <section className="py-24 bg-[#FAF8F5]">
       <div className="container mx-auto px-6 lg:px-12">
@@ -47,37 +137,10 @@ export default function Lookbook() {
           </motion.p>
         </div>
 
-        {/* Masonry Layout */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-          {lookbookItems.map((item, index) => (
-            <motion.div
-              key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              className={`relative group overflow-hidden break-inside-avoid ${item.height} w-full bg-[#EFEFEF]`}
-            >
-              <Image 
-                src={item.url}
-                alt={`Lookbook ${item.id}`}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
-              />
-              {/* Overlay */}
-              <Link
-                href={`/collections/${item.slug}`}
-                className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center"
-                aria-label={`Shop ${item.product}`}
-              >
-                <div className="bg-white text-[#111111] hover:bg-[#C7A17A] hover:text-white rounded-full p-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                  <ShoppingBag className="w-5 h-5" />
-                </div>
-                <span className="text-white mt-3 font-medium uppercase tracking-widest text-xs transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
-                  Shop {item.product}
-                </span>
-              </Link>
-            </motion.div>
+        {/* Layout */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
+          {displayItems.map((item, index) => (
+            <MediaItem key={item.id} item={item} index={index} />
           ))}
         </div>
       </div>

@@ -21,7 +21,9 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     category_id: "",
     stock_quantity: "",
     status: "active",
-    image_url: ""
+    image_url: "",
+    is_trending: false,
+    is_featured: false
   });
 
   useEffect(() => {
@@ -51,14 +53,22 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         category_id: product.category_id || "",
         stock_quantity: product.stock_quantity?.toString() || "0",
         status: product.status || "active",
-        image_url: (product.product_images && product.product_images[0]?.url) || ""
+        image_url: (product.product_images && product.product_images[0]?.url) || "",
+        is_trending: product.is_trending || false,
+        is_featured: product.is_featured || false
       });
     }
     setFetching(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,7 +86,9 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
       sku: formData.sku,
       category_id: formData.category_id || null,
       stock_quantity: parseInt(formData.stock_quantity) || 0,
-      status: formData.status
+      status: formData.status,
+      is_trending: formData.is_trending,
+      is_featured: formData.is_featured
     };
 
     const { error } = await supabase.from("products").update(payload).eq("id", params.id);
@@ -227,6 +239,32 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
+              </div>
+
+              <div className="pt-4 border-t border-[#EFEFEF] space-y-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="checkbox"
+                    name="is_trending"
+                    checked={formData.is_trending}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-[#C7A17A] border-[#EFEFEF] rounded-sm focus:ring-[#C7A17A]"
+                  />
+                  <span className="text-sm font-medium text-[#111111]">Trending Product</span>
+                </label>
+                <p className="text-xs text-[#666666] ml-6 mt-[-12px]">Shows in the Best Sellers section.</p>
+                
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="checkbox"
+                    name="is_featured"
+                    checked={formData.is_featured}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-[#C7A17A] border-[#EFEFEF] rounded-sm focus:ring-[#C7A17A]"
+                  />
+                  <span className="text-sm font-medium text-[#111111]">Featured Product</span>
+                </label>
+                <p className="text-xs text-[#666666] ml-6 mt-[-12px]">Shows in the New Collection section.</p>
               </div>
             </div>
 

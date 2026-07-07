@@ -6,31 +6,85 @@ import { X, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { SHIPPING_THRESHOLD } from "@/lib/constants";
+import { supabase } from "@/lib/supabase";
 
 export default function CartDrawer() {
   const { isOpen, closeCart, items: cartItems, removeItem, updateQuantity } = useCartStore();
   const [mounted, setMounted] = useState(false);
+  const [shippingThreshold, setShippingThreshold] = useState(10000); // Default to 10000
   const [discountCode, setDiscountCode] = useState("");
   const [discountMessage, setDiscountMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [activeCoupon, setActiveCoupon] = useState<{ code: string; is_free_shipping: boolean; discount_value: number; discount_type: 'percentage' | 'fixed' } | null>(null);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (isOpen) {
+      fetchShippingSettings();
+    }
+  }, [isOpen]);
+
+  const fetchShippingSettings = async () => {
+    const { data } = await supabase
+      .from('store_settings')
+      .select('value')
+      .eq('key', 'shipping')
+      .single();
+    if (data && data.value && data.value.free_shipping_threshold) {
+      setShippingThreshold(data.value.free_shipping_threshold);
+    }
+  };
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const progress = Math.min((subtotal / SHIPPING_THRESHOLD) * 100, 100);
-  const remaining = Math.max(0, SHIPPING_THRESHOLD - subtotal);
+  
+  // Calculate discount if applicable
+  let discountAmount = 0;
+  if (activeCoupon) {
+    if (activeCoupon.discount_type === 'percentage') {
+      discountAmount = (subtotal * activeCoupon.discount_value) / 100;
+    } else {
+      discountAmount = activeCoupon.discount_value;
+    }
+  }
+  const totalAfterDiscount = Math.max(0, subtotal - discountAmount);
+
+  // Free shipping logic
+  const isFreeShippingViaCoupon = activeCoupon?.is_free_shipping || false;
+  const progress = isFreeShippingViaCoupon ? 100 : Math.min((subtotal / shippingThreshold) * 100, 100);
+  const remaining = isFreeShippingViaCoupon ? 0 : Math.max(0, shippingThreshold - subtotal);
   const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  const handleApplyDiscount = () => {
+  const handleApplyDiscount = async () => {
     if (!discountCode.trim()) {
       setDiscountMessage({ type: "error", text: "Please enter a discount code." });
-    } else {
-      // TODO: Connect to real discount code validation
+      setActiveCoupon(null);
+      return;
+    } 
+
+    const { data, error } = await supabase
+      .from('coupons')
+      .select('code, is_active, min_order_value, discount_type, discount_value, is_free_shipping')
+      .ilike('code', discountCode.trim())
+      .single();
+
+    if (error || !data || !data.is_active) {
       setDiscountMessage({ type: "error", text: `"${discountCode.toUpperCase()}" is not a valid code.` });
+      setActiveCoupon(null);
+    } else if (data.min_order_value > subtotal) {
+      setDiscountMessage({ type: "error", text: `Minimum order value for this coupon is ₹${data.min_order_value}.` });
+      setActiveCoupon(null);
+    } else {
+      setDiscountMessage({ type: "success", text: `Discount applied successfully!` });
+      setActiveCoupon({
+        code: data.code,
+        is_free_shipping: data.is_free_shipping,
+        discount_value: data.discount_value,
+        discount_type: data.discount_type
+      });
     }
-    setTimeout(() => setDiscountMessage(null), 3000);
+
+    setTimeout(() => {
+      if (discountMessage?.type === 'error') setDiscountMessage(null);
+    }, 3000);
   };
 
   return (
@@ -161,10 +215,18 @@ export default function CartDrawer() {
                 )}
               </div>
 
+              {activeCoupon && discountAmount > 0 && (
+                <div className="flex justify-between items-center mb-2 text-[#2F855A]">
+                  <span className="font-serif text-lg tracking-wide">Discount</span>
+                  <span className="font-serif text-lg tracking-wide" style={{ fontFamily: 'var(--font-montserrat)' }}>
+                    -₹{discountAmount.toLocaleString('en-IN')}
+                  </span>
+                </div>
+              )}
               <div className="flex justify-between items-center mb-6">
-                <span className="font-serif text-xl tracking-wide">Subtotal</span>
+                <span className="font-serif text-xl tracking-wide">Total</span>
                 <span className="font-serif text-xl tracking-wide" style={{ fontFamily: 'var(--font-montserrat)' }}>
-                  ₹{subtotal.toLocaleString('en-IN')}
+                  ₹{totalAfterDiscount.toLocaleString('en-IN')}
                 </span>
               </div>
               <p className="text-xs text-[#666666] mb-6 text-center">

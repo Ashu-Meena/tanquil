@@ -1,12 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { IndianRupee, ShoppingBag, TrendingUp, Users, ArrowUpRight, ArrowDownRight, Package } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
+  const supabase = createClient();
   const [metrics, setMetrics] = useState({
     totalSales: 0,
     totalOrders: 0,
@@ -22,6 +23,15 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  const handleMakeAdmin = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { error } = await supabase.from('profiles').update({ is_admin: true, role: 'super_admin' }).eq('id', user.id);
+      if (error) alert(error.message);
+      else alert('You are now an Admin! Please reload the page.');
+    }
+  };
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -91,9 +101,17 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl text-[#111111] mb-1">Dashboard</h1>
-        <p className="text-[#666666] text-sm">Welcome back. Here is your store overview.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-2xl font-serif text-[#111111]">Dashboard Overview</h1>
+          <p className="text-sm text-[#666666] mt-1">Welcome back. Here's what's happening today.</p>
+        </div>
+        <button 
+          onClick={handleMakeAdmin}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-sm text-sm uppercase tracking-wider"
+        >
+          Fix Admin Permissions
+        </button>
       </div>
 
       {/* Metrics Grid */}
