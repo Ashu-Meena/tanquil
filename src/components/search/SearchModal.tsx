@@ -106,7 +106,10 @@ export default function SearchModal() {
 
   // Reset query when modal closes
   useEffect(() => {
-    if (!isOpen) setQuery("");
+    if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setQuery("");
+    }
   }, [isOpen]);
 
   return (

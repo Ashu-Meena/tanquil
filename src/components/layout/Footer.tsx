@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Mail, Volume2, VolumeX, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
 const InstagramIcon = ({ className }: { className?: string }) => (
@@ -21,96 +21,12 @@ const FacebookIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const PinterestIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.951-7.252 4.168 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.367 18.625 0 12.017 0z" />
-  </svg>
-);
 
-const YouTubeIcon = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-  </svg>
-);
-
-const isVideo = (url: string) => {
-  if (!url) return false;
-  const baseUrl = url.split('?')[0];
-  return baseUrl.match(/\.(mp4|mov|webm|ogg|m4v)$/i) !== null;
-};
-
-const FooterMediaItem = ({ post }: { post: any }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const video = isVideo(post.image_url);
-
-  const handleMouseEnter = () => {
-    if (video && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (video && videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  };
-
-  const toggleMute = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsMuted(!isMuted);
-  };
-
-  return (
-    <div 
-      className="aspect-[9/16] bg-[#1A1A1A] relative overflow-hidden group cursor-pointer block"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      {video ? (
-        <>
-          <video
-            ref={videoRef}
-            src={post.image_url}
-            muted={isMuted}
-            loop
-            playsInline
-            autoPlay
-            className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100"
-          />
-          <button 
-            onClick={toggleMute}
-            className="absolute top-2 right-2 z-20 bg-black/50 p-1.5 rounded-full text-white md:hidden"
-          >
-            {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-          </button>
-        </>
-      ) : (
-        <img 
-          src={post.image_url} 
-          alt="Instagram Feed" 
-          className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-700 opacity-60 group-hover:opacity-100" 
-        />
-      )}
-      
-      <a 
-        href={post.button_link || "https://instagram.com/tranquil.co.in"} 
-        target="_blank" 
-        rel="noreferrer" 
-        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"
-      >
-        <InstagramIcon className="w-6 h-6 text-white" />
-      </a>
-    </div>
-  );
-};
 
 export default function Footer() {
   const pathname = usePathname();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [storeInfo, setStoreInfo] = useState<any>(null);
-  const [instagramPosts, setInstagramPosts] = useState<any[]>([]);
 
   const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
 
@@ -122,15 +38,6 @@ export default function Footer() {
     async function fetchInfo() {
       const { data } = await supabase.from('store_settings').select('value').eq('key', 'store_info').single();
       if (data?.value) setStoreInfo(data.value);
-
-      const { data: instaData } = await supabase
-        .from('homepage_sections')
-        .select('image_url, button_link')
-        .eq('section_type', 'instagram')
-        .eq('is_active', true)
-        .order('display_order', { ascending: true })
-        .limit(4);
-      if (instaData) setInstagramPosts(instaData);
     }
     fetchInfo();
   }, []);

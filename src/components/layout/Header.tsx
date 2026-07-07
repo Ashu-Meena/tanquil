@@ -21,6 +21,7 @@ export default function Header() {
   const openSearch = useSearchStore((state) => state.openSearch);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -38,7 +39,11 @@ export default function Header() {
 
   // Close mobile menu on route change
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    if (isMobileMenuOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsMobileMenuOpen(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -70,13 +75,34 @@ export default function Header() {
             >
               <Menu className="w-6 h-6" />
             </button>
-            <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium">
-              <Link href="/collections/all" className="whitespace-nowrap hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">All Clothing</Link>
-              {categories.map((cat) => (
-                <Link key={cat.id} href={`/collections/${cat.slug}`} className="whitespace-nowrap hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px]">
-                  {cat.name}
-                </Link>
-              ))}
+            <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium relative group">
+              <Link href="/collections/all" className="whitespace-nowrap hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px] py-4">All Clothing</Link>
+              <div className="relative py-4 group/menu">
+                <span className="whitespace-nowrap hover:text-[#CDAA5D] transition-colors uppercase tracking-widest text-[11px] cursor-pointer">Shop</span>
+                
+                {/* Mega Menu Dropdown */}
+                <div className="absolute top-[100%] left-0 w-[600px] bg-white border border-[#EFEFEF] shadow-2xl opacity-0 translate-y-4 invisible group-hover/menu:opacity-100 group-hover/menu:translate-y-0 group-hover/menu:visible transition-all duration-300 ease-out flex text-[#111111]">
+                  <div className="flex-1 p-8">
+                    <h3 className="font-serif text-lg mb-4 text-[#CDAA5D]">Categories</h3>
+                    <div className="flex flex-col gap-3">
+                      {categories.map((cat) => (
+                        <Link key={cat.id} href={`/collections/${cat.slug}`} className="hover:translate-x-2 transition-transform hover:text-[#CDAA5D]">
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="w-[250px] bg-[#FAF8F5] relative p-6 flex flex-col justify-end">
+                    <div className="absolute inset-0 z-0">
+                      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop" alt="Featured" className="w-full h-full object-cover opacity-80" />
+                    </div>
+                    <div className="relative z-10 bg-white/90 backdrop-blur-sm p-4 text-center">
+                      <p className="font-serif text-lg">New Arrivals</p>
+                      <Link href="/collections/all" className="text-xs uppercase tracking-widest mt-2 hover:text-[#CDAA5D] inline-block">Shop Now &rarr;</Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </nav>
           </div>
 
@@ -89,7 +115,7 @@ export default function Header() {
 
           {/* Right: Actions */}
           <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6">
-            <button onClick={openSearch} aria-label="Search" className="hover:text-[#CDAA5D] transition-colors">
+            <button onClick={openSearch} aria-label="Search" className="hover:text-[#CDAA5D] transition-colors hidden lg:block">
               <Search className="w-5 h-5" />
             </button>
             <Link href="/account/wishlist" aria-label="Wishlist" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
@@ -98,7 +124,7 @@ export default function Header() {
             <Link href="/account" aria-label="Account" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
               <User className="w-5 h-5" />
             </Link>
-            <button onClick={openCart} aria-label="Cart" className="hover:text-[#CDAA5D] transition-colors relative">
+            <button onClick={openCart} aria-label="Cart" className="hover:text-[#CDAA5D] transition-colors relative hidden lg:block">
               <ShoppingBag className="w-5 h-5" />
               {mounted && totalItems > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">

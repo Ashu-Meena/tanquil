@@ -50,7 +50,7 @@ export default function NewCollection({ initialData = [] }: { initialData?: Prod
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12">
-          {products.map((product, index) => (
+          {products.map((product) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}

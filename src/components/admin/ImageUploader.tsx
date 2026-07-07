@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { UploadCloud, X, Loader2 } from "lucide-react";
+import { UploadCloud, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import Image from "next/image";
 
 interface ImageUploaderProps {
   value: string;
@@ -42,6 +41,7 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
       const { data } = supabase.storage.from('public-assets').getPublicUrl(filePath);
       onChange(data.publicUrl);
       
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       alert("Error uploading image: " + error.message);
     } finally {
@@ -98,6 +98,7 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
                 className="absolute inset-0 w-full h-full object-cover"
               />
             ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img 
                 src={value} 
                 alt="Uploaded Preview" 

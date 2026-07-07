@@ -7,6 +7,7 @@ import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SearchModal from "@/components/search/SearchModal";
 import Preloader from "@/components/layout/Preloader";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 const playfair = Playfair_Display({
@@ -50,6 +51,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <MobileBottomNav />
         <CartDrawer />
         <SearchModal />
       </body>

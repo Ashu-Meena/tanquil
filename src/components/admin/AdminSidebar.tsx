@@ -12,7 +12,6 @@ import {
   CreditCard,
   Truck,
   MessageSquare,
-  FileText,
   Tag,
   LogOut,
   Package,

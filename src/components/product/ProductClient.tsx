@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
+import { useWishlistStore } from "@/store/useWishlistStore";
 import { Heart, Ruler, Truck, ShieldCheck, RefreshCw, ChevronDown, ChevronUp, Share2, MessageCircle } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import SizeGuideModal from "@/components/product/SizeGuideModal";
@@ -28,6 +29,7 @@ interface ProductDetails {
 
 interface ProductClientProps {
   product: ProductDetails;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   relatedProducts: any[];
 }
 
@@ -39,12 +41,43 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   const [selectedSize, setSelectedSize] = useState(sizesList[0] || "Custom");
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
-  const [wishlistAdded, setWishlistAdded] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
   const [customMeasurements, setCustomMeasurements] = useState({ bust: "", waist: "", hips: "", length: "" });
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const addToCartRef = useRef<HTMLDivElement>(null);
   
   const { addItem, openCart } = useCartStore();
+  const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Show sticky bar when the main add to cart button is NOT intersecting (out of view)
+        // Also check if we're not at the very top to avoid showing it immediately on load if it's below fold
+        if (window.scrollY > 500) {
+          setShowStickyBar(!entry.isIntersecting);
+        } else {
+          setShowStickyBar(false);
+        }
+      },
+      { threshold: 0, rootMargin: "-100px 0px 0px 0px" }
+    );
+    
+    if (addToCartRef.current) {
+      observer.observe(addToCartRef.current);
+    }
+    
+    const handleScroll = () => {
+      if (window.scrollY < 500) setShowStickyBar(false);
+    };
+    window.addEventListener("scroll", handleScroll);
+    
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const getFinalSizeString = () => {
     if (selectedSize === "Custom") {
@@ -80,7 +113,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   };
 
   const handleWishlist = () => {
-    setWishlistAdded(!wishlistAdded);
+    toggleWishlist(product.id);
   };
 
   const handleShare = async () => {
@@ -258,7 +291,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col gap-4 mb-10">
+              <div className="flex flex-col gap-4 mb-10" ref={addToCartRef}>
                 <button 
                   onClick={handleAddToCart}
                   className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors"
@@ -274,10 +307,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   </button>
                   <button
                     onClick={handleWishlist}
-                    title={wishlistAdded ? "Remove from Wishlist" : "Add to Wishlist"}
-                    className={`w-14 border flex items-center justify-center transition-colors ${wishlistAdded ? 'border-[#E63946] bg-[#E63946] text-white' : 'border-[#EFEFEF] hover:border-[#E63946] text-[#111111] hover:text-[#E63946]'}`}
+                    title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
+                    className={`w-14 border flex items-center justify-center transition-colors ${isWishlisted(product.id) ? 'border-[#E63946] bg-[#E63946] text-white' : 'border-[#EFEFEF] hover:border-[#E63946] text-[#111111] hover:text-[#E63946]'}`}
                   >
-                    <Heart className={`w-5 h-5 ${wishlistAdded ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 ${isWishlisted(product.id) ? 'fill-current' : ''}`} />
                   </button>
                 </div>
                 <a 
@@ -349,6 +382,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           <div className="container mx-auto px-6 lg:px-12 mt-32 border-t border-[#EFEFEF] pt-24">
             <h2 className="font-serif text-3xl lg:text-4xl text-[#111111] mb-12 text-center">Complete The Look</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {relatedProducts.map((relProduct: any) => (
                 <ProductCard key={relProduct.id} product={relProduct} />
               ))}
@@ -357,7 +391,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
         )}
       </div>
       {/* Mobile Sticky Add to Cart */}
-      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-[#EFEFEF] p-4 z-40 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-6">
+      <div className={`md:hidden fixed bottom-[64px] left-0 w-full bg-white border-t border-[#EFEFEF] p-4 z-40 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-4 transition-transform duration-500 ${showStickyBar ? 'translate-y-0' : 'translate-y-[150%]'}`}>
         <button 
           onClick={handleAddToCart}
           className="flex-1 bg-[#111111] text-white py-3 uppercase tracking-widest text-[10px] font-medium transition-colors"
@@ -370,6 +404,30 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
         >
           Buy It Now
         </button>
+      </div>
+      {/* Desktop Sticky Add to Cart */}
+      <div className={`hidden md:flex fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-[#EFEFEF] p-4 z-50 items-center justify-between px-6 lg:px-12 transform transition-transform duration-500 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className="flex items-center gap-6">
+          <div className="w-12 h-16 relative bg-[#FAF8F5]">
+            <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+          </div>
+          <div>
+            <h3 className="font-serif text-lg text-[#111111]">{product.name}</h3>
+            <p className="text-sm font-medium text-[#111111]">₹{product.price.toLocaleString('en-IN')}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 text-xs uppercase tracking-widest text-[#666666]">
+            <span>Color: <span className="text-[#111111] font-medium">{selectedColor.name}</span></span>
+            <span>Size: <span className="text-[#111111] font-medium">{selectedSize === 'Custom' ? 'Custom' : selectedSize}</span></span>
+          </div>
+          <button 
+            onClick={handleAddToCart}
+            className="bg-[#111111] text-white px-8 py-3 uppercase tracking-widest text-xs font-medium hover:bg-[#C7A17A] transition-colors"
+          >
+            Add To Cart
+          </button>
+        </div>
       </div>
     </>
   );

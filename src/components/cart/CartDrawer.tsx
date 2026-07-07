@@ -16,13 +16,6 @@ export default function CartDrawer() {
   const [discountMessage, setDiscountMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const [activeCoupon, setActiveCoupon] = useState<{ code: string; is_free_shipping: boolean; discount_value: number; discount_type: 'percentage' | 'fixed' } | null>(null);
 
-  useEffect(() => {
-    setMounted(true);
-    if (isOpen) {
-      fetchShippingSettings();
-    }
-  }, [isOpen]);
-
   const fetchShippingSettings = async () => {
     const { data } = await supabase
       .from('store_settings')
@@ -33,6 +26,15 @@ export default function CartDrawer() {
       setShippingThreshold(data.value.free_shipping_threshold);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+    if (isOpen) {
+      fetchShippingSettings();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   
@@ -121,11 +123,11 @@ export default function CartDrawer() {
             <div className="p-4 sm:p-6 bg-[#FAF8F5] border-b border-[#EFEFEF]">
               {remaining > 0 ? (
                 <p className="text-sm text-center mb-3 text-[#111111]">
-                  You're <span className="font-bold text-[#C7A17A]">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
+                  You&apos;re <span className="font-bold text-[#C7A17A]">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
                 </p>
               ) : (
                 <p className="text-sm text-center mb-3 text-[#2F855A] font-medium">
-                  You've unlocked Free Shipping! 🎉
+                  You&apos;ve unlocked Free Shipping! 🎉
                 </p>
               )}
               <div className="w-full h-1.5 bg-[#EFEFEF] rounded-full overflow-hidden">

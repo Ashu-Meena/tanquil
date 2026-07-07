@@ -4,8 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Eye, ShoppingBag } from "lucide-react";
-import { motion } from "framer-motion";
 import { useCartStore } from "@/store/useCartStore";
+import { useWishlistStore } from "@/store/useWishlistStore";
 
 interface CardProduct {
   id: string | number;
@@ -21,9 +21,9 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const [isHovered, setIsHovered] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [sizeError, setSizeError] = useState(false);
-  const [wishlistAdded, setWishlistAdded] = useState(false);
-
+  
   const { addItem, openCart } = useCartStore();
+  const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
@@ -48,8 +48,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setWishlistAdded(true);
-    setTimeout(() => setWishlistAdded(false), 2000);
+    toggleWishlist(String(product.id));
   };
 
   const handleQuickView = (e: React.MouseEvent) => {
@@ -74,10 +73,10 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         {/* Wishlist Button */}
         <button
           onClick={handleWishlist}
-          title={wishlistAdded ? "Added to Wishlist!" : "Add to Wishlist"}
-          className={`absolute top-3 right-3 z-20 w-8 h-8 backdrop-blur-sm rounded-full flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 duration-300 transform translate-y-0 md:translate-y-[-10px] md:group-hover:translate-y-0 ${wishlistAdded ? 'bg-[#E63946] text-white' : 'bg-white/80 text-[#111111] hover:text-[#E63946] hover:bg-white'}`}
+          title={isWishlisted(String(product.id)) ? "Remove from Wishlist" : "Add to Wishlist"}
+          className={`absolute top-3 right-3 z-20 w-8 h-8 backdrop-blur-sm rounded-full flex items-center justify-center transition-all opacity-100 duration-300 transform translate-y-0 ${isWishlisted(String(product.id)) ? 'bg-[#E63946] text-white' : 'bg-white/80 text-[#111111] hover:text-[#E63946] hover:bg-white'}`}
         >
-          <Heart className={`w-4 h-4 ${wishlistAdded ? 'fill-current' : ''}`} />
+          <Heart className={`w-4 h-4 ${isWishlisted(String(product.id)) ? 'fill-current' : ''}`} />
         </button>
 
         {/* Quick View Button */}
@@ -144,19 +143,27 @@ export default function ProductCard({ product }: { product: CardProduct }) {
       </div>
       
       {/* Product Details */}
-      <div className="flex flex-col text-center">
-        <Link href={`/products/${product.slug || product.id}`} className="font-serif text-[#111111] text-lg hover:text-[#C7A17A] transition-colors mb-1">
-          {product.name}
+      <div className="flex flex-col text-left mt-4 px-1">
+        <Link href={`/products/${product.slug || product.id}`} className="group/link block">
+          <h3 className="font-serif text-[15px] md:text-[17px] text-[#111111] group-hover/link:text-[#C7A17A] transition-colors leading-snug tracking-wide line-clamp-1 mb-1.5">
+            {product.name}
+          </h3>
         </Link>
-        <div className="flex justify-center items-center gap-3">
-          <span className="font-sans font-medium text-sm text-[#111111]">₹{product.price.toLocaleString('en-IN')}</span>
-          {product.isSale && <span className="text-[#666666] line-through text-xs">₹{(product.price * 1.2).toLocaleString('en-IN')}</span>}
+        <div className="flex items-center gap-2.5">
+          <span className="font-sans text-[13px] md:text-[14px] font-medium tracking-wider text-[#111111]">
+            ₹{product.price.toLocaleString('en-IN')}
+          </span>
+          {product.isSale && (
+            <span className="font-sans text-[11px] md:text-[12px] text-[#999999] line-through tracking-wider">
+              ₹{(product.price * 1.2).toLocaleString('en-IN')}
+            </span>
+          )}
         </div>
         
-        {/* Mobile-only Quick View/Add Button */}
+        {/* Quick View/Add Button */}
         <Link 
           href={`/products/${product.slug || product.id}`}
-          className="md:hidden mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors"
+          className="mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors block text-center md:hidden"
         >
           View Options
         </Link>

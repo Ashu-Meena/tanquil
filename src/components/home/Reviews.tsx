@@ -91,7 +91,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
                   <Star className="w-5 h-5 fill-current" />
                 </div>
                 <p className="text-[#111111] font-serif text-xl md:text-2xl leading-relaxed mb-8 italic text-center">
-                  "{displayReviews[currentReview].text}"
+                  &quot;{displayReviews[currentReview].text}&quot;
                 </p>
               </div>
               
