@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Package, Search, Filter, Printer, ExternalLink, MoreVertical, Check, X } from "lucide-react";
 
 interface Order {
@@ -54,6 +54,7 @@ export default function OrdersPage() {
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
+    const supabase = createClient();
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -68,6 +69,7 @@ export default function OrdersPage() {
   }, [fetchOrders]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    const supabase = createClient();
     await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     if (selectedOrder?.id === orderId) {
@@ -78,6 +80,7 @@ export default function OrdersPage() {
   const saveFulfillmentDetails = async () => {
     if (!selectedOrder) return;
     setUpdating(true);
+    const supabase = createClient();
     await supabase.from("orders").update({ 
       notes: internalNotes,
       tracking_id: trackingId,
@@ -139,6 +142,7 @@ export default function OrdersPage() {
   const applyBulkAction = async () => {
     if (!bulkStatus || selectedOrders.length === 0) return;
     setUpdating(true);
+    const supabase = createClient();
     
     // Update all selected orders
     await Promise.all(selectedOrders.map(id => 
