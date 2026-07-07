@@ -189,7 +189,15 @@ export default function CheckoutPage() {
         }
 
         // 1. Generate Order Number & ID
-        const orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+        let orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+        try {
+          const { data: seqNumber, error: rpcError } = await supabase.rpc('generate_order_number');
+          if (!rpcError && seqNumber) {
+            orderNumber = seqNumber;
+          }
+        } catch (e) {
+          console.error("RPC fallback to random order number", e);
+        }
         const orderId = crypto.randomUUID();
 
         // 2. Insert Order
