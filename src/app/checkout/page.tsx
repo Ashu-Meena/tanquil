@@ -300,7 +300,7 @@ export default function CheckoutPage() {
           <ChevronLeft className="w-4 h-4" /> Return to Shop
         </Link>
         
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+        <div className="flex flex-col-reverse lg:flex-row gap-12 lg:gap-24">
           
           {/* Left: Checkout Form */}
           <div className="flex-1">
