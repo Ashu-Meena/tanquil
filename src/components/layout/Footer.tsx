@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, Mail, Volume2, VolumeX } from "lucide-react";
+import { ArrowRight, Mail, Volume2, VolumeX, ChevronDown } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
@@ -112,6 +112,12 @@ export default function Footer() {
   const [storeInfo, setStoreInfo] = useState<any>(null);
   const [instagramPosts, setInstagramPosts] = useState<any[]>([]);
 
+  const [activeAccordion, setActiveAccordion] = useState<string | null>(null);
+
+  const toggleAccordion = (section: string) => {
+    setActiveAccordion(activeAccordion === section ? null : section);
+  };
+
   useEffect(() => {
     async function fetchInfo() {
       const { data } = await supabase.from('store_settings').select('value').eq('key', 'store_info').single();
@@ -161,9 +167,9 @@ export default function Footer() {
         </div>
 
         {/* Middle Section: Links */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 mb-16 text-sm">
           {/* Brand */}
-          <div>
+          <div className="mb-8 md:mb-0">
             <h4 className="font-serif text-2xl tracking-widest uppercase mb-6 text-white">Tranquil</h4>
             <p className="text-[#666666] mb-6 leading-relaxed">
               Designed to be remembered. Luxury pieces for women who love standing out.
@@ -183,9 +189,15 @@ export default function Footer() {
           </div>
 
           {/* Shop */}
-          <div>
-            <h4 className="font-medium uppercase tracking-widest mb-6 text-[#C7A17A]">Shop</h4>
-            <ul className="flex flex-col gap-4 text-[#666666]">
+          <div className="border-b border-[#333333] md:border-none pb-4 md:pb-0">
+            <button 
+              onClick={() => toggleAccordion("shop")}
+              className="w-full flex justify-between items-center md:cursor-default"
+            >
+              <h4 className="font-medium uppercase tracking-widest md:mb-6 text-[#C7A17A]">Shop</h4>
+              <ChevronDown className={`w-4 h-4 text-[#C7A17A] transition-transform md:hidden ${activeAccordion === "shop" ? "rotate-180" : ""}`} />
+            </button>
+            <ul className={`flex flex-col gap-4 text-[#666666] overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "shop" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/collections/new" className="hover:text-white transition-colors">New Arrivals</Link></li>
               <li><Link href="/collections/bestsellers" className="hover:text-white transition-colors">Best Sellers</Link></li>
               <li><Link href="/collections/sale" className="hover:text-white transition-colors">Sale</Link></li>
@@ -194,9 +206,15 @@ export default function Footer() {
           </div>
 
           {/* Categories */}
-          <div>
-            <h4 className="font-medium uppercase tracking-widest mb-6 text-[#C7A17A]">Categories</h4>
-            <ul className="flex flex-col gap-4 text-[#666666]">
+          <div className="border-b border-[#333333] md:border-none pb-4 md:pb-0">
+            <button 
+              onClick={() => toggleAccordion("categories")}
+              className="w-full flex justify-between items-center md:cursor-default"
+            >
+              <h4 className="font-medium uppercase tracking-widest md:mb-6 text-[#C7A17A]">Categories</h4>
+              <ChevronDown className={`w-4 h-4 text-[#C7A17A] transition-transform md:hidden ${activeAccordion === "categories" ? "rotate-180" : ""}`} />
+            </button>
+            <ul className={`flex flex-col gap-4 text-[#666666] overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "categories" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/collections/dresses" className="hover:text-white transition-colors">Dresses</Link></li>
               <li><Link href="/collections/corsets" className="hover:text-white transition-colors">Corsets</Link></li>
               <li><Link href="/collections/coord" className="hover:text-white transition-colors">Co-Ords</Link></li>
@@ -206,9 +224,15 @@ export default function Footer() {
           </div>
 
           {/* About & Policies */}
-          <div>
-            <h4 className="font-medium uppercase tracking-widest mb-6 text-[#C7A17A]">About</h4>
-            <ul className="flex flex-col gap-4 text-[#666666]">
+          <div className="pb-4 md:pb-0">
+            <button 
+              onClick={() => toggleAccordion("about")}
+              className="w-full flex justify-between items-center md:cursor-default"
+            >
+              <h4 className="font-medium uppercase tracking-widest md:mb-6 text-[#C7A17A]">About</h4>
+              <ChevronDown className={`w-4 h-4 text-[#C7A17A] transition-transform md:hidden ${activeAccordion === "about" ? "rotate-180" : ""}`} />
+            </button>
+            <ul className={`flex flex-col gap-4 text-[#666666] overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "about" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/about" className="hover:text-white transition-colors">Our Story</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>

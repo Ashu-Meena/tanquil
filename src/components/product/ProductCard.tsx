@@ -75,7 +75,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         <button
           onClick={handleWishlist}
           title={wishlistAdded ? "Added to Wishlist!" : "Add to Wishlist"}
-          className={`absolute top-3 right-3 z-20 w-8 h-8 backdrop-blur-sm rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 duration-300 transform translate-y-[-10px] group-hover:translate-y-0 ${wishlistAdded ? 'bg-[#E63946] text-white' : 'bg-white/80 text-[#111111] hover:text-[#E63946] hover:bg-white'}`}
+          className={`absolute top-3 right-3 z-20 w-8 h-8 backdrop-blur-sm rounded-full flex items-center justify-center transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 duration-300 transform translate-y-0 md:translate-y-[-10px] md:group-hover:translate-y-0 ${wishlistAdded ? 'bg-[#E63946] text-white' : 'bg-white/80 text-[#111111] hover:text-[#E63946] hover:bg-white'}`}
         >
           <Heart className={`w-4 h-4 ${wishlistAdded ? 'fill-current' : ''}`} />
         </button>
@@ -84,7 +84,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         <button
           onClick={handleQuickView}
           title="Quick View"
-          className="absolute top-14 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-[#111111] hover:text-[#C7A17A] hover:bg-white transition-colors opacity-0 group-hover:opacity-100 duration-300 delay-75 transform translate-y-[-10px] group-hover:translate-y-0"
+          className="hidden md:flex absolute top-14 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full items-center justify-center text-[#111111] hover:text-[#C7A17A] hover:bg-white transition-colors opacity-0 group-hover:opacity-100 duration-300 delay-75 transform translate-y-[-10px] group-hover:translate-y-0"
         >
           <Eye className="w-4 h-4" />
         </button>

@@ -56,7 +56,7 @@ export default function BestSellers({ products }: { products: Product[] }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="min-w-[280px] md:min-w-[320px] lg:min-w-[360px] snap-center flex-shrink-0"
+              className="w-[75vw] sm:w-[50vw] md:w-[320px] lg:w-[360px] snap-center flex-shrink-0"
             >
               <ProductCard product={product} />
             </motion.div>

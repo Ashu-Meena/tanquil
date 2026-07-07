@@ -114,45 +114,57 @@ export default function Header() {
       {/* Mobile Menu Overlay — sibling of header, not nested inside it */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: "-100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "-100%" }}
-            transition={{ type: "tween", duration: 0.4, ease: "circOut" }}
-            className="fixed inset-0 z-[60] bg-white text-[#111111] flex flex-col"
-          >
-            <div className="flex items-center justify-between p-6 border-b border-[#EFEFEF]">
-              <span className="font-serif text-2xl tracking-widest uppercase">Tranquil</span>
-              <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="hover:rotate-90 transition-transform">
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <nav className="flex flex-col p-8 gap-8 mt-10">
-              <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-4xl hover:translate-x-3 transition-transform">All Clothing</Link>
-              {categories.map((cat) => (
-                <Link 
-                  key={cat.id} 
-                  href={`/collections/${cat.slug}`} 
-                  onClick={() => setIsMobileMenuOpen(false)} 
-                  className="font-serif text-4xl hover:translate-x-3 transition-transform"
-                >
-                  {cat.name}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-auto p-8 bg-[#FAF8F5] border-t border-[#EFEFEF] flex justify-between items-center">
-              <div className="flex gap-8">
-                <Link href="/account" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                  <User className="w-5 h-5" />
-                  Account
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm cursor-pointer"
+            />
+            <motion.div
+              initial={{ opacity: 0, x: "-100%" }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: "-100%" }}
+              transition={{ type: "tween", duration: 0.4, ease: "circOut" }}
+              className="fixed top-0 left-0 bottom-0 w-[85vw] max-w-sm z-[70] bg-white text-[#111111] flex flex-col shadow-2xl"
+            >
+              <div className="flex items-center justify-between p-6 border-b border-[#EFEFEF]">
+                <span className="font-serif text-2xl tracking-widest uppercase">Tranquil</span>
+                <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="hover:rotate-90 transition-transform">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto">
+                <nav className="flex flex-col p-8 gap-8 mt-4">
+                  <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-3xl hover:translate-x-2 transition-transform">All Clothing</Link>
+                  {categories.map((cat) => (
+                    <Link 
+                      key={cat.id} 
+                      href={`/collections/${cat.slug}`} 
+                      onClick={() => setIsMobileMenuOpen(false)} 
+                      className="font-serif text-3xl hover:translate-x-2 transition-transform"
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </nav>
+              </div>
+              <div className="mt-auto p-8 bg-[#FAF8F5] border-t border-[#EFEFEF] flex justify-between items-center">
+                <div className="flex gap-8">
+                  <Link href="/account" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                    <User className="w-5 h-5" />
+                    Account
+                  </Link>
+                </div>
+                <Link href="/account/wishlist" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Heart className="w-5 h-5" />
+                  Wishlist
                 </Link>
               </div>
-              <Link href="/account/wishlist" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                <Heart className="w-5 h-5" />
-                Wishlist
-              </Link>
-            </div>
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

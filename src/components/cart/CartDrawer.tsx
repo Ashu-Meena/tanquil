@@ -110,15 +110,15 @@ export default function CartDrawer() {
             className="fixed top-0 right-0 h-full w-full sm:w-[450px] bg-white z-[80] shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-[#EFEFEF]">
-              <h2 className="font-serif text-2xl tracking-wide">Your Cart {mounted ? `(${totalItemsCount})` : ''}</h2>
+            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#EFEFEF]">
+              <h2 className="font-serif text-xl sm:text-2xl tracking-wide">Your Cart {mounted ? `(${totalItemsCount})` : ''}</h2>
               <button onClick={closeCart} className="hover:rotate-90 transition-transform p-2 -mr-2">
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             {/* Free Shipping Progress */}
-            <div className="p-6 bg-[#FAF8F5] border-b border-[#EFEFEF]">
+            <div className="p-4 sm:p-6 bg-[#FAF8F5] border-b border-[#EFEFEF]">
               {remaining > 0 ? (
                 <p className="text-sm text-center mb-3 text-[#111111]">
                   You're <span className="font-bold text-[#C7A17A]">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
@@ -139,7 +139,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
               {!mounted ? null : cartItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
                   <p className="text-[#666666]">Your cart is currently empty.</p>
@@ -189,7 +189,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#EFEFEF] p-6 bg-white">
+            <div className="border-t border-[#EFEFEF] p-4 sm:p-6 bg-white">
               {/* Discount Code */}
               <div className="mb-6 border-b border-[#EFEFEF] pb-6">
                 <div className="flex gap-2">

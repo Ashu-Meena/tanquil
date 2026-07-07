@@ -34,8 +34,9 @@ interface ProductClientProps {
 export default function ProductClient({ product, relatedProducts }: ProductClientProps) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState(product.images[0]);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0] || { name: "Default", hex: "#000000" });
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0] || "Custom");
+  const [selectedColor, setSelectedColor] = useState(product.colors && product.colors.length > 0 ? product.colors[0] : { name: "Default", hex: "#000000" });
+  const sizesList = product.sizes && product.sizes.length > 0 ? product.sizes : ["XS", "S", "M", "L", "XL", "XXL", "3XL", "Custom"];
+  const [selectedSize, setSelectedSize] = useState(sizesList[0] || "Custom");
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   const [wishlistAdded, setWishlistAdded] = useState(false);
@@ -117,8 +118,17 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           </div>
 
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+            {/* Mobile Swipeable Gallery */}
+            <div className="w-full md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-6 px-6 pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {product.images.map((img, i) => (
+                <div key={i} className="relative w-full aspect-[3/4] flex-shrink-0 snap-center bg-[#FAF8F5]">
+                  <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" priority={i === 0} />
+                </div>
+              ))}
+            </div>
+
             {/* Gallery (Left) */}
-            <div className="w-full lg:w-[60%] flex flex-col-reverse md:flex-row gap-4 h-full sticky top-28">
+            <div className="hidden md:flex w-full lg:w-[60%] flex-col-reverse md:flex-row gap-4 lg:sticky lg:top-28 lg:h-[calc(100vh-120px)]">
               {/* Thumbnails */}
               <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-24 flex-shrink-0">
                 {product.images.map((img, i) => (
@@ -200,12 +210,12 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                     <Ruler className="w-3 h-3" /> Size Guide
                   </button>
                 </div>
-                <div className="grid grid-cols-5 gap-2">
-                  {product.sizes.map(size => (
+                <div className="grid grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-2">
+                  {sizesList.map(size => (
                     <button 
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`py-3 text-sm transition-all border ${selectedSize === size ? 'border-[#111111] bg-[#111111] text-white' : 'border-[#EFEFEF] hover:border-[#111111] text-[#111111]'}`}
+                      className={`py-3 text-[10px] uppercase tracking-widest border transition-colors ${selectedSize === size ? 'border-[#111111] bg-[#111111] text-white' : 'border-[#EFEFEF] hover:border-[#111111] text-[#111111]'}`}
                     >
                       {size}
                     </button>
@@ -345,6 +355,21 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             </div>
           </div>
         )}
+      </div>
+      {/* Mobile Sticky Add to Cart */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-white border-t border-[#EFEFEF] p-4 z-40 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-6">
+        <button 
+          onClick={handleAddToCart}
+          className="flex-1 bg-[#111111] text-white py-3 uppercase tracking-widest text-[10px] font-medium transition-colors"
+        >
+          Add To Cart
+        </button>
+        <button 
+          onClick={handleBuyNow}
+          className="flex-1 border border-[#111111] text-[#111111] py-3 uppercase tracking-widest text-[10px] font-medium transition-colors"
+        >
+          Buy It Now
+        </button>
       </div>
     </>
   );

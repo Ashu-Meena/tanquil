@@ -11,6 +11,16 @@ interface Category {
   link: string;
 }
 
+const getBentoClass = (index: number, total: number) => {
+  if (total === 4) {
+    if (index === 0) return "col-span-1 md:col-span-1 row-span-2 md:row-span-1 aspect-[3/4] md:aspect-[3/4] min-h-[200px] md:min-h-0"; 
+    if (index === 1) return "col-span-1 md:col-span-1 row-span-1 md:row-span-1 aspect-square md:aspect-[3/4]"; 
+    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 md:row-span-1 aspect-[4/5] md:aspect-[3/4]"; 
+    if (index === 3) return "col-span-2 md:col-span-1 row-span-1 md:row-span-1 aspect-[21/9] md:aspect-[3/4]"; 
+  }
+  return "col-span-1 md:col-span-1 row-span-1 md:row-span-1 aspect-square md:aspect-[3/4]";
+};
+
 export default function ShopByCategory({ categories }: { categories: Category[] }) {
   if (!categories || categories.length === 0) return null;
 
@@ -37,7 +47,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-1 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense gap-2 md:gap-6">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
@@ -45,7 +55,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="relative aspect-square md:aspect-[3/4] overflow-hidden group"
+              className={`relative overflow-hidden group ${getBentoClass(index, categories.length)}`}
             >
               <Link href={category.link} className="absolute inset-0 z-20" aria-label={`Shop ${category.title}`} />
               <Image 

@@ -14,22 +14,22 @@ interface Collection {
 
 const getBentoClass = (index: number, total: number) => {
   if (total === 4) {
-    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto min-h-[400px]"; // Left large feature
-    if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-[16/9]"; // Top right wide
-    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-square"; // Bottom right 1
-    if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-square"; // Bottom right 2
+    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto min-h-[200px] md:min-h-[400px]"; // Left large feature
+    if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[16/9]"; // Top right wide
+    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square"; // Bottom right 1
+    if (index === 3) return "col-span-2 md:col-span-1 row-span-1 aspect-[21/9] md:aspect-square"; // Bottom right 2
   }
   if (total === 3) {
-    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto min-h-[400px]"; // Left large
+    if (index === 0) return "col-span-2 md:col-span-2 row-span-2 aspect-video md:aspect-auto min-h-[200px] md:min-h-[400px]"; // Left large
     if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[21/9]"; // Top right
-    if (index === 2) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[21/9]"; // Bottom right
+    if (index === 2) return "col-span-1 md:col-span-2 row-span-1 aspect-[4/5] md:aspect-[21/9]"; // Bottom right
   }
   if (total === 5) {
-    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[4/5]"; 
+    if (index === 0) return "col-span-2 md:col-span-2 row-span-2 aspect-video md:aspect-[4/5]"; 
     if (index === 1) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
-    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
     if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
-    if (index === 4) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    if (index === 4) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
   }
   return "col-span-1 md:col-span-1 row-span-1 aspect-square";
 };
@@ -68,7 +68,7 @@ export default function TrendingMosaic({ collections }: { collections: Collectio
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense gap-2 md:gap-6">
           {collections.map((col, index) => (
             <Link
               key={col.id}
@@ -96,12 +96,12 @@ export default function TrendingMosaic({ collections }: { collections: Collectio
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
                 
                 {/* Content */}
-                <div className="absolute inset-x-0 bottom-0 p-6 md:p-8 flex items-end justify-between">
-                  <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                    <span className="text-[#C7A17A] text-[10px] font-bold uppercase tracking-[0.3em] mb-3 block opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                <div className="absolute inset-x-0 bottom-0 p-3 md:p-8 flex items-end justify-between">
+                  <div className="transform translate-y-2 md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                    <span className="text-[#C7A17A] text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] mb-1 md:mb-3 block md:opacity-0 group-hover:opacity-100 transition-opacity duration-500 md:delay-100">
                       Collection {String(index + 1).padStart(2, '0')}
                     </span>
-                    <h3 className="font-serif text-3xl md:text-4xl text-white font-light tracking-wide">{col.title}</h3>
+                    <h3 className="font-serif text-xl md:text-4xl text-white font-light tracking-wide">{col.title}</h3>
                   </div>
                   
                   {/* Floating Action Button */}

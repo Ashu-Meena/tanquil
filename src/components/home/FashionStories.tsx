@@ -70,7 +70,7 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
               <div 
                 key={story.id} 
                 ref={containerRef}
-                className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-24 ${story.align === 'right' ? 'lg:flex-row-reverse' : ''}`}
+                className={`flex flex-row items-center gap-6 md:gap-12 lg:gap-24 ${story.align === 'right' ? 'flex-row-reverse' : ''}`}
               >
                 {/* Image Block */}
                 <motion.div 
@@ -78,7 +78,7 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 1, ease: "easeOut" }}
-                  className="w-full lg:w-3/5"
+                  className="w-1/2 lg:w-3/5"
                 >
                   <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden group">
                     <motion.div style={{ y: y1 }} className="absolute inset-[-15%] w-[130%] h-[130%]">
@@ -99,21 +99,21 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  className="w-full lg:w-2/5 flex flex-col justify-center"
+                  className="w-1/2 lg:w-2/5 flex flex-col justify-center"
                 >
-                  <span className="text-[#C7A17A] text-xs uppercase tracking-[0.3em] font-medium mb-6 block">Editorial</span>
-                  <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-6 leading-tight">
+                  <span className="text-[#C7A17A] text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium mb-2 md:mb-6 block">Editorial</span>
+                  <h3 className="font-serif text-xl md:text-3xl lg:text-5xl text-[#111111] mb-2 md:mb-6 leading-tight">
                     {story.title}
                   </h3>
-                  <p className="text-[#666666] leading-relaxed mb-10 text-lg">
+                  <p className="text-[#666666] leading-relaxed mb-4 md:mb-10 text-[10px] md:text-lg line-clamp-4 md:line-clamp-none">
                     {story.description}
                   </p>
                   <Link 
                     href="/collections/editorial" 
-                    className="inline-flex items-center gap-3 text-[#111111] uppercase tracking-widest text-sm font-medium hover:text-[#C7A17A] transition-colors group self-start"
+                    className="inline-flex items-center gap-1.5 md:gap-3 text-[#111111] uppercase tracking-wider md:tracking-widest text-[8px] md:text-sm font-medium hover:text-[#C7A17A] transition-colors group self-start"
                   >
                     Read The Story 
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                    <ArrowRight className="w-3 h-3 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
                   </Link>
                 </motion.div>
               </div>

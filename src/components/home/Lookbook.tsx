@@ -63,7 +63,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.6 }}
-      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-full bg-[#EFEFEF]`}
+      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-[75vw] sm:w-[45vw] lg:w-full flex-shrink-0 snap-center bg-[#EFEFEF]`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -138,7 +138,7 @@ export default function Lookbook({ items }: { items?: LookbookItem[] }) {
         </div>
 
         {/* Layout */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-8 -mx-6 px-6 lg:mx-0 lg:px-0 lg:pb-0 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {displayItems.map((item, index) => (
             <MediaItem key={item.id} item={item} index={index} />
           ))}
