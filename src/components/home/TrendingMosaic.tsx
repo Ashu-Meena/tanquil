@@ -14,24 +14,12 @@ interface Collection {
 
 const getBentoClass = (index: number, total: number) => {
   if (total === 4) {
-    if (index === 0) return "col-span-1 md:col-span-2 row-span-2 aspect-[3/4] md:aspect-auto min-h-[200px] md:min-h-[400px]"; // Left large feature
-    if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[16/9]"; // Top right wide
-    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square"; // Bottom right 1
-    if (index === 3) return "col-span-2 md:col-span-1 row-span-1 aspect-[21/9] md:aspect-square"; // Bottom right 2
-  }
-  if (total === 3) {
-    if (index === 0) return "col-span-2 md:col-span-2 row-span-2 aspect-video md:aspect-auto min-h-[200px] md:min-h-[400px]"; // Left large
-    if (index === 1) return "col-span-1 md:col-span-2 row-span-1 aspect-square md:aspect-[21/9]"; // Top right
-    if (index === 2) return "col-span-1 md:col-span-2 row-span-1 aspect-[4/5] md:aspect-[21/9]"; // Bottom right
-  }
-  if (total === 5) {
-    if (index === 0) return "col-span-2 md:col-span-2 row-span-2 aspect-video md:aspect-[4/5]"; 
-    if (index === 1) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+    if (index === 0) return "col-span-2 md:col-span-2 row-span-2 aspect-[4/5] md:aspect-auto min-h-[300px] md:min-h-[400px]";
+    if (index === 1) return "col-span-2 md:col-span-2 row-span-1 aspect-square md:aspect-[16/9]";
     if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
-    if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-square";
-    if (index === 4) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
+    if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
   }
-  return "col-span-1 md:col-span-1 row-span-1 aspect-square";
+  return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-[3/4]";
 };
 
 export default function TrendingMosaic({ collections }: { collections: Collection[] }) {
@@ -68,7 +56,7 @@ export default function TrendingMosaic({ collections }: { collections: Collectio
         </div>
 
         {/* Bento Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense gap-2 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense gap-3 md:gap-6">
           {collections.map((col, index) => (
             <Link
               key={col.id}

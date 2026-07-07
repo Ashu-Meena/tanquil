@@ -291,7 +291,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col gap-4 mb-10" ref={addToCartRef}>
+              <div className="flex flex-col gap-4 mb-10 sticky bottom-[64px] z-[45] bg-white py-4 md:static md:p-0 border-t border-[#EFEFEF] md:border-none" ref={addToCartRef}>
                 <button 
                   onClick={handleAddToCart}
                   className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors"

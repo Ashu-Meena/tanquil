@@ -283,7 +283,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
               <div className="mt-16 border-t border-[#EFEFEF] pt-10 flex justify-center">
                 <button
                   onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
-                  className="border border-[#111111] px-10 py-4 uppercase tracking-widest text-sm font-medium hover:bg-[#111111] hover:text-white transition-colors duration-300"
+                  className="w-full md:w-auto border border-[#111111] px-10 py-4 uppercase tracking-widest text-sm font-medium hover:bg-[#111111] hover:text-white transition-colors duration-300"
                 >
                   Load More ({sorted.length - visibleCount} remaining)
                 </button>
