@@ -320,13 +320,19 @@ export default function CheckoutPage() {
                     <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Contact Information</h2>
                     {isLoadingAuth ? (
                       <div className="flex justify-center p-4"><Loader2 className="w-6 h-6 animate-spin text-[#C7A17A]" /></div>
-                    ) : isLoggedIn && userProfile ? (
+                    ) : isLoggedIn ? (
                       <div className="bg-white border border-[#EFEFEF] p-6 flex justify-between items-center rounded-sm">
                         <div>
-                          <p className="text-sm font-medium text-[#111111] mb-1">{userProfile.first_name} {userProfile.last_name}</p>
-                          <p className="text-sm text-[#666666]">{userProfile.email}</p>
+                          <p className="text-sm font-medium text-[#111111] mb-1">
+                            {userProfile?.first_name ? `${userProfile.first_name} ${userProfile?.last_name || ''}`.trim() : "My Account"}
+                          </p>
+                          <p className="text-sm text-[#666666]">{email}</p>
                         </div>
-                        <button className="text-xs uppercase tracking-widest text-[#C7A17A] font-medium hover:underline" onClick={() => setIsLoggedIn(false)}>Log Out</button>
+                        <button className="text-xs uppercase tracking-widest text-[#C7A17A] font-medium hover:underline" onClick={async () => {
+                          await supabase.auth.signOut();
+                          setIsLoggedIn(false);
+                          setUserProfile(null);
+                        }}>Log Out</button>
                       </div>
                     ) : (
                       <>
