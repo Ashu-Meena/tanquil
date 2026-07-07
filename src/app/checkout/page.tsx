@@ -187,22 +187,38 @@ export default function CheckoutPage() {
           };
         }
 
-        const { error } = await supabase.from('orders').insert({
+        // 1. Generate Order Number
+        const orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+
+        // 2. Insert Order
+        const { data: newOrder, error } = await supabase.from('orders').insert({
+          order_number: orderNumber,
           customer_name: isLoggedIn && userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() || email : `${firstName} ${lastName}`.trim() || email,
           customer_email: isLoggedIn && userProfile ? userProfile.email : email,
           customer_phone: isLoggedIn && userProfile ? userProfile.phone : phone,
           shipping_address: shippingAddr,
-          items: cartItems,
           subtotal,
           shipping_fee: shipping,
-          total,
+          total_amount: total,
           payment_method: paymentMethod,
           transaction_id: transactionId,
           screenshot_url: screenshotUrl,
-          status: 'pending_verification'
-        });
+          status: 'pending'
+        }).select().single();
 
         if (error) throw error;
+        
+        // 3. Insert Order Items
+        const orderItems = cartItems.map(item => ({
+          order_id: newOrder.id,
+          product_id: item.id,
+          product_name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        }));
+
+        const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
+        if (itemsError) throw itemsError;
         
         // Send Order Confirmation Email
         const orderEmail = isLoggedIn && userProfile ? userProfile.email : email;
