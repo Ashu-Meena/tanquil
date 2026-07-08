@@ -477,7 +477,7 @@ export default function AccountPage() {
                               </div>
                               <div>
                                 <p className="text-xs uppercase tracking-widest text-[#666666] mb-1">Total</p>
-                                <p className="text-sm font-medium text-[#111111]">₹{order.total?.toLocaleString('en-IN')}</p>
+                                <p className="text-sm font-medium text-[#111111]">₹{order.total_amount?.toLocaleString('en-IN')}</p>
                               </div>
                             </div>
                             <div className="text-right">
@@ -531,8 +531,8 @@ export default function AccountPage() {
                             {order.items?.map((item: any, idx: number) => (
                               <div key={idx} className="flex flex-col sm:flex-row gap-6">
                                 <div className="relative w-24 h-32 bg-[#FAF8F5] flex-shrink-0">
-                                  {item.image ? (
-                                    <Image src={item.image} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
+                                  {item.image_url || item.image ? (
+                                    <Image src={item.image_url || item.image} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center text-[#999999] text-xs uppercase tracking-widest text-center px-2">No Image</div>
                                   )}
