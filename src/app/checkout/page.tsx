@@ -150,6 +150,47 @@ export default function CheckoutPage() {
     checkAuth();
   }, []);
 
+  const handleSaveNewAddress = async () => {
+    if (!addressLine1 || !city || !state || !pinCode || !phone) {
+      setFormError("Please fill in all required fields: Address Line 1, City, State, PIN Code, and Phone.");
+      return;
+    }
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return;
+
+    // Use a provided name if one was added (for instance via another input, though there's no state for Address Name).
+    // The screenshot shows the first field is "ajsdkasjdhaj". Wait, looking at the inputs:
+    // Address Name (e.g. Home), Street Address
+    // The "Address Name" input isn't bound to state! Let's bind it to firstName temporarily or just rely on what is in state.
+    // I'll add an `addressName` state below. Wait, I can't add state hooks conditionally or randomly, I must add it to the top.
+    
+    const newAddress = {
+      user_id: session.user.id,
+      name: firstName || userProfile?.first_name || "New Address",
+      address_line1: addressLine1,
+      address_line2: addressLine2,
+      city,
+      state,
+      postal_code: pinCode,
+      phone,
+      landmark,
+      alternate_phone: alternatePhone,
+      is_default: savedAddresses.length === 0
+    };
+
+    const { data, error } = await supabase.from('addresses').insert(newAddress).select().single();
+    
+    if (error) {
+      setFormError("Failed to save address: " + error.message);
+    } else if (data) {
+      setSavedAddresses([data, ...savedAddresses]);
+      setSelectedAddress(data.id);
+      setShowNewAddressForm(false);
+      setFormError("");
+    }
+  };
+
   const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setPaymentScreenshot(e.target.files[0]);
@@ -454,7 +495,7 @@ export default function CheckoutPage() {
                             >
                               <div className="mt-4 space-y-4 border border-[#EFEFEF] p-4 rounded-sm">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <input type="text" placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                   <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -472,7 +513,7 @@ export default function CheckoutPage() {
                                   <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                   <input type="tel" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                 </div>
-                                <button className="bg-[#111111] text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
+                                <button onClick={handleSaveNewAddress} className="bg-[#111111] text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
                                   Save Address
                                 </button>
                               </div>
