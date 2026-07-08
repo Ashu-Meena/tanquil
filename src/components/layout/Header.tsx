@@ -115,10 +115,10 @@ export default function Header() {
 
           {/* Right: Actions */}
           <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6">
-            <button onClick={openSearch} aria-label="Search" className="hover:text-[#CDAA5D] transition-colors hidden lg:block">
+            <button onClick={openSearch} aria-label="Search" className="hover:text-[#CDAA5D] transition-colors block">
               <Search className="w-5 h-5" />
             </button>
-            <Link href="/account/wishlist" aria-label="Wishlist" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
+            <Link href="/account?tab=wishlist" aria-label="Wishlist" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
               <Heart className="w-5 h-5" />
             </Link>
             <Link href="/account" aria-label="Account" className="hover:text-[#CDAA5D] transition-colors hidden sm:block">
@@ -164,16 +164,28 @@ export default function Header() {
               </div>
               <div className="flex-1 overflow-y-auto">
                 <nav className="flex flex-col p-8 gap-8 mt-4">
-                  <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-3xl hover:translate-x-2 transition-transform">All Clothing</Link>
-                  {categories.map((cat) => (
-                    <Link 
-                      key={cat.id} 
-                      href={`/collections/${cat.slug}`} 
-                      onClick={() => setIsMobileMenuOpen(false)} 
-                      className="font-serif text-3xl hover:translate-x-2 transition-transform"
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1, duration: 0.4 }}
+                  >
+                    <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-2xl tracking-wide hover:text-[#C7A17A] transition-colors inline-block">All Clothing</Link>
+                  </motion.div>
+                  {categories.map((cat, i) => (
+                    <motion.div
+                      key={cat.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.15 + (i * 0.05), duration: 0.4 }}
                     >
-                      {cat.name}
-                    </Link>
+                      <Link 
+                        href={`/collections/${cat.slug}`} 
+                        onClick={() => setIsMobileMenuOpen(false)} 
+                        className="font-serif text-2xl tracking-wide hover:text-[#C7A17A] transition-colors inline-block"
+                      >
+                        {cat.name}
+                      </Link>
+                    </motion.div>
                   ))}
                 </nav>
               </div>
@@ -184,7 +196,7 @@ export default function Header() {
                     Account
                   </Link>
                 </div>
-                <Link href="/account/wishlist" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                <Link href="/account?tab=wishlist" className="flex items-center gap-3 text-sm tracking-widest uppercase text-[#666666] hover:text-[#111111] transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
                   <Heart className="w-5 h-5" />
                   Wishlist
                 </Link>

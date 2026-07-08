@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import MagneticButton from "../ui/MagneticButton";
@@ -15,6 +15,12 @@ interface Slide {
 
 export default function HeroSection({ slides }: { slides: Slide[] }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   useEffect(() => {
     if (!slides || slides.length === 0) return;
@@ -27,7 +33,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
   if (!slides || slides.length === 0) return null;
 
   return (
-    <section className="relative w-full h-[100dvh] lg:h-[100vh] overflow-hidden bg-[#111111]">
+    <section ref={containerRef} className="relative w-full h-[100dvh] lg:h-[100vh] overflow-hidden bg-[#111111]">
       <AnimatePresence initial={false}>
         <motion.div
           key={currentSlide}
@@ -43,6 +49,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
             initial={{ scale: 1.1 }}
             animate={{ scale: 1 }}
             transition={{ duration: 6, ease: "linear" }}
+            style={{ y }}
           >
             <Image
               src={slides[currentSlide].image_url}

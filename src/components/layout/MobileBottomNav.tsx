@@ -3,16 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, Heart, User, ShoppingBag } from "lucide-react";
+import { Home, LayoutGrid, Heart, User, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
-import { useSearchStore } from "@/store/useSearchStore";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const cartItems = useCartStore((state) => state.items);
   const openCart = useCartStore((state) => state.openCart);
-  const openSearch = useSearchStore((state) => state.openSearch);
 
   useEffect(() => {
     setMounted(true);
@@ -24,8 +22,8 @@ export default function MobileBottomNav() {
 
   const navItems = [
     { name: "Home", href: "/", icon: Home },
-    { name: "Search", action: openSearch, icon: Search },
-    { name: "Wishlist", href: "/account/wishlist", icon: Heart },
+    { name: "Shop", href: "/collections/all", icon: LayoutGrid },
+
     { name: "Cart", action: openCart, icon: ShoppingBag, badge: totalItems },
     { name: "Profile", href: "/account", icon: User },
   ];

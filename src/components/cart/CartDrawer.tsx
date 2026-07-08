@@ -132,76 +132,75 @@ export default function CartDrawer() {
             className="fixed top-0 right-0 h-full w-full sm:w-[450px] bg-white z-[80] shadow-2xl flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#EFEFEF]">
-              <h2 className="font-serif text-xl sm:text-2xl tracking-wide">Your Cart {mounted ? `(${totalItemsCount})` : ''}</h2>
-              <button onClick={closeCart} className="hover:rotate-90 transition-transform p-2 -mr-2">
-                <X className="w-6 h-6" />
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-[#EFEFEF]">
+              <div className="w-6" /> {/* Spacer for centering */}
+              <h2 className="font-serif text-2xl tracking-widest text-[#111111] uppercase">Your Cart {mounted && totalItemsCount > 0 ? `(${totalItemsCount})` : ''}</h2>
+              <button onClick={closeCart} className="hover:rotate-90 transition-transform text-[#111111]">
+                <X className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
 
             {/* Free Shipping Progress */}
-            <div className="p-4 sm:p-6 bg-[#FAF8F5] border-b border-[#EFEFEF]">
+            <div className="px-6 py-4 bg-white border-b border-[#EFEFEF]">
               {remaining > 0 ? (
-                <p className="text-sm text-center mb-3 text-[#111111]">
-                  You&apos;re <span className="font-bold text-[#C7A17A]">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
+                <p className="text-xs text-center mb-3 text-[#666666] tracking-wide uppercase">
+                  You're <span className="font-bold text-[#111111]">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
                 </p>
               ) : (
-                <p className="text-sm text-center mb-3 text-[#2F855A] font-medium">
-                  You&apos;ve unlocked Free Shipping! 🎉
+                <p className="text-xs text-center mb-3 text-[#C7A17A] tracking-widest uppercase font-medium">
+                  You've unlocked Free Shipping
                 </p>
               )}
-              <div className="w-full h-1.5 bg-[#EFEFEF] rounded-full overflow-hidden">
+              <div className="w-full h-[2px] bg-[#F5F5F5] rounded-full overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className={`h-full ${progress === 100 ? 'bg-[#2F855A]' : 'bg-[#C7A17A]'}`}
+                  className={`h-full ${progress === 100 ? 'bg-[#C7A17A]' : 'bg-[#111111]'}`}
                 />
               </div>
             </div>
 
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8 bg-[#FAF8F5]">
               {!mounted ? null : cartItems.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-                  <p className="text-[#666666]">Your cart is currently empty.</p>
-                  <button onClick={closeCart} className="bg-[#111111] text-white px-6 py-3 text-sm uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
+                <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
+                  <p className="text-[#666666] font-serif italic text-lg">Your cart is currently empty.</p>
+                  <button onClick={closeCart} className="bg-[#111111] text-white px-8 py-3.5 text-xs uppercase tracking-[0.2em] hover:bg-[#C7A17A] transition-colors">
                     Continue Shopping
                   </button>
                 </div>
               ) : (
                 cartItems.map((item) => (
-                  <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4 group">
-                    <div className="relative w-24 h-32 bg-[#FAF8F5] overflow-hidden flex-shrink-0">
+                  <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-5 group items-center">
+                    <div className="relative w-24 md:w-28 aspect-[3/4] bg-[#F5F5F5] overflow-hidden flex-shrink-0">
                       <Image 
                         src={item.image} 
                         alt={item.name} 
                         fill 
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
                     </div>
-                    <div className="flex flex-col flex-1 py-1 justify-between">
+                    <div className="flex flex-col flex-1 py-1 h-full justify-between">
                       <div>
-                        <div className="flex justify-between items-start gap-2 mb-1">
-                          <Link href={`/products/${item.id}`} onClick={closeCart} className="font-medium hover:text-[#C7A17A] transition-colors line-clamp-2">
-                            {item.name}
-                          </Link>
-                          <p className="font-medium whitespace-nowrap">₹{item.price.toLocaleString('en-IN')}</p>
-                        </div>
-                        <p className="text-sm text-[#666666] mb-2">{item.color} / {item.size}</p>
+                        <Link href={`/products/${item.id}`} onClick={closeCart} className="font-serif text-lg hover:text-[#C7A17A] transition-colors line-clamp-2 leading-snug mb-1">
+                          {item.name}
+                        </Link>
+                        <p className="font-medium text-[#111111] text-sm mb-2" style={{ fontFamily: 'var(--font-montserrat)' }}>₹{item.price.toLocaleString('en-IN')}</p>
+                        <p className="text-xs text-[#666666] tracking-widest uppercase mb-4">{item.color} / {item.size}</p>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center border border-[#EFEFEF]">
-                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity - 1)} className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">-</button>
-                          <span className="px-3 py-1 text-sm">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} className="px-3 py-1 hover:bg-[#FAF8F5] transition-colors">+</button>
+                      
+                      <div className="flex items-center justify-between mt-auto">
+                        <div className="flex items-center border border-[#EFEFEF] bg-white rounded-sm">
+                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity - 1)} className="px-3 py-1 text-[#666666] hover:text-[#111111] transition-colors">-</button>
+                          <span className="px-3 py-1 text-xs text-[#111111]">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} className="px-3 py-1 text-[#666666] hover:text-[#111111] transition-colors">+</button>
                         </div>
                         <button
                           onClick={() => removeItem(item.id, item.color, item.size)}
-                          className="text-[#999999] hover:text-[#E63946] transition-colors p-1"
-                          title="Remove item"
+                          className="text-[#999999] hover:text-[#E63946] transition-colors text-[10px] uppercase tracking-widest border-b border-transparent hover:border-[#E63946] pb-0.5"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          Remove
                         </button>
                       </div>
                     </div>
@@ -211,56 +210,56 @@ export default function CartDrawer() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#EFEFEF] p-4 sm:p-6 bg-white">
+            <div className="p-6 bg-white shadow-[0_-10px_30px_rgba(0,0,0,0.03)] z-10">
               {/* Discount Code */}
-              <div className="mb-6 border-b border-[#EFEFEF] pb-6">
-                <div className="flex gap-2">
+              <div className="mb-6 pb-6">
+                <div className="flex items-end gap-4 border-b border-[#EFEFEF] focus-within:border-[#111111] transition-colors pb-1 group">
                   <input 
                     type="text" 
-                    placeholder="Discount code"
+                    placeholder="Enter Discount Code"
                     value={discountCode}
                     onChange={e => setDiscountCode(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && handleApplyDiscount()}
-                    className="flex-1 border border-[#EFEFEF] px-4 py-2 text-sm focus:outline-none focus:border-[#C7A17A] uppercase"
+                    className="flex-1 bg-transparent px-0 py-1 text-xs uppercase tracking-widest focus:outline-none text-[#111111] placeholder:text-[#999999]"
                   />
                   <button
                     onClick={handleApplyDiscount}
-                    className="bg-[#111111] text-white px-4 py-2 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors"
+                    className="text-[#111111] text-[10px] uppercase tracking-[0.2em] font-medium hover:text-[#C7A17A] transition-colors pb-1"
                   >
                     Apply
                   </button>
                 </div>
                 {discountMessage && (
-                  <p className={`text-xs mt-2 ${discountMessage.type === "error" ? "text-[#E63946]" : "text-[#2F855A]"}`}>
+                  <p className={`text-[10px] uppercase tracking-widest mt-2 ${discountMessage.type === "error" ? "text-[#E63946]" : "text-[#C7A17A]"}`}>
                     {discountMessage.text}
                   </p>
                 )}
               </div>
 
               {activeCoupon && discountAmount > 0 && (
-                <div className="flex justify-between items-center mb-2 text-[#2F855A]">
-                  <span className="font-serif text-lg tracking-wide">Discount</span>
-                  <span className="font-serif text-lg tracking-wide" style={{ fontFamily: 'var(--font-montserrat)' }}>
+                <div className="flex justify-between items-center mb-3 text-[#C7A17A]">
+                  <span className="text-xs uppercase tracking-widest">Discount</span>
+                  <span className="font-medium text-sm" style={{ fontFamily: 'var(--font-montserrat)' }}>
                     -₹{discountAmount.toLocaleString('en-IN')}
                   </span>
                 </div>
               )}
               <div className="flex justify-between items-center mb-6">
-                <span className="font-serif text-xl tracking-wide">Total</span>
-                <span className="font-serif text-xl tracking-wide" style={{ fontFamily: 'var(--font-montserrat)' }}>
+                <span className="font-serif text-2xl tracking-widest uppercase">Total</span>
+                <span className="font-medium text-xl" style={{ fontFamily: 'var(--font-montserrat)' }}>
                   ₹{totalAfterDiscount.toLocaleString('en-IN')}
                 </span>
               </div>
-              <p className="text-xs text-[#666666] mb-6 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-[#999999] mb-6 text-center">
                 Taxes and shipping calculated at checkout
               </p>
               <button 
                 onClick={handleCheckout}
                 disabled={cartItems.length === 0}
-                className={`w-full py-4 uppercase tracking-widest text-sm font-medium transition-colors flex items-center justify-center gap-2 group ${cartItems.length === 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#111111] hover:bg-[#C7A17A] text-white'}`}
+                className={`w-full py-5 uppercase tracking-[0.2em] text-xs transition-all duration-300 flex items-center justify-center gap-3 group ${cartItems.length === 0 ? 'bg-[#F5F5F5] text-[#999999] cursor-not-allowed' : 'bg-[#111111] hover:bg-[#C7A17A] text-white shadow-md hover:shadow-lg'}`}
               >
                 Proceed to Checkout
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
               </button>
             </div>
           </motion.div>
