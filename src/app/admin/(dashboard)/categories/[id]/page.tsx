@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Save, Image as ImageIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ImageUploader from "@/components/admin/ImageUploader";
+import { toast } from "@/store/useToastStore";
 
 export default function EditCategoryPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
           display_order: data.display_order || 0
         });
       } else {
-        alert("Category not found");
+        toast.error("Category not found");
         router.push("/admin/categories");
       }
       setFetching(false);
@@ -59,7 +60,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
       router.push("/admin/categories");
     } catch (error: any) {
       console.error("Error updating category:", error);
-      alert("Failed to update category: " + error.message);
+      toast.error("Failed to update category: " + error.message);
     } finally {
       setSaving(false);
     }

@@ -59,7 +59,7 @@ export function AdminSidebar() {
       )}
 
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#EFEFEF] flex-col transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-screen md:flex md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#EFEFEF] flex-col transition-transform duration-300 ease-in-out md:flex md:translate-x-0 ${
           isMobileSidebarOpen ? "translate-x-0 flex" : "-translate-x-full hidden"
         }`}
       >

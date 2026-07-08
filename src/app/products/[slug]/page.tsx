@@ -33,7 +33,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .select(`
       *,
       category:categories(name),
-      product_images(url),
+      product_images(url, color_name),
       product_variants(color_name, color_hex, size, stock_quantity)
     `)
     .eq("slug", slug)
@@ -55,9 +55,17 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .limit(4);
 
   // 3. Format product for Client Component
-  const images = productData.product_images?.map((img: any) => img.url) || [];
+  const colorImages: Record<string, string[]> = {};
+  const images = productData.product_images?.map((img: any) => {
+    const color = img.color_name || "Default";
+    if (!colorImages[color]) colorImages[color] = [];
+    colorImages[color].push(img.url);
+    return img.url;
+  }) || [];
+  
   if (images.length === 0) {
     images.push("https://images.unsplash.com/photo-1595777457583-95e059d581b8?q=80&w=1200"); // Fallback
+    colorImages["Default"] = [...images];
   }
 
   // Extract unique colors
@@ -81,15 +89,17 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     id: productData.id,
     name: productData.name,
     price: productData.price,
+    compare_at_price: productData.compare_at_price || null,
     category: productData.category?.name || "Clothing",
     description: productData.description || "",
+    brand: productData.brand || null,
+    tags: productData.tags || [],
+    fabric: productData.fabric || null,
     images,
+    colorImages,
     colors,
     sizes,
-    details: [
-      productData.fabric ? `Fabric: ${productData.fabric}` : "Premium Fabric",
-      "Dry clean only"
-    ]
+    variants: productData.product_variants || [],
   };
 
   const formattedRelated = relatedData?.map(rp => ({

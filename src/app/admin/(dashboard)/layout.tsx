@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AntiInspect } from "@/components/admin/AntiInspect";
 import { Metadata } from "next";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
@@ -28,8 +29,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">
+      <AntiInspect />
       <AdminSidebar />
-      <div className="flex-1 flex flex-col min-h-screen max-w-full overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-screen overflow-hidden md:pl-64 w-full">
         <AdminHeader />
         <main className="flex-1 p-6 md:p-8 overflow-y-auto">
           {children}

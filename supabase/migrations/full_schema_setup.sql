@@ -101,6 +101,7 @@ CREATE TABLE IF NOT EXISTS product_images (
     product_id UUID REFERENCES products(id) ON DELETE CASCADE,
     url TEXT NOT NULL,
     alt_text VARCHAR(255),
+    color_name VARCHAR(50), -- links image to a specific variant color
     display_order INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );

@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { IndianRupee, ShoppingBag, TrendingUp, Users, ArrowUpRight, ArrowDownRight, Package } from "lucide-react";
 import Link from "next/link";
+import { toast } from "@/store/useToastStore";
 
 export default function AdminDashboard() {
   const supabase = createClient();
@@ -28,8 +29,8 @@ export default function AdminDashboard() {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { error } = await supabase.from('profiles').update({ is_admin: true, role: 'super_admin' }).eq('id', user.id);
-      if (error) alert(error.message);
-      else alert('You are now an Admin! Please reload the page.');
+      if (error) toast.error(error.message);
+      else toast.info('You are now an Admin! Please reload the page.');
     }
   };
 

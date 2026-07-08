@@ -5,6 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Filter } from "lucide-react";
 import Image from "next/image";
+import { toast } from "@/store/useToastStore";
 
 export default function ProductsPage() {
   const supabase = createClient();
@@ -25,10 +26,25 @@ export default function ProductsPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("products")
-      .select("*, categories(name)")
+      .select("*, categories(name), product_images(url), product_variants(stock_quantity)")
       .order("created_at", { ascending: false });
     
-    if (data) setProducts(data);
+    if (data) {
+      const formattedData = data.map(product => {
+        // Map images to the expected format
+        const images = product.product_images?.map((img: any) => img.url) || [];
+        
+        // Sum up total stock from all variants
+        const totalStock = product.product_variants?.reduce((sum: number, variant: any) => sum + (variant.stock_quantity || 0), 0) || 0;
+        
+        return {
+          ...product,
+          images,
+          stock_quantity: totalStock
+        };
+      });
+      setProducts(formattedData);
+    }
     setLoading(false);
   };
 
@@ -66,7 +82,27 @@ export default function ProductsPage() {
     setSelectedProducts([]);
     setBulkStatus("");
     setUpdating(false);
-    alert("Products updated successfully!");
+    toast.success("Products updated successfully!");
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    // Optimistic UI update
+    const previousProducts = [...products];
+    setProducts(products.filter(p => p.id !== id));
+    
+    const { error } = await supabase.from('products').delete().eq('id', id);
+    
+    if (error) {
+      // Revert if error
+      setProducts(previousProducts);
+      toast.error(`Failed to delete product: ${error.message}`);
+    } else {
+      toast.success("Product deleted successfully");
+    }
   };
 
   return (
@@ -187,7 +223,11 @@ export default function ProductsPage() {
                         <Link href={`/admin/products/${product.id}`} className="p-2 text-[#666666] hover:text-[#C7A17A] transition-colors rounded-sm hover:bg-[#FAF8F5]">
                           <Edit className="w-4 h-4" />
                         </Link>
-                        <button className="p-2 text-[#666666] hover:text-[#E63946] transition-colors rounded-sm hover:bg-red-50">
+                        <button 
+                          onClick={() => handleDelete(product.id, product.name)}
+                          className="p-2 text-[#666666] hover:text-[#E63946] transition-colors rounded-sm hover:bg-red-50"
+                          title="Delete Product"
+                        >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>

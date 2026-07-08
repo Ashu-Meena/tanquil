@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Save, Layout, Type, Link as LinkIcon } from "lucide-react";
 import ImageUploader from "@/components/admin/ImageUploader";
+import { toast } from "@/store/useToastStore";
 
 interface HomepageSection {
   id?: string;
@@ -144,35 +145,35 @@ export default function HomepageManager() {
       }
     }
     setSaving(false);
-    alert('Saved successfully!');
+    toast.success('Saved successfully!');
   };
 
   const saveTrendingMosaic = async () => {
     setSaving(true);
     await saveArray(trendingData);
     setSaving(false);
-    alert('Trending Mosaic saved successfully!');
+    toast.success('Trending Mosaic saved successfully!');
   };
 
   const saveEditorial = async () => {
     setSaving(true);
     await saveArray(editorialData);
     setSaving(false);
-    alert('Editorial Stories saved successfully!');
+    toast.success('Editorial Stories saved successfully!');
   };
 
   const saveTestimonials = async () => {
     setSaving(true);
     await saveArray(testimonialData);
     setSaving(false);
-    alert('Testimonials saved successfully!');
+    toast.success('Testimonials saved successfully!');
   };
 
   const saveInstagram = async () => {
     setSaving(true);
     await saveArray(instagramData);
     setSaving(false);
-    alert('Instagram Feed saved successfully!');
+    toast.success('Instagram Feed saved successfully!');
   };
 
   const saveArray = async (items: HomepageSection[]) => {
@@ -183,7 +184,7 @@ export default function HomepageManager() {
         const { data, error } = await supabase.from('homepage_sections').insert([item]).select().single();
         if (error) {
           console.error("Save error:", error);
-          alert("Error saving section: " + error.message);
+          toast.error("Error saving section: " + error.message);
         }
         if (data) {
           item.id = data.id;
@@ -212,7 +213,7 @@ export default function HomepageManager() {
               <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
               <input 
                 type="text" 
-                value={heroData.title}
+                value={heroData.title || ""}
                 onChange={e => setHeroData({...heroData, title: e.target.value})}
                 className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
               />
@@ -230,7 +231,7 @@ export default function HomepageManager() {
                 <label className="block text-sm font-medium text-[#111111] mb-2">Button Text</label>
                 <input 
                   type="text" 
-                  value={heroData.button_text}
+                  value={heroData.button_text || ""}
                   onChange={e => setHeroData({...heroData, button_text: e.target.value})}
                   className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
                 />
@@ -239,7 +240,7 @@ export default function HomepageManager() {
                 <label className="block text-sm font-medium text-[#111111] mb-2">Button Link</label>
                 <input 
                   type="text" 
-                  value={heroData.button_link}
+                  value={heroData.button_link || ""}
                   onChange={e => setHeroData({...heroData, button_link: e.target.value})}
                   className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
                 />

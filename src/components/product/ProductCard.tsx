@@ -3,8 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Eye, ShoppingBag } from "lucide-react";
-import { useCartStore } from "@/store/useCartStore";
+import { Heart, Eye } from "lucide-react";
 import { useWishlistStore } from "@/store/useWishlistStore";
 
 interface CardProduct {
@@ -19,31 +18,8 @@ interface CardProduct {
 
 export default function ProductCard({ product }: { product: CardProduct }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [selectedSize, setSelectedSize] = useState("");
-  const [sizeError, setSizeError] = useState(false);
   
-  const { addItem, openCart } = useCartStore();
   const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
-
-  const sizes = ["XS", "S", "M", "L", "XL"];
-
-  const handleAddToCart = () => {
-    if (!selectedSize) {
-      setSizeError(true);
-      setTimeout(() => setSizeError(false), 1500);
-      return;
-    }
-    addItem({
-      id: String(product.id),
-      name: product.name,
-      price: product.price,
-      image: product.images[0],
-      color: "Default",
-      size: selectedSize,
-      quantity: 1,
-    });
-    openCart();
-  };
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -110,33 +86,11 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         {/* Hover Actions Panel (Desktop Only) */}
         <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
           <div className="bg-white/95 backdrop-blur-md p-3 rounded-sm shadow-xl">
-            <div className="flex justify-between items-center mb-3">
-              <span className={`text-[10px] uppercase tracking-widest ${sizeError ? 'text-[#E63946] font-medium' : 'text-[#666666]'}`}>
-                {sizeError ? 'Please select a size' : 'Select Size'}
-              </span>
-            </div>
-            <div className="flex justify-between gap-1 mb-3">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => { setSelectedSize(size); setSizeError(false); }}
-                  className={`flex-1 py-1.5 text-[10px] uppercase tracking-widest border transition-colors ${
-                    selectedSize === size 
-                      ? 'border-[#111111] bg-[#111111] text-white' 
-                      : sizeError
-                        ? 'border-[#E63946] text-[#E63946]'
-                        : 'border-[#EFEFEF] hover:border-[#111111]'
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
             <button
-              onClick={handleAddToCart}
-              className="w-full bg-[#C7A17A] hover:bg-[#111111] text-white py-2 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
+              onClick={handleQuickView}
+              className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
             >
-              <ShoppingBag className="w-4 h-4" /> Add to Cart
+              Select Options
             </button>
           </div>
         </div>
@@ -165,7 +119,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           href={`/products/${product.slug || product.id}`}
           className="mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors block text-center md:hidden"
         >
-          View Options
+          Select Options
         </Link>
       </div>
     </div>

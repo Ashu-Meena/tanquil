@@ -8,6 +8,16 @@ import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
 
+const INDIAN_STATES = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
+  "Bihar", "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir",
+  "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh",
+  "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+  "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+];
+
 export default function AccountPage() {
   const [activeTab, setActiveTab] = useState("home");
   const [feedbackMessage, setFeedbackMessage] = useState("");
@@ -44,7 +54,7 @@ export default function AccountPage() {
   // Address form state
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [addressForm, setAddressForm] = useState({
-    name: "", address_line1: "", address_line2: "", city: "", state: "", postal_code: "", country: "", phone: ""
+    name: "", address_line1: "", address_line2: "", city: "", state: "", postal_code: "", country: "", phone: "", landmark: "", alternate_phone: ""
   });
   const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
 
@@ -70,7 +80,7 @@ export default function AccountPage() {
       }
 
       // Fetch orders
-      const { data: userOrders } = await supabase.from('orders').select('*').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
+      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*)').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
       if (userOrders) {
         setOrders(userOrders);
       }
@@ -156,7 +166,7 @@ export default function AccountPage() {
     } else {
       setAddresses([data, ...addresses]);
       setShowAddressForm(false);
-      setAddressForm({ name: "", address_line1: "", address_line2: "", city: "", state: "", postal_code: "", country: "", phone: "" });
+      setAddressForm({ name: "", address_line1: "", address_line2: "", city: "", state: "", postal_code: "", country: "", phone: "", landmark: "", alternate_phone: "" });
       showFeedback('Address saved successfully! ✓');
     }
     setIsSubmittingAddress(false);
@@ -455,8 +465,6 @@ export default function AccountPage() {
                     </div>
                   ) : (
                     orders.map(order => {
-                      const statuses = ["pending", "processing", "shipped", "delivered"];
-                      const currentStatusIndex = statuses.indexOf(order.status) !== -1 ? statuses.indexOf(order.status) : 0;
 
                       return (
                         <div key={order.id} className="border border-[#EFEFEF] rounded-sm overflow-hidden">
@@ -474,24 +482,48 @@ export default function AccountPage() {
                             </div>
                             <div className="text-right">
                               <p className="text-xs uppercase tracking-widest text-[#666666] mb-1">Order #</p>
-                              <p className="text-sm font-medium text-[#111111]">{order.id.split('-')[0].toUpperCase()}</p>
+                              <p className="text-sm font-medium text-[#111111]">{(order.order_number || order.id.split('-')[0]).toUpperCase()}</p>
                             </div>
                           </div>
 
-                          {/* Progress Bar */}
+                          {/* Progress Bar & Status Info */}
                           <div className="p-6 md:px-10 py-8 border-b border-[#EFEFEF]">
-                            <div className="relative">
-                              <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#EFEFEF]">
-                                <div style={{ width: `${(currentStatusIndex / (statuses.length - 1)) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#C7A17A] transition-all duration-500"></div>
+                            {['cancelled', 'returned', 'refunded'].includes(order.status) ? (
+                              <div className="text-center py-4">
+                                <p className={`font-bold uppercase tracking-widest text-lg ${
+                                  order.status === 'cancelled' ? 'text-red-600' : 
+                                  order.status === 'returned' ? 'text-gray-800' : 'text-orange-600'
+                                }`}>
+                                  Order {order.status}
+                                </p>
                               </div>
-                              <div className="flex justify-between text-xs font-medium uppercase tracking-widest text-[#666666]">
-                                {statuses.map((status, idx) => (
-                                  <div key={status} className={`text-center ${idx <= currentStatusIndex ? 'text-[#111111]' : ''}`}>
-                                    {status}
-                                  </div>
-                                ))}
+                            ) : (
+                              <div className="relative">
+                                <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#EFEFEF]">
+                                  <div style={{ width: `${(
+                                    order.status === 'pending_verification' ? 0 :
+                                    order.status === 'confirmed' || order.status === 'packed' ? 33.3 :
+                                    order.status === 'shipped' || order.status === 'out_for_delivery' ? 66.6 :
+                                    order.status === 'delivered' ? 100 : 0
+                                  )}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#C7A17A] transition-all duration-500"></div>
+                                </div>
+                                <div className="flex justify-between text-xs font-medium uppercase tracking-widest text-[#666666]">
+                                  {["Pending", "Confirmed", "Shipped", "Delivered"].map((status, idx) => {
+                                    const isActive = (
+                                      (idx === 0) || 
+                                      (idx === 1 && ['confirmed', 'packed', 'shipped', 'out_for_delivery', 'delivered'].includes(order.status)) ||
+                                      (idx === 2 && ['shipped', 'out_for_delivery', 'delivered'].includes(order.status)) ||
+                                      (idx === 3 && order.status === 'delivered')
+                                    );
+                                    return (
+                                      <div key={status} className={`text-center ${isActive ? 'text-[#111111] font-bold' : ''}`}>
+                                        {status}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </div>
                           
                           {/* Items */}
@@ -499,11 +531,15 @@ export default function AccountPage() {
                             {order.items?.map((item: any, idx: number) => (
                               <div key={idx} className="flex flex-col sm:flex-row gap-6">
                                 <div className="relative w-24 h-32 bg-[#FAF8F5] flex-shrink-0">
-                                  <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                  {item.image ? (
+                                    <Image src={item.image} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-[#999999] text-xs uppercase tracking-widest text-center px-2">No Image</div>
+                                  )}
                                 </div>
                                 <div className="flex-1 flex flex-col justify-center">
-                                  <h3 className="font-medium text-[#111111] text-lg mb-1">{item.name}</h3>
-                                  <p className="text-sm text-[#666666] mb-2">{item.color} / {item.size}</p>
+                                  <h3 className="font-medium text-[#111111] text-lg mb-1">{item.product_name || item.name}</h3>
+                                  <p className="text-sm text-[#666666] mb-2">{item.color_name || item.color} / {item.size}</p>
                                   <div className="flex items-center gap-4 text-sm">
                                     <span className="font-medium text-[#111111]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                                     <span className="text-[#999999]">|</span>
@@ -519,11 +555,20 @@ export default function AccountPage() {
                           </div>
 
                           {/* Footer Actions */}
-                          <div className="bg-[#FAF8F5] p-4 px-6 flex justify-between items-center border-t border-[#EFEFEF]">
-                            <button onClick={() => showFeedback('Tracking info coming soon! Check your email for updates.')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2">
-                              <Truck className="w-4 h-4" /> Track Package
-                            </button>
-                            <button onClick={() => showFeedback('To initiate a return, please contact us at returns@tranquil.co.in')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2">
+                          <div className="bg-[#FAF8F5] p-4 px-6 flex flex-col sm:flex-row justify-between items-center border-t border-[#EFEFEF] gap-4">
+                            {order.tracking_id ? (
+                              <div className="flex items-center gap-2">
+                                <Truck className="w-4 h-4 text-[#C7A17A]" />
+                                <span className="text-sm text-[#111111]">
+                                  Shipped via <span className="font-bold">{order.courier_name}</span> | Tracking ID: <span className="font-mono font-bold">{order.tracking_id}</span>
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="text-sm text-[#999999] flex items-center gap-2">
+                                <Truck className="w-4 h-4" /> Tracking info will appear here once shipped.
+                              </div>
+                            )}
+                            <button onClick={() => showFeedback('To initiate a return, please contact us at returns@tranquil.co.in')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
                               <RefreshCw className="w-4 h-4" /> Return Item
                             </button>
                           </div>
@@ -609,7 +654,10 @@ export default function AccountPage() {
                       </div>
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">State / Province</label>
-                        <input required type="text" value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <select required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] text-[#666]">
+                          <option value="" disabled>Select State</option>
+                          {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                        </select>
                       </div>
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Postal / Zip Code</label>
@@ -620,8 +668,16 @@ export default function AccountPage() {
                         <input required type="text" value={addressForm.country} onChange={e => setAddressForm({...addressForm, country: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
                       </div>
                       <div className="md:col-span-2">
+                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Landmark (Optional)</label>
+                        <input type="text" value={addressForm.landmark} onChange={e => setAddressForm({...addressForm, landmark: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                      </div>
+                      <div>
                         <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Phone Number</label>
-                        <input type="tel" value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <input required type="tel" value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                      </div>
+                      <div>
+                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Alternate Phone (Optional)</label>
+                        <input type="tel" value={addressForm.alternate_phone} onChange={e => setAddressForm({...addressForm, alternate_phone: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
                       </div>
                     </div>
                     <button disabled={isSubmittingAddress} type="submit" className="bg-[#111111] hover:bg-[#C7A17A] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors">
@@ -646,7 +702,9 @@ export default function AccountPage() {
                           {addr.address_line2 && <>{addr.address_line2}<br /></>}
                           {addr.city}, {addr.state} {addr.postal_code}<br />
                           {addr.country}<br />
-                          Phone: {addr.phone || userProfile?.phone || 'Not provided'}
+                          {addr.landmark && <>Landmark: {addr.landmark}<br /></>}
+                          Phone: {addr.phone || userProfile?.phone || 'Not provided'}<br />
+                          {addr.alternate_phone && <>Alternate Phone: {addr.alternate_phone}</>}
                         </p>
                         <div className="flex gap-4 pt-4 border-t border-[#EFEFEF]">
                           {!addr.is_default && (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,9 +22,15 @@ interface ProductDetails {
   category: string;
   description: string;
   images: string[];
+  colorImages?: Record<string, string[]>;
   colors: Color[];
   sizes: string[];
+  variants?: any[];
   details: string[];
+  brand?: string;
+  tags?: string[];
+  fabric?: string;
+  compare_at_price?: number;
 }
 
 interface ProductClientProps {
@@ -35,10 +41,51 @@ interface ProductClientProps {
 
 export default function ProductClient({ product, relatedProducts }: ProductClientProps) {
   const router = useRouter();
-  const [selectedImage, setSelectedImage] = useState(product.images[0]);
   const [selectedColor, setSelectedColor] = useState(product.colors && product.colors.length > 0 ? product.colors[0] : { name: "Default", hex: "#000000" });
-  const sizesList = product.sizes && product.sizes.length > 0 ? product.sizes : ["XS", "S", "M", "L", "XL", "XXL", "3XL", "Custom"];
-  const [selectedSize, setSelectedSize] = useState(sizesList[0] || "Custom");
+
+  const activeImages = useMemo(() => {
+    if (product.colorImages && product.colorImages[selectedColor.name] && product.colorImages[selectedColor.name].length > 0) {
+      return product.colorImages[selectedColor.name];
+    }
+    return product.images;
+  }, [selectedColor.name, product.colorImages, product.images]);
+
+  const [selectedImage, setSelectedImage] = useState(activeImages[0] || product.images[0]);
+
+  // Keep selected image in sync with color changes
+  useEffect(() => {
+    setSelectedImage(activeImages[0] || product.images[0]);
+  }, [activeImages, product.images]);
+  
+  const availableSizesForColor = useMemo(() => {
+    if (!product.variants || product.variants.length === 0) {
+      const fallback = product.sizes && product.sizes.length > 0 ? [...product.sizes] : ["XS", "S", "M", "L", "XL", "XXL", "3XL", "Custom"];
+      if (!fallback.includes("Custom")) fallback.push("Custom");
+      return fallback;
+    }
+    
+    const sizes = product.variants
+      .filter(v => v.color_name === selectedColor.name)
+      .map(v => v.size);
+      
+    if (!sizes.includes("Custom")) sizes.push("Custom");
+    
+    // Sort sizes logically if possible, or just return as is
+    return sizes;
+  }, [product.variants, product.sizes, selectedColor.name]);
+
+  const [selectedSize, setSelectedSize] = useState(availableSizesForColor[0] || "Custom");
+
+  useEffect(() => {
+    if (!availableSizesForColor.includes(selectedSize)) {
+      setSelectedSize(availableSizesForColor[0] || "Custom");
+    }
+  }, [selectedColor.name, availableSizesForColor, selectedSize]);
+
+  const handleColorSelect = (color: Color) => {
+    setSelectedColor(color);
+  };
+
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("details");
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
@@ -78,6 +125,35 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Calculate out of stock status based on selected size and color
+  const currentVariant = useMemo(() => {
+    if (!product.variants || product.variants.length === 0) return null;
+    return product.variants.find(
+      (v) => v.color_name === selectedColor.name && v.size === selectedSize
+    );
+  }, [product.variants, selectedColor.name, selectedSize]);
+
+  const isOutOfStock = (() => {
+    if (selectedSize === "Custom") return false; // Custom sizes are made-to-order
+    if (!product.variants || product.variants.length === 0) return false; // Fallback if no variants
+    return currentVariant ? currentVariant.stock_quantity <= 0 : false;
+  })();
+
+  const maxQuantity = (() => {
+    if (selectedSize === "Custom") return 99; // Arbitrary high number for custom
+    if (!product.variants || product.variants.length === 0) return 99;
+    return currentVariant ? currentVariant.stock_quantity : 0;
+  })();
+
+  // Sync quantity if it exceeds max available
+  useEffect(() => {
+    if (quantity > maxQuantity && maxQuantity > 0) {
+      setQuantity(maxQuantity);
+    } else if (quantity > maxQuantity && maxQuantity === 0) {
+      setQuantity(1); // Keep at 1 visually but disable buttons
+    }
+  }, [maxQuantity, quantity]);
 
   const getFinalSizeString = () => {
     if (selectedSize === "Custom") {
@@ -153,7 +229,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
             {/* Mobile Swipeable Gallery */}
             <div className="w-full md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-6 px-6 pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              {product.images.map((img, i) => (
+              {activeImages.map((img, i) => (
                 <div key={i} className="relative w-full aspect-[3/4] flex-shrink-0 snap-center bg-[#FAF8F5]">
                   <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" priority={i === 0} />
                 </div>
@@ -164,7 +240,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             <div className="hidden md:flex w-full lg:w-[60%] flex-col-reverse md:flex-row gap-4 lg:sticky lg:top-28 lg:h-[calc(100vh-120px)]">
               {/* Thumbnails */}
               <div className="flex md:flex-col gap-4 overflow-x-auto md:overflow-y-auto no-scrollbar md:w-24 flex-shrink-0">
-                {product.images.map((img, i) => (
+                {activeImages.map((img, i) => (
                   <button 
                     key={i} 
                     onClick={() => setSelectedImage(img)}
@@ -199,13 +275,18 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   <Share2 className="w-5 h-5" />
                 </button>
               </div>
+              <div className="text-xl text-[#111111] mb-8 flex items-center gap-3">
+                ₹{product.price.toLocaleString('en-IN')}
+                {product.compare_at_price && product.compare_at_price > product.price && (
+                  <>
+                    <span className="text-[#999999] line-through text-lg">₹{product.compare_at_price.toLocaleString('en-IN')}</span>
+                    <span className="bg-[#E63946] text-white text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-sm">Sale</span>
+                  </>
+                )}
+              </div>
               {shareCopied && (
                 <p className="text-xs text-[#2F855A] mb-2 -mt-2">Link copied to clipboard!</p>
               )}
-              
-              <p className="text-2xl text-[#111111] mb-8" style={{ fontFamily: 'var(--font-montserrat)' }}>
-                ₹{product.price.toLocaleString('en-IN')}
-              </p>
 
               {/* Colors */}
               {product.colors && product.colors.length > 0 && (
@@ -217,7 +298,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                     {product.colors.map(color => (
                       <button 
                         key={color.name}
-                        onClick={() => setSelectedColor(color)}
+                        onClick={() => handleColorSelect(color)}
                         className={`w-10 h-10 rounded-full border-2 transition-all ${selectedColor.name === color.name ? 'border-[#111111] p-[2px]' : 'border-transparent p-0'}`}
                       >
                         <span 
@@ -244,15 +325,35 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   </button>
                 </div>
                 <div className="grid grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-2">
-                  {sizesList.map(size => (
-                    <button 
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`py-3 text-[10px] uppercase tracking-widest border transition-colors ${selectedSize === size ? 'border-[#111111] bg-[#111111] text-white' : 'border-[#EFEFEF] hover:border-[#111111] text-[#111111]'}`}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                  {availableSizesForColor.map(size => {
+                    // Check stock for this specific size
+                    let isSizeOutOfStock = false;
+                    if (size !== "Custom" && product.variants && product.variants.length > 0) {
+                      const v = product.variants.find((v) => v.color_name === selectedColor.name && v.size === size);
+                      if (v && v.stock_quantity <= 0) isSizeOutOfStock = true;
+                    }
+
+                    return (
+                      <button 
+                        key={size}
+                        onClick={() => setSelectedSize(size)}
+                        className={`py-3 text-[10px] uppercase tracking-widest border transition-colors relative ${
+                          selectedSize === size 
+                            ? 'border-[#111111] bg-[#111111] text-white' 
+                            : isSizeOutOfStock 
+                              ? 'border-[#EFEFEF] text-[#CCCCCC] hover:border-[#CCCCCC]' 
+                              : 'border-[#EFEFEF] hover:border-[#111111] text-[#111111]'
+                        }`}
+                      >
+                        {size}
+                        {isSizeOutOfStock && (
+                          <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden pointer-events-none">
+                            <div className="w-[140%] h-[1px] bg-[#CCCCCC] transform -rotate-45 absolute"></div>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {selectedSize === "Custom" && (
@@ -284,9 +385,17 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               <div className="mb-8">
                 <p className="text-xs uppercase tracking-widest text-[#666666] mb-4">Quantity</p>
                 <div className="flex items-center border border-[#EFEFEF] w-32 h-12">
-                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="flex-1 hover:bg-[#FAF8F5] h-full transition-colors">-</button>
+                  <button 
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))} 
+                    className="flex-1 hover:bg-[#FAF8F5] h-full transition-colors disabled:opacity-50"
+                    disabled={isOutOfStock}
+                  >-</button>
                   <span className="flex-1 text-center font-medium">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="flex-1 hover:bg-[#FAF8F5] h-full transition-colors">+</button>
+                  <button 
+                    onClick={() => setQuantity(Math.min(maxQuantity, quantity + 1))} 
+                    className="flex-1 hover:bg-[#FAF8F5] h-full transition-colors disabled:opacity-50"
+                    disabled={isOutOfStock || quantity >= maxQuantity}
+                  >+</button>
                 </div>
               </div>
 
@@ -294,14 +403,24 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               <div className="flex flex-col gap-4 mb-10 sticky bottom-[64px] z-[45] bg-white py-4 md:static md:p-0 border-t border-[#EFEFEF] md:border-none" ref={addToCartRef}>
                 <button 
                   onClick={handleAddToCart}
-                  className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors"
+                  disabled={isOutOfStock}
+                  className={`w-full py-4 uppercase tracking-widest text-sm font-medium transition-colors ${
+                    isOutOfStock 
+                      ? 'bg-[#EFEFEF] text-[#999999] cursor-not-allowed' 
+                      : 'bg-[#111111] hover:bg-[#C7A17A] text-white'
+                  }`}
                 >
-                  Add To Cart
+                  {isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
                 </button>
                 <div className="flex gap-4">
                   <button
                     onClick={handleBuyNow}
-                    className="flex-1 border border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors"
+                    disabled={isOutOfStock}
+                    className={`flex-1 border py-4 uppercase tracking-widest text-sm font-medium transition-colors ${
+                      isOutOfStock 
+                        ? 'border-[#EFEFEF] text-[#999999] cursor-not-allowed' 
+                        : 'border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white'
+                    }`}
                   >
                     Buy It Now
                   </button>
@@ -365,7 +484,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   </button>
                   {activeTab === "details" && (
                     <ul className="pt-4 text-[#666666] text-sm space-y-2 list-disc pl-4">
-                      {product.details.map((detail, i) => (
+                      {product.brand && <li><strong>Brand:</strong> {product.brand}</li>}
+                      {product.fabric && <li><strong>Fabric:</strong> {product.fabric}</li>}
+                      {product.tags && product.tags.length > 0 && <li><strong>Tags:</strong> {product.tags.join(', ')}</li>}
+                      {!product.brand && !product.fabric && product.details.map((detail, i) => (
                         <li key={i}>{detail}</li>
                       ))}
                     </ul>

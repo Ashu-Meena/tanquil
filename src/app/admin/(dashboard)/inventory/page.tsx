@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Search, Save, AlertTriangle } from "lucide-react";
 import Image from "next/image";
 
@@ -10,6 +10,7 @@ export default function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
+  const supabase = createClient();
 
   useEffect(() => {
     fetchInventory();
@@ -21,7 +22,7 @@ export default function InventoryPage() {
       .from("product_variants")
       .select(`
         *,
-        products (name, images, status)
+        products (name, status, product_images(url))
       `)
       .order("stock_quantity", { ascending: true }); // Lowest stock first
       
@@ -101,8 +102,8 @@ export default function InventoryPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-16 bg-[#EFEFEF] relative rounded-sm overflow-hidden flex-shrink-0">
-                            {variant.products?.images && variant.products.images[0] ? (
-                              <Image src={variant.products.images[0]} alt={variant.products.name} fill className="object-cover" />
+                            {variant.products?.product_images && variant.products.product_images[0] ? (
+                              <Image src={variant.products.product_images[0].url} alt={variant.products.name} fill className="object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px]">No Img</div>
                             )}

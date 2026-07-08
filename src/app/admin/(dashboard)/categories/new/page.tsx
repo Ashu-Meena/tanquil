@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Save, Image as ImageIcon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import ImageUploader from "@/components/admin/ImageUploader";
+import { toast } from "@/store/useToastStore";
 
 export default function NewCategoryPage() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function NewCategoryPage() {
       router.push("/admin/categories");
     } catch (error) {
       console.error("Error saving category:", error);
-      alert("Failed to save category.");
+      toast.error("Failed to save category.");
     } finally {
       setSaving(false);
     }

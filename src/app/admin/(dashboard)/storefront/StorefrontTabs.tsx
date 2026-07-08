@@ -8,7 +8,6 @@ export default function StorefrontTabs() {
 
   const tabs = [
     { name: "Homepage CMS", href: "/admin/storefront/homepage" },
-    { name: "Custom Pages", href: "/admin/storefront/pages" },
   ];
 
   return (

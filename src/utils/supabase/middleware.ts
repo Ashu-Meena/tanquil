@@ -44,11 +44,13 @@ export async function updateSession(request: NextRequest) {
       // Check if user is actually an admin in the profiles table
       const { data: profile } = await supabase
         .from('profiles')
-        .select('is_admin')
+        .select('is_admin, role')
         .eq('id', user.id)
         .single()
       
-      if (!profile?.is_admin) {
+      const hasAccess = profile?.is_admin === true || profile?.role === 'super_admin';
+      
+      if (!hasAccess) {
         // Logged in but NOT an admin -> Redirect to storefront or show unauthorized
         const url = request.nextUrl.clone()
         url.pathname = '/'
@@ -61,11 +63,13 @@ export async function updateSession(request: NextRequest) {
   if (isLoginRoute && user) {
     const { data: profile } = await supabase
       .from('profiles')
-      .select('is_admin')
+      .select('is_admin, role')
       .eq('id', user.id)
       .single()
       
-    if (profile?.is_admin) {
+    const hasAccess = profile?.is_admin === true || profile?.role === 'super_admin';
+      
+    if (hasAccess) {
       const url = request.nextUrl.clone()
       url.pathname = '/admin'
       return NextResponse.redirect(url)

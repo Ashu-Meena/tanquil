@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Package, Search, Filter, Printer, ExternalLink, MoreVertical, Check, X } from "lucide-react";
+import { toast } from "@/store/useToastStore";
 
 interface Order {
   id: string;
@@ -21,6 +22,7 @@ interface Order {
   courier_name?: string;
   transaction_id?: string;
   screenshot_url?: string;
+  payment_status: string;
 }
 
 const STATUS_OPTIONS = [
@@ -33,6 +35,13 @@ const STATUS_OPTIONS = [
   { value: "cancelled", label: "Cancelled", color: "bg-red-100 text-red-800" },
   { value: "returned", label: "Returned", color: "bg-gray-200 text-gray-800" },
   { value: "refunded", label: "Refunded", color: "bg-orange-100 text-orange-800" },
+];
+
+const PAYMENT_STATUS_OPTIONS = [
+  { value: "pending", label: "Pending" },
+  { value: "paid", label: "Paid" },
+  { value: "failed", label: "Failed" },
+  { value: "refunded", label: "Refunded" },
 ];
 
 export default function OrdersPage() {
@@ -52,15 +61,34 @@ export default function OrdersPage() {
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [bulkStatus, setBulkStatus] = useState("");
 
+  const [invoiceSettings, setInvoiceSettings] = useState({
+    companyName: "Tranquil",
+    tagline: "LUXURY FASHION & APPAREL",
+    addressLine1: "123 Serenity Avenue, Fashion District",
+    addressLine2: "New Delhi, Delhi 110001, India",
+    gstin: "07AABCU9603R1ZX",
+    email: "support@tranquil.co.in",
+    phone: "+91 98765 43210",
+    terms: "Returns accepted within 7 days of delivery.\nItems must be unworn with original tags attached.\nThis is a computer generated invoice and requires no signature.",
+    signatory: "Authorized Signatory"
+  });
+
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     const supabase = createClient();
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("*, items:order_items(*)")
       .order("created_at", { ascending: false });
     
     if (!error && data) setOrders(data);
+
+    // Fetch Invoice Settings
+    const { data: settingsData } = await supabase.from('store_settings').select('*').eq('key', 'invoice_settings').single();
+    if (settingsData?.value) {
+      setInvoiceSettings(settingsData.value);
+    }
+
     setLoading(false);
   }, []);
 
@@ -74,6 +102,15 @@ export default function OrdersPage() {
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     if (selectedOrder?.id === orderId) {
       setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+    }
+  };
+
+  const updatePaymentStatus = async (orderId: string, newStatus: string) => {
+    const supabase = createClient();
+    await supabase.from("orders").update({ payment_status: newStatus }).eq("id", orderId);
+    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, payment_status: newStatus } : o));
+    if (selectedOrder?.id === orderId) {
+      setSelectedOrder(prev => prev ? { ...prev, payment_status: newStatus } : null);
     }
   };
 
@@ -117,7 +154,7 @@ export default function OrdersPage() {
 
   const filteredOrders = orders.filter(o => {
     const matchesSearch = o.customer_name?.toLowerCase().includes(search.toLowerCase()) || 
-                          o.id.toLowerCase().includes(search.toLowerCase()) ||
+                          (o.order_number || o.id).toLowerCase().includes(search.toLowerCase()) ||
                           (o.customer_email && o.customer_email.toLowerCase().includes(search.toLowerCase()));
     const matchesStatus = statusFilter === "all" || o.status === statusFilter;
     return matchesSearch && matchesStatus;
@@ -153,7 +190,7 @@ export default function OrdersPage() {
     setSelectedOrders([]);
     setBulkStatus("");
     setUpdating(false);
-    alert("Orders updated successfully!");
+    toast.success("Orders updated successfully!");
   };
 
   return (
@@ -220,6 +257,7 @@ export default function OrdersPage() {
                 <th className="px-6 py-4 font-medium hidden md:table-cell">Date</th>
                 <th className="px-6 py-4 font-medium">Customer</th>
                 <th className="px-6 py-4 font-medium hidden md:table-cell">Total</th>
+                <th className="px-6 py-4 font-medium">Payment</th>
                 <th className="px-6 py-4 font-medium">Status</th>
                 <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
@@ -227,11 +265,11 @@ export default function OrdersPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[#666666]">Loading orders...</td>
+                  <td colSpan={8} className="px-6 py-12 text-center text-[#666666]">Loading orders...</td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-[#666666]">No orders found.</td>
+                  <td colSpan={8} className="px-6 py-12 text-center text-[#666666]">No orders found.</td>
                 </tr>
               ) : (
                 filteredOrders.map((order) => {
@@ -249,7 +287,7 @@ export default function OrdersPage() {
                       <td className="px-6 py-4 cursor-pointer" onClick={() => openModal(order)}>
                         <div className="flex items-center gap-2 font-medium text-[#111111]">
                           <Package className="w-4 h-4 text-[#C7A17A]" />
-                          #{order.id.slice(0, 8).toUpperCase()}
+                          #{order.order_number || order.id.slice(0, 8).toUpperCase()}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-[#666666] cursor-pointer hidden md:table-cell" onClick={() => openModal(order)}>
@@ -260,6 +298,15 @@ export default function OrdersPage() {
                         <p className="text-xs text-[#666666]">{order.customer_email}</p>
                       </td>
                       <td className="px-6 py-4 font-medium text-[#111111] hidden md:table-cell">₹{order.total_amount?.toLocaleString('en-IN')}</td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${
+                          order.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
+                          order.payment_status === 'failed' || order.payment_status === 'refunded' ? 'bg-red-100 text-red-800' : 
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {order.payment_status || 'pending'}
+                        </span>
+                      </td>
                       <td className="px-6 py-4">
                         <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${statusDef.color}`}>
                           {statusDef.label}
@@ -288,7 +335,7 @@ export default function OrdersPage() {
             <div className="bg-white p-6 border-b border-[#EFEFEF] flex justify-between items-center sticky top-0 z-10">
               <div>
                 <h2 className="font-serif text-2xl text-[#111111] flex items-center gap-2">
-                  Order #{selectedOrder.id.slice(0, 8).toUpperCase()}
+                  Order #{selectedOrder.order_number || selectedOrder.id.slice(0, 8).toUpperCase()}
                 </h2>
                 <p className="text-sm text-[#666666]">
                   {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleString() : ''}
@@ -308,20 +355,34 @@ export default function OrdersPage() {
             <div className="p-6 space-y-6">
               
               {/* Status Update Block */}
-              <div className="bg-white p-5 border border-[#EFEFEF] rounded-sm flex justify-between items-center">
-                <div>
-                  <p className="text-[10px] text-[#999999] uppercase tracking-widest mb-1">Current Status</p>
-                  <select
-                    value={selectedOrder.status}
-                    onChange={(e) => updateOrderStatus(selectedOrder.id, e.target.value)}
-                    className="border border-[#EFEFEF] bg-[#FAF8F5] px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] font-medium"
-                  >
-                    {STATUS_OPTIONS.map(s => (
-                      <option key={s.value} value={s.value}>{s.label}</option>
-                    ))}
-                  </select>
+              <div className="bg-white p-5 border border-[#EFEFEF] rounded-sm flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4">
+                <div className="flex gap-6">
+                  <div>
+                    <p className="text-[10px] text-[#999999] uppercase tracking-widest mb-1">Order Status</p>
+                    <select
+                      value={selectedOrder.status}
+                      onChange={(e) => updateOrderStatus(selectedOrder.id, e.target.value)}
+                      className="border border-[#EFEFEF] bg-[#FAF8F5] px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] font-medium"
+                    >
+                      {STATUS_OPTIONS.map(s => (
+                        <option key={s.value} value={s.value}>{s.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-[#999999] uppercase tracking-widest mb-1">Payment Status</p>
+                    <select
+                      value={selectedOrder.payment_status}
+                      onChange={(e) => updatePaymentStatus(selectedOrder.id, e.target.value)}
+                      className="border border-[#EFEFEF] bg-[#FAF8F5] px-3 py-2 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] font-medium"
+                    >
+                      {PAYMENT_STATUS_OPTIONS.map(s => (
+                        <option key={s.value} value={s.value}>{s.label}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div className="text-right">
+                <div className="text-left md:text-right">
                   <p className="text-[10px] text-[#999999] uppercase tracking-widest mb-1">Payment Method</p>
                   <p className="font-medium text-[#111111] uppercase">{selectedOrder.payment_method}</p>
                 </div>
@@ -336,12 +397,23 @@ export default function OrdersPage() {
                     {selectedOrder.items && selectedOrder.items.length > 0 ? (
                       <div className="space-y-4">
                         {selectedOrder.items.map((item, i) => (
-                          <div key={i} className="flex justify-between items-center text-sm">
-                            <div>
-                              <p className="font-medium text-[#111111]">{item.name}</p>
-                              <p className="text-xs text-[#666666]">Size: {item.size} | Qty: {item.quantity}</p>
+                          <div key={i} className="flex gap-4 items-center text-sm">
+                            <div className="relative w-16 h-20 bg-[#FAF8F5] flex-shrink-0 rounded-sm overflow-hidden border border-[#EFEFEF]">
+                              {item.image_url ? (
+                                <img src={item.image_url} alt={item.product_name || item.name || 'Product'} className="object-cover w-full h-full" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px] uppercase tracking-widest text-center px-1">No Image</div>
+                              )}
                             </div>
-                            <p className="font-medium">₹{item.price?.toLocaleString('en-IN')}</p>
+                            <div className="flex-1">
+                              <p className="font-medium text-[#111111]">{item.product_name || item.name}</p>
+                              <p className="text-xs text-[#666666] mt-1">
+                                Color: <span className="font-medium text-[#111111]">{item.color_name || 'N/A'}</span> | 
+                                Size: <span className="font-medium text-[#111111]">{item.size}</span> | 
+                                Qty: <span className="font-medium text-[#111111]">{item.quantity}</span>
+                              </p>
+                            </div>
+                            <p className="font-medium text-right">₹{item.price?.toLocaleString('en-IN')}</p>
                           </div>
                         ))}
                       </div>
@@ -462,79 +534,122 @@ export default function OrdersPage() {
 
       {/* Hidden Printable Invoice Template */}
       {selectedOrder && (
-        <div id="invoice-content" className="hidden print:block p-8 bg-white text-black max-w-4xl mx-auto font-sans">
-          <div className="flex justify-between items-start border-b pb-6 mb-6">
+        <div id="invoice-content" className="hidden print:block p-10 bg-white text-black max-w-4xl mx-auto font-sans leading-relaxed">
+          {/* Header */}
+          <div className="flex justify-between items-start border-b-2 border-[#111111] pb-8 mb-8">
             <div>
-              <h1 className="text-3xl font-serif font-bold tracking-widest uppercase">Tranquil</h1>
-              <p className="text-sm text-gray-500 mt-1">Luxury Fashion & Apparel</p>
+              <h1 className="text-4xl font-serif font-bold tracking-widest uppercase mb-2">{invoiceSettings.companyName}</h1>
+              <p className="text-sm text-gray-600 font-medium tracking-wide uppercase">{invoiceSettings.tagline}</p>
+              <div className="mt-4 text-sm text-gray-500 space-y-1">
+                <p>{invoiceSettings.addressLine1}</p>
+                <p>{invoiceSettings.addressLine2}</p>
+                <p>GSTIN: {invoiceSettings.gstin}</p>
+                <p>{invoiceSettings.email} | {invoiceSettings.phone}</p>
+              </div>
             </div>
             <div className="text-right">
-              <h2 className="text-xl font-bold text-gray-800">INVOICE</h2>
-              <p className="text-sm">Order #{selectedOrder.id.slice(0, 8).toUpperCase()}</p>
-              <p className="text-sm">Date: {selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleDateString() : ''}</p>
+              <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Tax Invoice</h2>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 text-left w-64 ml-auto">
+                <span className="font-semibold text-gray-800">Invoice No:</span>
+                <span className="text-right uppercase">{selectedOrder.id.slice(0, 8)}</span>
+                <span className="font-semibold text-gray-800">Date:</span>
+                <span className="text-right">{selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleDateString('en-IN') : 'N/A'}</span>
+                <span className="font-semibold text-gray-800">Order No:</span>
+                <span className="text-right uppercase">{selectedOrder.order_number || selectedOrder.id.slice(0, 8)}</span>
+                <span className="font-semibold text-gray-800">Payment:</span>
+                <span className="text-right uppercase">{selectedOrder.payment_method} ({selectedOrder.payment_status})</span>
+              </div>
             </div>
           </div>
 
-          <div className="flex justify-between mb-8 text-sm">
+          {/* Customer Details */}
+          <div className="grid grid-cols-2 gap-12 mb-10">
             <div>
-              <p className="font-bold text-gray-800 mb-1">Billed To:</p>
-              <p>{selectedOrder.customer_name}</p>
-              <p>{selectedOrder.customer_email}</p>
-              <p>{selectedOrder.customer_phone}</p>
+              <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Billed To</h3>
+              <p className="font-bold text-[#111111] text-lg">{selectedOrder.customer_name}</p>
+              <p className="text-sm text-gray-600 mt-1">{selectedOrder.customer_email}</p>
+              <p className="text-sm text-gray-600 mb-2">{selectedOrder.customer_phone}</p>
             </div>
             {selectedOrder.shipping_address && (
-              <div className="text-right">
-                <p className="font-bold text-gray-800 mb-1">Shipped To:</p>
-                <p>{selectedOrder.shipping_address.name}</p>
-                <p>{selectedOrder.shipping_address.address}</p>
-                <p>{selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} {selectedOrder.shipping_address.pin}</p>
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Shipped To</h3>
+                <p className="font-bold text-[#111111]">{selectedOrder.shipping_address.name || selectedOrder.customer_name}</p>
+                <p className="text-sm text-gray-600 mt-1">{selectedOrder.shipping_address.address}</p>
+                <p className="text-sm text-gray-600">{selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state}</p>
+                <p className="text-sm text-gray-600">PIN: {selectedOrder.shipping_address.pin}</p>
               </div>
             )}
           </div>
 
-          <table className="w-full text-left mb-8 text-sm border-collapse">
-            <thead>
-              <tr className="border-b-2 border-gray-800">
-                <th className="py-2">Item</th>
-                <th className="py-2">Size</th>
-                <th className="py-2 text-center">Qty</th>
-                <th className="py-2 text-right">Price</th>
-                <th className="py-2 text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedOrder.items?.map((item, i) => (
-                <tr key={i} className="border-b border-gray-200">
-                  <td className="py-3 font-medium">{item.name}</td>
-                  <td className="py-3">{item.size}</td>
-                  <td className="py-3 text-center">{item.quantity}</td>
-                  <td className="py-3 text-right">₹{item.price?.toLocaleString()}</td>
-                  <td className="py-3 text-right">₹{(item.price * item.quantity).toLocaleString()}</td>
+          {/* Line Items */}
+          <div className="mb-10">
+            <table className="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr className="bg-[#FAF8F5] border-y border-[#111111]">
+                  <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs">Item Description</th>
+                  <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-center">HSN</th>
+                  <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-center">Qty</th>
+                  <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-right">Rate</th>
+                  <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-right">Amount</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {selectedOrder.items?.map((item, i) => (
+                  <tr key={i}>
+                    <td className="py-4 px-4">
+                      <p className="font-bold text-[#111111]">{item.product_name || item.name}</p>
+                      <p className="text-xs text-gray-500 mt-1">Color: {item.color_name || 'N/A'} | Size: {item.size}</p>
+                    </td>
+                    <td className="py-4 px-4 text-center text-gray-600">6204</td>
+                    <td className="py-4 px-4 text-center">{item.quantity}</td>
+                    <td className="py-4 px-4 text-right">₹{item.price?.toLocaleString('en-IN')}</td>
+                    <td className="py-4 px-4 text-right font-medium">₹{(item.price * item.quantity).toLocaleString('en-IN')}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-          <div className="flex justify-end mb-8">
-            <div className="w-64">
-              <div className="flex justify-between py-2 border-b">
+          {/* Totals */}
+          <div className="flex justify-end mb-12">
+            <div className="w-80">
+              <div className="flex justify-between py-2 text-sm text-gray-600">
                 <span>Subtotal</span>
-                <span>₹{selectedOrder.total_amount?.toLocaleString()}</span>
+                <span>₹{selectedOrder.total_amount?.toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex justify-between py-2 border-b">
-                <span>Shipping</span>
+              <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-gray-200">
+                <span>Shipping & Handling</span>
                 <span>₹0</span>
               </div>
-              <div className="flex justify-between py-3 text-lg font-bold">
-                <span>Total</span>
-                <span>₹{selectedOrder.total_amount?.toLocaleString()}</span>
+              <div className="flex justify-between py-2 text-sm text-gray-600">
+                <span>Taxable Amount</span>
+                <span>₹{(selectedOrder.total_amount * 0.82).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-[#111111]">
+                <span>IGST (18%)</span>
+                <span>₹{(selectedOrder.total_amount * 0.18).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+              </div>
+              <div className="flex justify-between py-4 text-xl font-bold text-[#111111]">
+                <span>Grand Total</span>
+                <span>₹{selectedOrder.total_amount?.toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
 
-          <div className="text-center text-sm text-gray-500 mt-16 pt-8 border-t">
-            <p>Thank you for shopping with Tranquil!</p>
-            <p>If you have any questions about this invoice, please contact support@tranquil.com</p>
+          {/* Footer & T&C */}
+          <div className="grid grid-cols-2 gap-8 border-t-2 border-[#EFEFEF] pt-8 text-xs text-gray-500">
+            <div>
+              <h4 className="font-bold text-[#111111] mb-2 uppercase tracking-widest">Terms & Conditions</h4>
+              <ul className="list-disc pl-4 space-y-1">
+                {invoiceSettings.terms.split('\n').map((term, idx) => (
+                  <li key={idx}>{term}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="text-right flex flex-col justify-end">
+              <h4 className="font-bold text-[#111111] mb-1">For {invoiceSettings.companyName}</h4>
+              <p className="italic">{invoiceSettings.signatory}</p>
+            </div>
           </div>
         </div>
       )}

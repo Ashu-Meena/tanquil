@@ -3,13 +3,14 @@ const supabase = createClient('https://flygrbvvkaxriitxnzyi.supabase.co', 'eyJhb
 
 async function test() {
   const orderId = crypto.randomUUID();
+  const orderNum = 'TEST-' + Math.floor(Math.random() * 1000000);
   
   // 1. Insert order
   const { error: orderErr } = await supabase.from('orders').insert({
     id: orderId,
-    order_number: 'TEST-123',
-    customer_name: 'Test',
-    customer_email: 'test@example.com',
+    order_number: orderNum,
+    customer_name: 'Test Mobile',
+    customer_email: 'testmobile@example.com',
     shipping_address: {},
     subtotal: 100,
     total_amount: 100
@@ -20,7 +21,7 @@ async function test() {
   const { error: itemErr } = await supabase.from('order_items').insert({
     order_id: orderId,
     product_id: 'e8e45260-2646-4444-a095-2c8c4a165b4c',
-    product_name: 'Test',
+    product_name: 'Test Mobile',
     quantity: 1,
     price: 100
   });

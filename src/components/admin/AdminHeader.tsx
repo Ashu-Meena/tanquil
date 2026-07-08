@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Bell, Menu, LogOut, Settings } from "lucide-react";
 import AdminSearch from "./AdminSearch";
+import { NotificationDropdown } from "./NotificationDropdown";
 import { useAdminStore } from "@/store/useAdminStore";
 
 export function AdminHeader() {
@@ -35,12 +36,7 @@ export function AdminHeader() {
       </div>
       
       <div className="flex items-center gap-4">
-        <button className="text-[#666666] hover:text-[#111111] relative">
-          <Bell className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#E63946] text-white text-[10px] flex items-center justify-center rounded-full border border-white">
-            3
-          </span>
-        </button>
+        <NotificationDropdown />
         
         <button className="text-[#666666] hover:text-[#111111]">
           <Settings className="w-5 h-5" />

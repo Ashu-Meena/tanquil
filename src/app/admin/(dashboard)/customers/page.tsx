@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Search, Mail, Phone, Calendar, ArrowUpDown, Loader2 } from "lucide-react";
 
 interface Customer {
@@ -16,9 +16,11 @@ interface Customer {
 }
 
 export default function CustomersPage() {
+  const supabase = createClient();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [rawOrdersCount, setRawOrdersCount] = useState(0);
 
   useEffect(() => {
     fetchCustomers();
@@ -41,10 +43,15 @@ export default function CustomersPage() {
     // 2. Fetch all orders to calculate spend
     const { data: orders } = await supabase
       .from('orders')
-      .select('user_id, total_amount, status');
+      .select('user_id, customer_email, total_amount, status');
+
+    setRawOrdersCount(orders?.length || 0);
 
     const customerData: Customer[] = profiles.map(profile => {
-      const userOrders = (orders || []).filter(o => o.user_id === profile.id);
+      const userOrders = (orders || []).filter(o => 
+        o.user_id === profile.id || 
+        (o.customer_email && o.customer_email.toLowerCase() === profile.email.toLowerCase())
+      );
       const successfulOrders = userOrders.filter(o => o.status !== 'cancelled' && o.status !== 'refunded');
       
       const totalSpend = successfulOrders.reduce((sum, order) => sum + Number(order.total_amount), 0);

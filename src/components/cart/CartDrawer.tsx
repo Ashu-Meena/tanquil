@@ -6,9 +6,13 @@ import { X, Trash2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+import { toast } from "@/store/useToastStore";
 
 export default function CartDrawer() {
+  const supabase = createClient();
+  const router = useRouter();
   const { isOpen, closeCart, items: cartItems, removeItem, updateQuantity } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [shippingThreshold, setShippingThreshold] = useState(10000); // Default to 10000
@@ -87,6 +91,22 @@ export default function CartDrawer() {
     setTimeout(() => {
       if (discountMessage?.type === 'error') setDiscountMessage(null);
     }, 3000);
+  };
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      toast.info("Please login or register to complete your order.");
+      closeCart();
+      router.push("/account");
+      return;
+    }
+    
+    closeCart();
+    router.push("/checkout");
   };
 
   return (
@@ -234,20 +254,14 @@ export default function CartDrawer() {
               <p className="text-xs text-[#666666] mb-6 text-center">
                 Taxes and shipping calculated at checkout
               </p>
-              <Link 
-                href="/checkout" 
-                onClick={(e) => {
-                  if (cartItems.length === 0) {
-                    e.preventDefault();
-                    return;
-                  }
-                  closeCart();
-                }}
+              <button 
+                onClick={handleCheckout}
+                disabled={cartItems.length === 0}
                 className={`w-full py-4 uppercase tracking-widest text-sm font-medium transition-colors flex items-center justify-center gap-2 group ${cartItems.length === 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#111111] hover:bg-[#C7A17A] text-white'}`}
               >
                 Proceed to Checkout
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </button>
             </div>
           </motion.div>
         </>

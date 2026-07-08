@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Search, Filter, Check, X, Trash2, Star } from "lucide-react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<any[]>([]);
+    const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
+const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 

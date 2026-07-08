@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Save, Truck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { toast } from "@/store/useToastStore";
 
 export default function ShippingPage() {
   const [loading, setLoading] = useState(false);
@@ -41,9 +42,9 @@ export default function ShippingPage() {
       
     setLoading(false);
     if (!error) {
-      alert("Shipping settings saved successfully!");
+      toast.success("Shipping settings saved successfully!");
     } else {
-      alert("Error saving settings");
+      toast.error("Error saving settings");
     }
   };
 

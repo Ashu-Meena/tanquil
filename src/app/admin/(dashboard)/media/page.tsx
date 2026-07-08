@@ -4,16 +4,19 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { Copy, Trash2, UploadCloud, Search, Check, ImageIcon } from "lucide-react";
 import Image from "next/image";
+import { toast } from "@/store/useToastStore";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function MediaLibraryPage() {
-  const [files, setFiles] = useState<any[]>([]);
+    const [imageToDelete, setImageToDelete] = useState<string | null>(null);
+const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const bucketName = "product-images";
+  const bucketName = "public-assets";
 
   useEffect(() => {
     fetchFiles();
@@ -50,24 +53,37 @@ export default function MediaLibraryPage() {
 
       const { error: uploadError } = await supabase.storage
         .from(bucketName)
-        .upload(filePath, file);
+        .upload(filePath, file, { contentType: file.type || 'image/jpeg' });
 
       if (uploadError) throw uploadError;
       
       fetchFiles();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload error:", error);
-      alert("Error uploading image");
+      toast.error("Error uploading image: " + error.message);
     } finally {
       setUploading(false);
     }
   };
 
-  const handleDelete = async (fileName: string) => {
-    if (window.confirm("Are you sure you want to delete this image? It will break any links pointing to it.")) {
-      await supabase.storage.from(bucketName).remove([fileName]);
-      fetchFiles();
+  const confirmDelete = async () => {
+    if (!imageToDelete) return;
+    try {
+      const { data, error } = await supabase.storage.from(bucketName).remove([imageToDelete]);
+      if (error) {
+        toast.error("Failed to delete: " + error.message);
+      } else {
+        toast.success("Image deleted successfully");
+      }
+    } catch (err: any) {
+      toast.error("Error deleting image: " + err.message);
     }
+    fetchFiles();
+    setImageToDelete(null);
+  };
+
+  const handleDelete = (fileName: string) => {
+    setImageToDelete(fileName);
   };
 
   const getPublicUrl = (fileName: string) => {
@@ -85,6 +101,14 @@ export default function MediaLibraryPage() {
 
   return (
     <div className="space-y-6 max-w-full">
+            <ConfirmModal
+        isOpen={!!imageToDelete}
+        onClose={() => setImageToDelete(null)}
+        onConfirm={confirmDelete}
+        title="Delete Image"
+        message="Are you sure you want to delete this image? It will break any links pointing to it. This action cannot be undone."
+        confirmText="Delete"
+      />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="font-serif text-3xl text-[#111111] mb-1">Media Library</h1>

@@ -6,12 +6,23 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Lock, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
 
-const steps = ["Information", "Shipping", "Payment", "Review"];
+const INDIAN_STATES = [
+  "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
+  "Bihar", "Chandigarh", "Chhattisgarh", "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir",
+  "Jharkhand", "Karnataka", "Kerala", "Ladakh", "Lakshadweep", "Madhya Pradesh",
+  "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+  "Puducherry", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+  "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"
+];
+
+const steps = ["Shipping", "Payment", "Review"];
 
 export default function CheckoutPage() {
+  const supabase = createClient();
   const [currentStep, setCurrentStep] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [transactionId, setTransactionId] = useState("");
@@ -47,14 +58,6 @@ export default function CheckoutPage() {
       setIsFreeShippingCouponApplied(false);
       return;
     } 
-    
-    if (discountCode.toUpperCase() === "FREESHIP") {
-      setDiscountMsg("Free shipping applied! ✓");
-      setAppliedCoupon(null);
-      setIsFreeShippingCouponApplied(true);
-      setTimeout(() => setDiscountMsg(""), 3000);
-      return;
-    }
 
     try {
       const { data, error } = await supabase.from('coupons')
@@ -103,15 +106,21 @@ export default function CheckoutPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [pinCode, setPinCode] = useState("");
+  const [landmark, setLandmark] = useState("");
+  const [alternatePhone, setAlternatePhone] = useState("");
 
   const [shippingSettings, setShippingSettings] = useState({ free_shipping_threshold: 10000, flat_rate: 250 });
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
+  const [formError, setFormError] = useState("");
 
   useEffect(() => {
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        setIsLoggedIn(true);
+      if (!session?.user) {
+        router.push('/account');
+        return;
+      }
+      setIsLoggedIn(true);
         // Fetch profile
         const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
         if (profile) {
@@ -130,7 +139,6 @@ export default function CheckoutPage() {
           setSavedAddresses(addresses);
           setSelectedAddress(addresses[0].id);
         }
-      }
       
       const { data: settings } = await supabase.from('store_settings').select('value').eq('key', 'shipping').single();
       if (settings?.value) {
@@ -151,7 +159,7 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     if (paymentMethod === 'upi' && (!transactionId || !paymentScreenshot)) {
-      alert("Please enter Transaction ID and upload screenshot.");
+      setFormError("Please enter Transaction ID and upload screenshot.");
       return;
     }
     
@@ -184,7 +192,9 @@ export default function CheckoutPage() {
             city,
             state,
             postal_code: pinCode,
-            phone
+            phone,
+            landmark,
+            alternate_phone: alternatePhone
           };
         }
 
@@ -198,7 +208,7 @@ export default function CheckoutPage() {
         if (valErr) throw valErr;
         
         if (!validProducts || validProducts.length !== productIds.length) {
-          alert("Some items in your cart are no longer available in our store. Please review and update your cart.");
+          setFormError("Some items in your cart are no longer available in our store. Please review and update your cart.");
           setIsSubmitting(false);
           return;
         }
@@ -229,7 +239,8 @@ export default function CheckoutPage() {
           payment_method: paymentMethod,
           transaction_id: transactionId,
           screenshot_url: screenshotUrl,
-          status: 'pending'
+          status: 'pending',
+          payment_status: 'pending'
         });
 
         if (error) throw error;
@@ -240,7 +251,10 @@ export default function CheckoutPage() {
           product_id: item.id,
           product_name: item.name,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
+          color_name: item.color,
+          size: item.size,
+          image_url: item.image
         }));
 
         const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
@@ -262,6 +276,7 @@ export default function CheckoutPage() {
                   <h1 style="text-align: center; font-weight: normal; margin-bottom: 30px;">TRANQUIL</h1>
                   <p>Hi ${orderName},</p>
                   <p>Thank you for your order! We've received it and will process it shortly.</p>
+                  <p><strong>Order ID:</strong> #{orderNumber}</p>
                   <p><strong>Total:</strong> ₹${total.toLocaleString()}</p>
                   <p>We will notify you once your order has been dispatched.</p>
                   <p style="margin-top: 40px; font-size: 12px; color: #666;">Tranquil Team</p>
@@ -285,7 +300,7 @@ export default function CheckoutPage() {
       }
     } catch (err) {
       console.error(err);
-      alert("Error placing order. Please try again.");
+      setFormError("Error placing order. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -305,8 +320,62 @@ export default function CheckoutPage() {
   const shipping = isFreeShippingCouponApplied || subtotalAfterDiscount >= shippingSettings.free_shipping_threshold ? 0 : shippingSettings.flat_rate;
   const total = subtotalAfterDiscount + shipping;
 
-  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
-  const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 0));
+  const nextStep = async () => {
+    setFormError("");
+    if (currentStep === 0) { // Shipping
+      const usingNew = !selectedAddress || showNewAddressForm || savedAddresses.length === 0;
+      if (usingNew) {
+        if (!addressLine1 || !city || !state || !pinCode || !phone) {
+          setFormError("Please fill in all required address fields.");
+          return;
+        }
+        if (addressLine1.length < 5 || city.length < 2 || state.length < 2) {
+          setFormError("Please enter a valid address, city, and state.");
+          return;
+        }
+        if (!/^[1-9][0-9]{5}$/.test(pinCode)) {
+          setFormError("Please enter a valid 6-digit Indian PIN Code.");
+          return;
+        }
+        
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${pinCode}`);
+          const data = await res.json();
+          if (data[0]?.Status === "Error" || data[0]?.Status === "404") {
+            setFormError("The PIN Code you entered does not appear to be valid. Please check and try again.");
+            return;
+          }
+        } catch (err) {
+          console.error("Pincode validation error", err);
+        }
+        
+        if (isLoggedIn && userProfile && savedAddresses.length === 0) {
+          const { data, error } = await supabase.from('addresses').insert({
+            user_id: userProfile.id,
+            name: "Home",
+            address_line1: addressLine1,
+            address_line2: addressLine2,
+            city: city,
+            state: state,
+            postal_code: pinCode,
+            country: 'India',
+            phone: phone || userProfile?.phone,
+            landmark,
+            alternate_phone: alternatePhone,
+            is_default: true
+          }).select().single();
+          
+          if (data && !error) {
+            setSavedAddresses([data]);
+            setSelectedAddress(data.id);
+            setShowNewAddressForm(false);
+          }
+        }
+      }
+    }
+    setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+  };
+  const prevStep = () => { setFormError(""); setCurrentStep(prev => Math.max(prev - 1, 0)); };
 
   return (
     <div className="bg-[#FAF8F5] min-h-screen pt-36 pb-20">
@@ -332,48 +401,18 @@ export default function CheckoutPage() {
                 </div>
               ))}
             </div>
+            
+            {formError && (
+              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-sm">
+                {formError}
+              </div>
+            )}
 
             <div>
               <AnimatePresence mode="wait">
                 {currentStep === 0 && (
                   <motion.div
                     key="step0"
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="space-y-6"
-                  >
-                    <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Contact Information</h2>
-                    {isLoadingAuth ? (
-                      <div className="flex justify-center p-4"><Loader2 className="w-6 h-6 animate-spin text-[#C7A17A]" /></div>
-                    ) : isLoggedIn ? (
-                      <div className="bg-white border border-[#EFEFEF] p-6 flex justify-between items-center rounded-sm">
-                        <div>
-                          <p className="text-sm font-medium text-[#111111] mb-1">
-                            {userProfile?.first_name ? `${userProfile.first_name} ${userProfile?.last_name || ''}`.trim() : "My Account"}
-                          </p>
-                          <p className="text-sm text-[#666666]">{email}</p>
-                        </div>
-                        <button className="text-xs uppercase tracking-widest text-[#C7A17A] font-medium hover:underline" onClick={async () => {
-                          await supabase.auth.signOut();
-                          setIsLoggedIn(false);
-                          setUserProfile(null);
-                        }}>Log Out</button>
-                      </div>
-                    ) : (
-                      <>
-                        <input type="email" placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                        <label className="flex items-center gap-2 text-sm text-[#666666]">
-                          <input type="checkbox" className="accent-[#C7A17A]" /> Email me with news and offers
-                        </label>
-                      </>
-                    )}
-                  </motion.div>
-                )}
-
-                {currentStep === 1 && (
-                  <motion.div
-                    key="step1"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -420,8 +459,18 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                   <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm text-[#666]">
+                                    <option value="" disabled>Select State</option>
+                                    {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                                  </select>
                                   <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                </div>
+                                <div className="grid grid-cols-1 gap-4">
+                                  <input type="text" value={landmark} onChange={e => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="tel" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
                                 </div>
                                 <button className="bg-[#111111] text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
                                   Save Address
@@ -441,7 +490,10 @@ export default function CheckoutPage() {
                         <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <input type="text" value={state} onChange={e => setState(e.target.value)} placeholder="State" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors text-[#666]">
+                              <option value="" disabled>Select State</option>
+                              {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
@@ -452,9 +504,9 @@ export default function CheckoutPage() {
                   </motion.div>
                 )}
 
-                {currentStep === 2 && (
+                {currentStep === 1 && (
                   <motion.div
-                    key="step2"
+                    key="step1"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -573,9 +625,9 @@ export default function CheckoutPage() {
                   </motion.div>
                 )}
 
-                {currentStep === 3 && (
+                {currentStep === 2 && (
                   <motion.div
-                    key="step3"
+                    key="step2"
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
@@ -584,11 +636,7 @@ export default function CheckoutPage() {
                     <h2 className="text-xl font-serif text-[#111111] border-b border-[#EFEFEF] pb-4">Review Your Order</h2>
                     
                     <div className="bg-white border border-[#EFEFEF] p-6 text-sm">
-                      <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
-                        <div className="text-[#666666]">Contact</div>
-                        <div className="text-[#111111]">{isLoggedIn && userProfile ? userProfile.email : email}</div>
-                        <button onClick={() => setCurrentStep(0)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
-                      </div>
+
                       <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
                         <div className="text-[#666666]">Ship to</div>
                         <div className="text-[#111111] text-right max-w-[200px]">
@@ -601,12 +649,12 @@ export default function CheckoutPage() {
                             `${addressLine1}, ${city}, ${pinCode}`
                           )}
                         </div>
-                        <button onClick={() => setCurrentStep(1)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
+                        <button onClick={() => setCurrentStep(0)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                       <div className="flex justify-between">
                         <div className="text-[#666666]">Payment</div>
                         <div className="text-[#111111]">{paymentMethod === "upi" ? "UPI QR Code" : "Cash on Delivery"}</div>
-                        <button onClick={() => setCurrentStep(2)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
+                        <button onClick={() => setCurrentStep(1)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                     </div>
                   </motion.div>

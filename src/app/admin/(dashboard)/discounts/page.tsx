@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Plus, Tag, Settings2, Trash2, Loader2, Save } from "lucide-react";
+import { toast } from "@/store/useToastStore";
 
 interface Coupon {
   id: string;
@@ -16,6 +17,7 @@ interface Coupon {
 }
 
 export default function DiscountsPage() {
+  const supabase = createClient();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDrawer, setShowDrawer] = useState(false);
@@ -42,7 +44,7 @@ export default function DiscountsPage() {
   };
 
   const handleSave = async () => {
-    if (!formData.code || !formData.discount_value) return;
+    if (!formData.code || formData.discount_value === undefined) return;
     
     setSaving(true);
     const payload = {
@@ -50,16 +52,24 @@ export default function DiscountsPage() {
       code: formData.code.toUpperCase()
     };
 
-    if (formData.id) {
-      await supabase.from('coupons').update(payload).eq('id', formData.id);
-    } else {
-      await supabase.from('coupons').insert([payload]);
-    }
+    try {
+      if (formData.id) {
+        const { error } = await supabase.from('coupons').update(payload).eq('id', formData.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from('coupons').insert([payload]);
+        if (error) throw error;
+      }
 
-    setShowDrawer(false);
-    setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
-    setSaving(false);
-    fetchCoupons();
+      setShowDrawer(false);
+      setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
+    } catch (error: any) {
+      console.error(error);
+      toast.error("Error saving coupon: " + error.message);
+    } finally {
+      setSaving(false);
+      fetchCoupons();
+    }
   };
 
   const toggleStatus = async (id: string, currentStatus: boolean) => {

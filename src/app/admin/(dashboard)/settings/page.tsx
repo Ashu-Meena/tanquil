@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { Save, Settings, Megaphone, Globe } from "lucide-react";
+import { Save, Settings, Megaphone, Globe, Printer } from "lucide-react";
+import { toast } from "@/store/useToastStore";
 
 interface SettingItem {
   key: string;
@@ -23,6 +24,18 @@ export default function SettingsPage() {
   
   const [announcements, setAnnouncements] = useState<string[]>([""]);
 
+  const [invoiceInfo, setInvoiceInfo] = useState({
+    companyName: "Tranquil",
+    tagline: "LUXURY FASHION & APPAREL",
+    addressLine1: "123 Serenity Avenue, Fashion District",
+    addressLine2: "New Delhi, Delhi 110001, India",
+    gstin: "07AABCU9603R1ZX",
+    email: "support@tranquil.co.in",
+    phone: "+91 98765 43210",
+    terms: "Returns accepted within 7 days of delivery.\nItems must be unworn with original tags attached.\nThis is a computer generated invoice and requires no signature.",
+    signatory: "Authorized Signatory"
+  });
+
   useEffect(() => {
     fetchSettings();
   }, []);
@@ -40,6 +53,11 @@ export default function SettingsPage() {
       const ann = data.find(s => s.key === 'announcement');
       if (ann?.value?.messages && Array.isArray(ann.value.messages)) {
         setAnnouncements(ann.value.messages);
+      }
+
+      const inv = data.find(s => s.key === 'invoice_settings');
+      if (inv?.value) {
+        setInvoiceInfo({ ...invoiceInfo, ...inv.value });
       }
     }
     setLoading(false);
@@ -61,9 +79,16 @@ export default function SettingsPage() {
       value: { messages: announcements.filter(m => m.trim() !== '') },
       description: 'Announcement Bar Messages'
     });
+
+    // Save Invoice Info
+    await supabase.from('store_settings').upsert({
+      key: 'invoice_settings',
+      value: invoiceInfo,
+      description: 'Invoice Template Configuration'
+    });
     
     setSaving(false);
-    alert('Settings saved successfully!');
+    toast.success('Settings saved successfully!');
   };
 
   const updateAnnouncement = (index: number, value: string) => {
@@ -182,6 +207,100 @@ export default function SettingsPage() {
           >
             + Add another message
           </button>
+        </div>
+      </div>
+
+      {/* Invoice Settings */}
+      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm p-6 space-y-6">
+        <div className="flex items-center gap-3 border-b border-[#EFEFEF] pb-4">
+          <Printer className="w-5 h-5 text-[#C7A17A]" />
+          <h2 className="font-serif text-xl text-[#111111]">Invoice Template Settings</h2>
+        </div>
+        
+        <p className="text-sm text-[#666666]">Configure the details that appear on the printable PDF invoice for customers.</p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Company Name</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.companyName}
+              onChange={e => setInvoiceInfo({...invoiceInfo, companyName: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Tagline / Subtitle</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.tagline}
+              onChange={e => setInvoiceInfo({...invoiceInfo, tagline: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Address Line 1</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.addressLine1}
+              onChange={e => setInvoiceInfo({...invoiceInfo, addressLine1: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Address Line 2</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.addressLine2}
+              onChange={e => setInvoiceInfo({...invoiceInfo, addressLine2: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">GSTIN / Tax ID</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.gstin}
+              onChange={e => setInvoiceInfo({...invoiceInfo, gstin: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Support Email</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.email}
+              onChange={e => setInvoiceInfo({...invoiceInfo, email: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Support Phone</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.phone}
+              onChange={e => setInvoiceInfo({...invoiceInfo, phone: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Authorized Signatory Text</label>
+            <input 
+              type="text" 
+              value={invoiceInfo.signatory}
+              onChange={e => setInvoiceInfo({...invoiceInfo, signatory: e.target.value})}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
+          <div className="md:col-span-2 space-y-1">
+            <label className="text-sm font-medium text-[#111111]">Terms & Conditions (One per line)</label>
+            <textarea 
+              value={invoiceInfo.terms}
+              onChange={e => setInvoiceInfo({...invoiceInfo, terms: e.target.value})}
+              rows={4}
+              className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+            />
+          </div>
         </div>
       </div>
 
