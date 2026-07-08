@@ -165,17 +165,20 @@ export default function CheckoutPage() {
     // The "Address Name" input isn't bound to state! Let's bind it to firstName temporarily or just rely on what is in state.
     // I'll add an `addressName` state below. Wait, I can't add state hooks conditionally or randomly, I must add it to the top.
     
+    let combinedAddressLine2 = addressLine2 || "";
+    if (landmark) combinedAddressLine2 += (combinedAddressLine2 ? ", " : "") + `Landmark: ${landmark}`;
+    if (alternatePhone) combinedAddressLine2 += (combinedAddressLine2 ? ", " : "") + `Alt Phone: ${alternatePhone}`;
+    
     const newAddress = {
       user_id: session.user.id,
-      name: firstName || userProfile?.first_name || "New Address",
+      title: firstName || "Home",
+      name: userProfile?.first_name ? `${userProfile.first_name} ${userProfile.last_name || ""}`.trim() : "New Address",
       address_line1: addressLine1,
-      address_line2: addressLine2,
+      address_line2: combinedAddressLine2,
       city,
       state,
       postal_code: pinCode,
       phone,
-      landmark,
-      alternate_phone: alternatePhone,
       is_default: savedAddresses.length === 0
     };
 
