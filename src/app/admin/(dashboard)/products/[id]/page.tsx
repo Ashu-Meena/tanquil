@@ -268,7 +268,6 @@ export default function EditProductPage() {
         color_name: v.color_name,
         color_hex: v.color_hex,
         size: v.size,
-        size: v.size,
         stock_quantity: v.stock_quantity,
         sku: vSku
       };

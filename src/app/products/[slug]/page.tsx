@@ -100,6 +100,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     colors,
     sizes,
     variants: productData.product_variants || [],
+    details: [],
   };
 
   const formattedRelated = relatedData?.map(rp => ({

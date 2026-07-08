@@ -158,7 +158,7 @@ export default function AddProductPage() {
     const { data: product, error } = await supabase.from("products").insert([payload]).select().single();
 
     if (error || !product) {
-      toast.error("Error saving product: " + error.message);
+      toast.error("Error saving product: " + (error?.message || "Unknown error"));
       setLoading(false);
       return;
     }
