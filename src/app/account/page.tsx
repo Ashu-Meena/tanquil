@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, Trash2 } from "lucide-react";
+import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, Trash2, Printer } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
@@ -38,6 +38,8 @@ export default function AccountPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<any[]>([]);
+  const [invoiceSettings, setInvoiceSettings] = useState<any>(null);
+  const [selectedOrderToPrint, setSelectedOrderToPrint] = useState<any>(null);
   
   const addToCart = useCartStore((state) => state.addItem);
   const openCart = useCartStore((state) => state.openCart);
@@ -97,6 +99,12 @@ export default function AccountPage() {
         setWishlist(userWishlist);
       }
 
+      // Fetch invoice settings
+      const { data: invData } = await supabase.from('store_settings').select('value').eq('id', 'invoice_settings').single();
+      if (invData?.value) {
+        setInvoiceSettings(invData.value);
+      }
+
       setIsLoading(false);
     }
     fetchAccountData();
@@ -105,6 +113,19 @@ export default function AccountPage() {
   const showFeedback = (msg: string) => {
     setFeedbackMessage(msg);
     setTimeout(() => setFeedbackMessage(""), 3000);
+  };
+
+  const triggerPrint = (order: any) => {
+    setSelectedOrderToPrint(order);
+    setTimeout(() => {
+      const printContent = document.getElementById("invoice-content");
+      if (!printContent) return;
+      const originalContents = document.body.innerHTML;
+      document.body.innerHTML = printContent.innerHTML;
+      window.print();
+      document.body.innerHTML = originalContents;
+      window.location.reload();
+    }, 100);
   };
 
   const handleSignOut = async () => {
@@ -568,9 +589,14 @@ export default function AccountPage() {
                                 <Truck className="w-4 h-4" /> Tracking info will appear here once shipped.
                               </div>
                             )}
-                            <button onClick={() => showFeedback('To initiate a return, please contact us at returns@tranquil.co.in')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
-                              <RefreshCw className="w-4 h-4" /> Return Item
-                            </button>
+                            <div className="flex gap-2">
+                              <button onClick={() => triggerPrint(order)} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
+                                <Printer className="w-4 h-4" /> Download Invoice
+                              </button>
+                              <button onClick={() => showFeedback('To initiate a return, please contact us at returns@tranquil.co.in')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
+                                <RefreshCw className="w-4 h-4" /> Return Item
+                              </button>
+                            </div>
                           </div>
                         </div>
                       );
@@ -770,6 +796,128 @@ export default function AccountPage() {
                         {isUpdatingPassword ? "Updating..." : "Update Password"}
                       </button>
                     </form>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Hidden Printable Invoice Template */}
+            {selectedOrderToPrint && invoiceSettings && (
+              <div id="invoice-content" className="hidden print:block p-10 bg-white text-black max-w-4xl mx-auto font-sans leading-relaxed">
+                {/* Header */}
+                <div className="flex justify-between items-start border-b-2 border-[#111111] pb-8 mb-8">
+                  <div>
+                    <h1 className="text-4xl font-serif font-bold tracking-widest uppercase mb-2">{invoiceSettings.companyName}</h1>
+                    <p className="text-sm text-gray-600 font-medium tracking-wide uppercase">{invoiceSettings.tagline}</p>
+                    <div className="mt-4 text-sm text-gray-500 space-y-1">
+                      <p>{invoiceSettings.addressLine1}</p>
+                      <p>{invoiceSettings.addressLine2}</p>
+                      <p>GSTIN: {invoiceSettings.gstin}</p>
+                      <p>{invoiceSettings.email} | {invoiceSettings.phone}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Tax Invoice</h2>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 text-left w-64 ml-auto">
+                      <span className="font-semibold text-gray-800">Invoice No:</span>
+                      <span className="text-right uppercase">{selectedOrderToPrint.id.slice(0, 8)}</span>
+                      <span className="font-semibold text-gray-800">Date:</span>
+                      <span className="text-right">{selectedOrderToPrint.created_at ? new Date(selectedOrderToPrint.created_at).toLocaleDateString('en-IN') : 'N/A'}</span>
+                      <span className="font-semibold text-gray-800">Order No:</span>
+                      <span className="text-right uppercase">{selectedOrderToPrint.order_number || selectedOrderToPrint.id.slice(0, 8)}</span>
+                      <span className="font-semibold text-gray-800">Payment:</span>
+                      <span className="text-right uppercase">{selectedOrderToPrint.payment_method} ({selectedOrderToPrint.payment_status})</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Customer Details */}
+                <div className="grid grid-cols-2 gap-12 mb-10">
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Billed To</h3>
+                    <p className="font-bold text-[#111111] text-lg">{selectedOrderToPrint.customer_name}</p>
+                    <p className="text-sm text-gray-600 mt-1">{selectedOrderToPrint.customer_email}</p>
+                    <p className="text-sm text-gray-600 mb-2">{selectedOrderToPrint.customer_phone}</p>
+                  </div>
+                  {selectedOrderToPrint.shipping_address && (
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Shipped To</h3>
+                      <p className="font-bold text-[#111111]">{selectedOrderToPrint.shipping_address.name || selectedOrderToPrint.customer_name}</p>
+                      <p className="text-sm text-gray-600 mt-1">{selectedOrderToPrint.shipping_address.address}</p>
+                      <p className="text-sm text-gray-600">{selectedOrderToPrint.shipping_address.city}, {selectedOrderToPrint.shipping_address.state}</p>
+                      <p className="text-sm text-gray-600">PIN: {selectedOrderToPrint.shipping_address.pin}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Line Items */}
+                <div className="mb-10">
+                  <table className="w-full text-left text-sm border-collapse">
+                    <thead>
+                      <tr className="bg-[#FAF8F5] border-y border-[#111111]">
+                        <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs">Item Description</th>
+                        <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-center">HSN</th>
+                        <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-center">Qty</th>
+                        <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-right">Rate</th>
+                        <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-right">Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {selectedOrderToPrint.items?.map((item: any, i: number) => (
+                        <tr key={i}>
+                          <td className="py-4 px-4">
+                            <p className="font-bold text-[#111111]">{item.product_name || item.name}</p>
+                            <p className="text-xs text-gray-500 mt-1">Color: {item.color_name || 'N/A'} | Size: {item.size}</p>
+                          </td>
+                          <td className="py-4 px-4 text-center text-gray-600">6204</td>
+                          <td className="py-4 px-4 text-center">{item.quantity}</td>
+                          <td className="py-4 px-4 text-right">₹{item.price?.toLocaleString('en-IN')}</td>
+                          <td className="py-4 px-4 text-right font-medium">₹{(item.price * item.quantity).toLocaleString('en-IN')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Totals */}
+                <div className="flex justify-end mb-12">
+                  <div className="w-80">
+                    <div className="flex justify-between py-2 text-sm text-gray-600">
+                      <span>Subtotal</span>
+                      <span>₹{selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-gray-200">
+                      <span>Shipping & Handling</span>
+                      <span>₹0</span>
+                    </div>
+                    <div className="flex justify-between py-2 text-sm text-gray-600">
+                      <span>Taxable Amount</span>
+                      <span>₹{(selectedOrderToPrint.total_amount * 0.82).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-[#111111]">
+                      <span>IGST (18%)</span>
+                      <span>₹{(selectedOrderToPrint.total_amount * 0.18).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+                    </div>
+                    <div className="flex justify-between py-4 text-xl font-bold text-[#111111]">
+                      <span>Grand Total</span>
+                      <span>₹{selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer & T&C */}
+                <div className="grid grid-cols-2 gap-8 border-t-2 border-[#EFEFEF] pt-8 text-xs text-gray-500">
+                  <div>
+                    <h4 className="font-bold text-[#111111] mb-2 uppercase tracking-widest">Terms & Conditions</h4>
+                    <ul className="list-disc pl-4 space-y-1">
+                      {invoiceSettings.terms.split('\n').map((term: string, idx: number) => (
+                        <li key={idx}>{term}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="text-right flex flex-col justify-end">
+                    <h4 className="font-bold text-[#111111] mb-1">For {invoiceSettings.companyName}</h4>
+                    <p className="italic">{invoiceSettings.signatory}</p>
                   </div>
                 </div>
               </div>
