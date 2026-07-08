@@ -217,8 +217,8 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       
       <div className="bg-white min-h-screen pt-36 pb-20">
         <div className="container mx-auto px-6 lg:px-12">
-          {/* Breadcrumbs */}
-          <div className="text-[11px] uppercase tracking-widest text-[#666666] mb-8 flex items-center gap-2">
+          {/* Breadcrumbs - Hidden on Mobile */}
+          <div className="hidden md:flex text-[11px] uppercase tracking-widest text-[#666666] mb-8 items-center gap-2">
             <Link href="/" className="hover:text-[#C7A17A] transition-colors">Home</Link>
             <span>/</span>
             <Link href={`/collections/${product.category.toLowerCase()}`} className="hover:text-[#C7A17A] transition-colors">{product.category}</Link>
@@ -226,14 +226,38 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             <span className="text-[#111111]">{product.name}</span>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-            {/* Mobile Swipeable Gallery */}
-            <div className="w-full md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-6 px-6 pb-4" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-              {activeImages.map((img, i) => (
-                <div key={i} className="relative w-full aspect-[3/4] flex-shrink-0 snap-center bg-[#FAF8F5]">
-                  <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" priority={i === 0} />
+          <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20">
+            {/* Mobile Swipeable Gallery (Edge-to-Edge) */}
+            <div className="relative w-screen -mx-6 md:hidden">
+              <div 
+                className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+                onScroll={(e) => {
+                  const scrollLeft = (e.target as HTMLElement).scrollLeft;
+                  const width = (e.target as HTMLElement).clientWidth;
+                  const newIndex = Math.round(scrollLeft / width);
+                  if (newIndex !== activeImages.indexOf(selectedImage)) {
+                    setSelectedImage(activeImages[newIndex] || activeImages[0]);
+                  }
+                }}
+              >
+                {activeImages.map((img, i) => (
+                  <div key={i} className="relative w-screen aspect-[4/5] flex-shrink-0 snap-center bg-[#FAF8F5]">
+                    <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" priority={i === 0} />
+                  </div>
+                ))}
+              </div>
+              
+              {/* Pagination Dots */}
+              {activeImages.length > 1 && (
+                <div className="absolute bottom-4 left-0 w-full flex justify-center gap-2 z-10">
+                  {activeImages.map((img, i) => (
+                    <div 
+                      key={i} 
+                      className={`h-1 transition-all duration-300 ${selectedImage === img ? 'w-4 bg-[#111111]' : 'w-1.5 bg-black/30'}`}
+                    />
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Gallery (Left) */}
@@ -265,17 +289,17 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
 
             {/* Product Info (Right) */}
             <div className="w-full lg:w-[40%] flex flex-col">
-              <div className="flex justify-between items-start mb-4">
-                <h1 className="font-serif text-3xl md:text-4xl text-[#111111]">{product.name}</h1>
+              <div className="flex justify-between items-start mb-2 md:mb-4">
+                <h1 className="font-serif text-2xl md:text-4xl text-[#111111] leading-tight pr-4">{product.name}</h1>
                 <button
                   onClick={handleShare}
                   title={shareCopied ? "Link Copied!" : "Share"}
-                  className={`transition-colors p-2 ${shareCopied ? 'text-[#2F855A]' : 'text-[#111111] hover:text-[#C7A17A]'}`}
+                  className={`transition-colors p-1 md:p-2 flex-shrink-0 ${shareCopied ? 'text-[#2F855A]' : 'text-[#111111] hover:text-[#C7A17A]'}`}
                 >
-                  <Share2 className="w-5 h-5" />
+                  <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
               </div>
-              <div className="text-xl text-[#111111] mb-8 flex items-center gap-3">
+              <div className="text-lg md:text-xl font-medium text-[#111111] mb-6 md:mb-8 flex items-center gap-3" style={{ fontFamily: 'var(--font-montserrat)' }}>
                 ₹{product.price.toLocaleString('en-IN')}
                 {product.compare_at_price && product.compare_at_price > product.price && (
                   <>
@@ -291,18 +315,18 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               {/* Colors */}
               {product.colors && product.colors.length > 0 && (
                 <div className="mb-8">
-                  <p className="text-xs uppercase tracking-widest text-[#666666] mb-4">
-                    Color: <span className="text-[#111111] font-medium">{selectedColor.name}</span>
+                  <p className="text-[10px] uppercase tracking-widest text-[#666666] mb-4">
+                    Color <span className="text-[#111111] font-medium ml-2">{selectedColor.name}</span>
                   </p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-2">
                     {product.colors.map(color => (
                       <button 
                         key={color.name}
                         onClick={() => handleColorSelect(color)}
-                        className={`w-10 h-10 rounded-full border-2 transition-all ${selectedColor.name === color.name ? 'border-[#111111] p-[2px]' : 'border-transparent p-0'}`}
+                        className={`w-8 h-8 rounded-full border transition-all flex items-center justify-center ${selectedColor.name === color.name ? 'border-[#111111] p-[2px]' : 'border-transparent p-0'}`}
                       >
                         <span 
-                          className="block w-full h-full rounded-full border border-[#EFEFEF]" 
+                          className="block w-full h-full rounded-full border border-black/10" 
                           style={{ backgroundColor: color.hex }}
                         />
                       </button>
@@ -314,14 +338,14 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               {/* Sizes */}
               <div className="mb-8">
                 <div className="flex justify-between items-center mb-4">
-                  <p className="text-xs uppercase tracking-widest text-[#666666]">
-                    Size: <span className="text-[#111111] font-medium">{selectedSize}</span>
+                  <p className="text-[10px] uppercase tracking-widest text-[#666666]">
+                    Size <span className="text-[#111111] font-medium ml-2">{selectedSize}</span>
                   </p>
                   <button
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-xs uppercase tracking-widest text-[#111111] underline underline-offset-4 flex items-center gap-1 hover:text-[#C7A17A] transition-colors"
+                    className="text-[10px] uppercase tracking-widest text-[#111111] underline underline-offset-4 flex items-center gap-1 hover:text-[#C7A17A] transition-colors"
                   >
-                    <Ruler className="w-3 h-3" /> Size Guide
+                    Size Guide
                   </button>
                 </div>
                 <div className="grid grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-2">
@@ -337,7 +361,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                       <button 
                         key={size}
                         onClick={() => setSelectedSize(size)}
-                        className={`py-3 text-[10px] uppercase tracking-widest border transition-colors relative ${
+                        className={`py-2 text-[10px] uppercase tracking-widest border transition-colors relative ${
                           selectedSize === size 
                             ? 'border-[#111111] bg-[#111111] text-white' 
                             : isSizeOutOfStock 
@@ -400,11 +424,11 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col gap-4 mb-10 sticky bottom-[64px] z-[45] bg-white py-4 md:static md:p-0 border-t border-[#EFEFEF] md:border-none" ref={addToCartRef}>
+              <div className="flex flex-col gap-3 mb-6 sticky bottom-[64px] z-[45] bg-white py-3 md:py-4 md:static md:p-0 border-t border-[#EFEFEF] md:border-none" ref={addToCartRef}>
                 <button 
                   onClick={handleAddToCart}
                   disabled={isOutOfStock}
-                  className={`w-full py-4 uppercase tracking-widest text-sm font-medium transition-colors ${
+                  className={`w-full py-3 md:py-4 uppercase tracking-widest text-[11px] md:text-sm font-medium transition-colors ${
                     isOutOfStock 
                       ? 'bg-[#EFEFEF] text-[#999999] cursor-not-allowed' 
                       : 'bg-[#111111] hover:bg-[#C7A17A] text-white'
@@ -412,11 +436,11 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                 >
                   {isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
                 </button>
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   <button
                     onClick={handleBuyNow}
                     disabled={isOutOfStock}
-                    className={`flex-1 border py-4 uppercase tracking-widest text-sm font-medium transition-colors ${
+                    className={`flex-1 border py-3 md:py-4 uppercase tracking-widest text-[11px] md:text-sm font-medium transition-colors ${
                       isOutOfStock 
                         ? 'border-[#EFEFEF] text-[#999999] cursor-not-allowed' 
                         : 'border-[#111111] text-[#111111] hover:bg-[#111111] hover:text-white'
@@ -427,18 +451,18 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   <button
                     onClick={handleWishlist}
                     title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
-                    className={`w-14 border flex items-center justify-center transition-colors ${isWishlisted(product.id) ? 'border-[#E63946] bg-[#E63946] text-white' : 'border-[#EFEFEF] hover:border-[#E63946] text-[#111111] hover:text-[#E63946]'}`}
+                    className={`w-12 md:w-14 border flex items-center justify-center transition-colors ${isWishlisted(product.id) ? 'border-[#E63946] bg-[#E63946] text-white' : 'border-[#EFEFEF] hover:border-[#E63946] text-[#111111] hover:text-[#E63946]'}`}
                   >
-                    <Heart className={`w-5 h-5 ${isWishlisted(product.id) ? 'fill-current' : ''}`} />
+                    <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isWishlisted(product.id) ? 'fill-current' : ''}`} />
                   </button>
                 </div>
                 <a 
                   href="https://wa.me/919876543210" 
                   target="_blank" 
                   rel="noreferrer"
-                  className="w-full mt-2 flex items-center justify-center gap-2 border border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white py-3 text-sm font-medium transition-colors rounded-sm"
+                  className="w-full mt-2 flex items-center justify-center gap-2 text-[#25D366] hover:text-[#111111] py-2 text-[10px] uppercase tracking-widest transition-colors rounded-sm"
                 >
-                  <MessageCircle className="w-5 h-5" /> Need styling advice? Chat on WhatsApp
+                  <MessageCircle className="w-3 h-3 md:w-4 md:h-4" /> Need styling advice? WhatsApp Us
                 </a>
               </div>
 
@@ -459,39 +483,39 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               </div>
 
               {/* Accordions */}
-              <div className="border-t border-[#EFEFEF]">
-                <div className="py-4 border-b border-[#EFEFEF]">
+              <div className="border-t border-[#EFEFEF] mt-2">
+                <div className="py-5 border-b border-[#EFEFEF]">
                   <button 
                     onClick={() => setActiveTab(activeTab === "desc" ? "" : "desc")}
-                    className="w-full flex justify-between items-center text-left uppercase tracking-widest text-sm font-medium text-[#111111]"
+                    className="w-full flex justify-between items-center text-left uppercase tracking-[0.2em] text-[10px] font-medium text-[#111111]"
                   >
                     Description
-                    {activeTab === "desc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    <span className="text-lg font-light leading-none">{activeTab === "desc" ? "—" : "+"}</span>
                   </button>
-                  {activeTab === "desc" && (
-                    <div className="pt-4 text-[#666666] leading-relaxed text-sm">
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeTab === "desc" ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
+                    <div className="text-[#666666] leading-relaxed text-[13px] pb-2">
                       {product.description}
                     </div>
-                  )}
+                  </div>
                 </div>
-                <div className="py-4 border-b border-[#EFEFEF]">
+                <div className="py-5 border-b border-[#EFEFEF]">
                   <button 
                     onClick={() => setActiveTab(activeTab === "details" ? "" : "details")}
-                    className="w-full flex justify-between items-center text-left uppercase tracking-widest text-sm font-medium text-[#111111]"
+                    className="w-full flex justify-between items-center text-left uppercase tracking-[0.2em] text-[10px] font-medium text-[#111111]"
                   >
                     Details & Care
-                    {activeTab === "details" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    <span className="text-lg font-light leading-none">{activeTab === "details" ? "—" : "+"}</span>
                   </button>
-                  {activeTab === "details" && (
-                    <ul className="pt-4 text-[#666666] text-sm space-y-2 list-disc pl-4">
-                      {product.brand && <li><strong>Brand:</strong> {product.brand}</li>}
-                      {product.fabric && <li><strong>Fabric:</strong> {product.fabric}</li>}
-                      {product.tags && product.tags.length > 0 && <li><strong>Tags:</strong> {product.tags.join(', ')}</li>}
+                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeTab === "details" ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
+                    <ul className="text-[#666666] text-[13px] space-y-2 list-none pb-2">
+                      {product.brand && <li><span className="font-medium text-[#111111]">Brand:</span> {product.brand}</li>}
+                      {product.fabric && <li><span className="font-medium text-[#111111]">Fabric:</span> {product.fabric}</li>}
+                      {product.tags && product.tags.length > 0 && <li><span className="font-medium text-[#111111]">Tags:</span> {product.tags.join(', ')}</li>}
                       {!product.brand && !product.fabric && product.details.map((detail, i) => (
                         <li key={i}>{detail}</li>
                       ))}
                     </ul>
-                  )}
+                  </div>
                 </div>
               </div>
 

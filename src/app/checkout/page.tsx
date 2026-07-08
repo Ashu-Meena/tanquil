@@ -495,27 +495,27 @@ export default function CheckoutPage() {
                               exit={{ height: 0, opacity: 0 }}
                               className="overflow-hidden"
                             >
-                              <div className="mt-4 space-y-4 border border-[#EFEFEF] p-4 rounded-sm">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                              <div className="mt-4 space-y-4 border border-[#EFEFEF] p-6 rounded-sm bg-white">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                                  <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                  <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm text-[#666]">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                  <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                                  <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm text-[#666]">
                                     <option value="" disabled>Select State</option>
                                     {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                                   </select>
-                                  <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                  <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                                 </div>
-                                <div className="grid grid-cols-1 gap-4">
-                                  <input type="text" value={landmark} onChange={e => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                <div className="grid grid-cols-1 gap-6">
+                                  <input type="text" value={landmark} onChange={e => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
-                                  <input type="tel" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm" />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                                  <input type="tel" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                                 </div>
-                                <button onClick={handleSaveNewAddress} className="bg-[#111111] text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors">
+                                <button onClick={handleSaveNewAddress} className="bg-[#111111] text-white px-8 py-4 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors mt-2">
                                   Save Address
                                 </button>
                               </div>
@@ -525,22 +525,22 @@ export default function CheckoutPage() {
                       </div>
                     ) : (
                       <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                         </div>
-                        <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Address" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                        <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors text-[#666]">
+                        <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Address" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                        <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                          <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm text-[#666]">
                               <option value="" disabled>Select State</option>
                               {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                             </select>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className="w-full bg-white border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                         </div>
                       </>
                     )}
@@ -612,22 +612,22 @@ export default function CheckoutPage() {
                               
                               <div className="w-full max-w-[300px] space-y-4 text-left border-t border-[#EFEFEF] pt-6">
                                 <div>
-                                  <label className="block text-xs font-medium text-[#111111] mb-1 uppercase tracking-wider">Transaction ID / UTR No.</label>
+                                  <label className="block text-[10px] font-medium text-[#666666] mb-2 uppercase tracking-wider">Transaction ID / UTR No.</label>
                                   <input 
                                     type="text" 
                                     placeholder="Enter 12-digit UTR" 
                                     value={transactionId}
                                     onChange={(e) => setTransactionId(e.target.value)}
-                                    className="w-full bg-white border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] transition-colors rounded-sm" 
+                                    className="w-full bg-transparent border-b border-[#EFEFEF] pb-3 text-sm focus:outline-none focus:border-[#111111] transition-colors placeholder-[#999999]" 
                                   />
                                 </div>
-                                <div>
-                                  <label className="block text-xs font-medium text-[#111111] mb-1 uppercase tracking-wider">Payment Screenshot</label>
+                                <div className="mt-6">
+                                  <label className="block text-[10px] font-medium text-[#666666] mb-3 uppercase tracking-wider">Payment Screenshot</label>
                                   <input 
                                     type="file" 
                                     accept="image/*"
                                     onChange={handleScreenshotUpload}
-                                    className="w-full bg-white border border-[#EFEFEF] p-2 text-xs focus:outline-none focus:border-[#C7A17A] transition-colors rounded-sm file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-xs file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer" 
+                                    className="w-full text-xs text-[#666666] file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer" 
                                   />
                                   {paymentScreenshotPreview && (
                                     <p className="text-xs text-[#2F855A] mt-2 flex items-center gap-1 font-medium">
@@ -743,8 +743,8 @@ export default function CheckoutPage() {
 
           {/* Right: Order Summary */}
           <div className="w-full lg:w-[400px]">
-            <div className="bg-white border border-[#EFEFEF] p-6 lg:p-8 sticky top-32">
-              <h2 className="font-serif text-2xl text-[#111111] mb-6">Order Summary</h2>
+            <div className="bg-white p-6 lg:p-10 sticky top-32 shadow-[0_0_40px_rgba(0,0,0,0.03)] rounded-md">
+              <h2 className="font-serif text-2xl text-[#111111] mb-8">Order Summary</h2>
               
               <div className="space-y-6 mb-8">
                 {mounted && cartItems.length === 0 ? (
@@ -769,19 +769,19 @@ export default function CheckoutPage() {
               </div>
 
               {/* Discount Code */}
-              <div className="mb-8 border-t border-[#EFEFEF] pt-6">
-                <div className="flex gap-2">
+              <div className="mb-8 border-t border-[#EFEFEF] pt-8">
+                <div className="flex relative">
                   <input
                     type="text"
-                    placeholder="Discount Code"
+                    placeholder="DISCOUNT CODE"
                     value={discountCode}
                     onChange={e => setDiscountCode(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleApplyDiscount()}
-                    className="flex-1 bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors text-sm uppercase"
+                    className="w-full bg-transparent border-b border-[#EFEFEF] pb-3 focus:outline-none focus:border-[#111111] transition-colors text-xs tracking-widest uppercase placeholder-[#999999]"
                   />
-                  <button onClick={handleApplyDiscount} className="bg-[#111111] hover:bg-[#C7A17A] text-white px-6 uppercase tracking-widest text-xs font-medium transition-colors">Apply</button>
+                  <button onClick={handleApplyDiscount} className="absolute right-0 top-0 text-[10px] uppercase tracking-widest text-[#111111] hover:text-[#C7A17A] transition-colors pb-3 border-b border-transparent font-medium">Apply</button>
                 </div>
-                {discountMsg && <p className={`text-xs mt-2 ${discountMsg.includes('✓') ? 'text-[#2F855A]' : 'text-[#E63946]'}`}>{discountMsg}</p>}
+                {discountMsg && <p className={`text-[10px] uppercase tracking-widest mt-3 ${discountMsg.includes('✓') ? 'text-[#2F855A]' : 'text-[#E63946]'}`}>{discountMsg}</p>}
               </div>
 
               {/* Totals */}
