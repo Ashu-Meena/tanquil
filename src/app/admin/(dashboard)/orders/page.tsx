@@ -135,6 +135,20 @@ export default function OrdersPage() {
     } : null);
     setUpdating(false);
   };
+  const handleDeleteAllOrders = async () => {
+    if (!confirm("Are you sure you want to permanently delete ALL orders? This cannot be undone.")) return;
+    setUpdating(true);
+    const supabase = createClient();
+    const { error } = await supabase.from('orders').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    if (error) {
+      toast.error("Failed to delete orders: " + error.message);
+    } else {
+      toast.success("All orders have been deleted!");
+      setOrders([]);
+      setSelectedOrder(null);
+    }
+    setUpdating(false);
+  };
 
   const openModal = (order: Order) => {
     setSelectedOrder(order);
@@ -198,9 +212,14 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Orders</h1>
-          <p className="text-[#666666] text-sm">Manage and fulfill customer orders</p>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="font-serif text-3xl text-[#111111] tracking-widest uppercase mb-2">Orders Management</h1>
+            <p className="text-[#666666] text-sm">View and manage customer orders, updates status and process fulfillment.</p>
+          </div>
+          <button onClick={handleDeleteAllOrders} className="bg-red-600 text-white px-4 py-2 uppercase tracking-widest text-xs font-medium hover:bg-red-700 transition-colors flex items-center gap-2">
+            Delete All Orders
+          </button>
         </div>
         <div className="flex gap-2">
           <div className="bg-white border border-[#EFEFEF] px-4 py-2 rounded-sm text-center">
