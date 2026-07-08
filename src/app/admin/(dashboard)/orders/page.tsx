@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Package, Search, Filter, Printer, ExternalLink, MoreVertical, Check, X } from "lucide-react";
 import { toast } from "@/store/useToastStore";
+import Image from "next/image";
 
 interface Order {
   id: string;
@@ -79,7 +80,7 @@ export default function OrdersPage() {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("orders")
-      .select("*, items:order_items(*)")
+      .select("*, items:order_items(*, product:products(images))")
       .order("created_at", { ascending: false });
     
     if (!error && data) setOrders(data);
@@ -399,10 +400,10 @@ export default function OrdersPage() {
                       <div className="space-y-4">
                         {selectedOrder.items.map((item, i) => (
                           <div key={i} className="flex gap-4 items-center text-sm">
-                            <div className="relative w-16 h-20 bg-[#FAF8F5] flex-shrink-0 rounded-sm overflow-hidden border border-[#EFEFEF]">
-                              {item.image_url ? (
-                                <img src={item.image_url} alt={item.product_name || item.name || 'Product'} className="object-cover w-full h-full" />
-                              ) : (
+                            <div className="relative w-12 h-16 bg-[#FAF8F5] flex-shrink-0">
+                                  {item.image_url || item.image || item.product?.images?.[0] ? (
+                                    <Image src={item.image_url || item.image || item.product?.images?.[0]} alt={item.product_name || item.name} fill className="object-cover" />
+                                  ) : (
                                 <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px] uppercase tracking-widest text-center px-1">No Image</div>
                               )}
                             </div>

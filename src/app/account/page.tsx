@@ -92,7 +92,7 @@ export default function AccountPage() {
       }
 
       // Fetch orders
-      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*)').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
+      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*, product:products(images))').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
       if (userOrders) {
         setOrders(userOrders);
       }
@@ -562,8 +562,8 @@ export default function AccountPage() {
                             {order.items?.map((item: any, idx: number) => (
                               <div key={idx} className="flex flex-col sm:flex-row gap-6">
                                 <div className="relative w-24 h-32 bg-[#FAF8F5] flex-shrink-0">
-                                  {item.image_url || item.image ? (
-                                    <Image src={item.image_url || item.image} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
+                                  {item.image_url || item.image || item.product?.images?.[0] ? (
+                                    <Image src={item.image_url || item.image || item.product?.images?.[0]} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center text-[#999999] text-xs uppercase tracking-widest text-center px-2">No Image</div>
                                   )}
