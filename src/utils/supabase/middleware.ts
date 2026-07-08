@@ -41,7 +41,6 @@ export async function updateSession(request: NextRequest) {
       url.pathname = '/admin/login'
       return NextResponse.redirect(url)
     } else {
-      // Check if user is actually an admin in the profiles table
       const { data: profile } = await supabase
         .from('profiles')
         .select('is_admin, role')

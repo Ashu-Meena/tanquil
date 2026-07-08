@@ -65,7 +65,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="max-w-4xl px-4"
           >
-            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-white mb-4 lg:mb-6 leading-tight tracking-wide">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white mb-4 lg:mb-6 leading-tight tracking-wide">
               {slides[currentSlide].title}
             </h1>
             <p className="font-serif italic text-lg md:text-2xl text-white/90 mb-8 lg:mb-10">
@@ -103,7 +103,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 right-8 z-20 flex flex-col items-center gap-3">
+      <div className="hidden md:flex absolute bottom-8 right-8 z-20 flex-col items-center gap-3">
         <span className="text-[10px] uppercase tracking-widest text-white/70 transform rotate-90 translate-y-6">Scroll</span>
         <motion.div 
           animate={{ y: [0, 10, 0] }} 

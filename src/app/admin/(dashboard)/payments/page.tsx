@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 
 interface Transaction {
   id: string;
+  order_number?: string;
   customer_name: string;
   customer_email: string;
   total_amount: number;
@@ -81,7 +82,7 @@ export default function PaymentsPage() {
               ) : (
                 transactions.map((tx) => (
                   <tr key={tx.id} className="hover:bg-[#FAF8F5] transition-colors">
-                    <td className="p-4 font-mono text-xs text-[#666666]">{tx.id.slice(0, 8).toUpperCase()}</td>
+                    <td className="p-4 font-mono text-xs text-[#666666]">#{tx.order_number || tx.id.slice(0, 8).toUpperCase()}</td>
                     <td className="p-4 text-[#666666]">
                       {new Date(tx.created_at).toLocaleDateString()}
                       <div className="text-xs">{new Date(tx.created_at).toLocaleTimeString()}</div>

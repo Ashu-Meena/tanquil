@@ -185,13 +185,7 @@ export default function CheckoutPage() {
     const { data, error } = await supabase.from('addresses').insert(newAddress).select().single();
     
     if (error) {
-      console.warn("Failed to save address to DB:", error.message);
-      // Fallback: Just save it to local state so they can continue checkout!
-      const temporaryAddress = { ...newAddress, id: `temp-${Date.now()}` };
-      setSavedAddresses([temporaryAddress, ...savedAddresses]);
-      setSelectedAddress(temporaryAddress.id);
-      setShowNewAddressForm(false);
-      setFormError("");
+      setFormError("Failed to save address: " + error.message);
     } else if (data) {
       setSavedAddresses([data, ...savedAddresses]);
       setSelectedAddress(data.id);
@@ -348,9 +342,8 @@ export default function CheckoutPage() {
         clearCart();
         router.push('/checkout/success');
       }
-    } catch (err) {
-      console.error(err);
-      setFormError("Error placing order. Please try again.");
+    } catch (err: any) {
+      setFormError(err.message || "Error placing order. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

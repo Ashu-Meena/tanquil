@@ -42,7 +42,7 @@ const StoryCard = ({ story }: { story: Story }) => {
   return (
     <div 
       ref={containerRef}
-      className={`flex flex-row items-center gap-6 md:gap-12 lg:gap-24 ${story.align === 'right' ? 'flex-row-reverse' : ''}`}
+      className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 lg:gap-24 ${story.align === 'right' ? 'md:flex-row-reverse' : ''}`}
     >
       {/* Image Block */}
       <motion.div 
@@ -50,7 +50,7 @@ const StoryCard = ({ story }: { story: Story }) => {
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="w-1/2 lg:w-3/5"
+        className="w-full md:w-1/2 lg:w-3/5"
       >
         <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden group">
           <motion.div style={{ y: y1 }} className="absolute inset-[-15%] w-[130%] h-[130%]">
@@ -71,13 +71,13 @@ const StoryCard = ({ story }: { story: Story }) => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-1/2 lg:w-2/5 flex flex-col justify-center"
+        className="w-full md:w-1/2 lg:w-2/5 flex flex-col justify-center"
       >
-        <span className="text-[#C7A17A] text-[8px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium mb-2 md:mb-6 block">Editorial</span>
-        <h3 className="font-serif text-xl md:text-3xl lg:text-5xl text-[#111111] mb-2 md:mb-6 leading-tight">
+        <span className="text-[#C7A17A] text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium mb-2 md:mb-6 block">Editorial</span>
+        <h3 className="font-serif text-3xl md:text-3xl lg:text-5xl text-[#111111] mb-2 md:mb-6 leading-tight">
           {story.title}
         </h3>
-        <p className="text-[#666666] leading-relaxed mb-4 md:mb-10 text-[10px] md:text-lg line-clamp-4 md:line-clamp-none">
+        <p className="text-[#666666] leading-relaxed mb-6 md:mb-10 text-sm md:text-lg">
           {story.description}
         </p>
         <Link 

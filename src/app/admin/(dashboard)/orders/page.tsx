@@ -80,7 +80,7 @@ export default function OrdersPage() {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("orders")
-      .select("*, items:order_items(*, product:products(images))")
+      .select("*, items:order_items(*)")
       .order("created_at", { ascending: false });
     
     if (!error && data) setOrders(data);

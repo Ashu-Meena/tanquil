@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useState } from "react";
+
 interface Category {
   id: string | number;
   title: string;
@@ -11,70 +13,87 @@ interface Category {
   link: string;
 }
 
-const getBentoClass = (index: number, total: number) => {
-  if (total === 4) {
-    return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-[3/4]";
-  }
-  return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-[3/4]";
-};
-
 export default function ShopByCategory({ categories }: { categories: Category[] }) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   if (!categories || categories.length === 0) return null;
 
   return (
-    <section className="py-24 bg-[#FAF8F5]">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="text-center mb-16">
+    <section className="py-20 bg-white overflow-hidden">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12">
+        <div className="text-center mb-12">
           <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
+            className="font-serif text-3xl md:text-4xl text-[#111111] mb-2"
           >
             Shop By Category
           </motion.h2>
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-serif italic text-xl text-[#666666]"
+            className="text-[#666666] font-serif italic text-lg"
           >
             Find your perfect piece
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense gap-3 md:gap-6">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
-              className={`relative overflow-hidden group ${getBentoClass(index, categories.length)}`}
-            >
-              <Link href={category.link} className="absolute inset-0 z-20" aria-label={`Shop ${category.title}`} />
-              <Image 
-                src={category.image} 
-                alt={category.title} 
-                fill 
-                className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]"
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
-              
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4 text-center">
-                <h3 className="font-serif text-2xl md:text-3xl lg:text-4xl text-white tracking-wider uppercase group-hover:scale-110 transition-transform duration-700">
-                  {category.title}
-                </h3>
-              </div>
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0">
-                <span className="bg-white text-[#111111] px-6 py-2 uppercase tracking-widest text-[10px] font-medium whitespace-nowrap">
-                  Explore
-                </span>
-              </div>
-            </motion.div>
-          ))}
+        {/* Circular Avatars Layout */}
+        <div className="flex overflow-x-auto justify-start md:justify-center gap-6 md:gap-10 pb-8 pt-4 px-2 no-scrollbar snap-x">
+          {categories.map((category, index) => {
+            const isHovered = hoveredIndex === index;
+            const isNotHovered = hoveredIndex !== null && !isHovered;
+
+            return (
+              <motion.div
+                key={category.id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05, duration: 0.5, ease: "easeOut" }}
+                className="snap-center flex-shrink-0"
+              >
+                <Link
+                  href={category.link}
+                  className="group flex flex-col items-center gap-4"
+                  aria-label={`Shop ${category.title}`}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {/* Fixed Height Container to prevent text jumping */}
+                  <div className="flex items-center justify-center h-[140px] md:h-[200px]">
+                    {/* Circular Image Container with dynamic sizing */}
+                    <div 
+                      className={`relative rounded-full overflow-hidden border border-gray-100 shadow-sm transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                        hoveredIndex === null 
+                          ? "w-[110px] h-[110px] md:w-[150px] md:h-[150px]" 
+                          : isHovered 
+                            ? "w-[140px] h-[140px] md:w-[200px] md:h-[200px] -translate-y-2 shadow-lg"
+                            : "w-[90px] h-[90px] md:w-[120px] md:h-[120px] opacity-60 grayscale-[30%]"
+                      }`}
+                    >
+                      <Image 
+                        src={category.image} 
+                        alt={category.title} 
+                        fill 
+                        sizes="(max-width: 768px) 140px, 200px"
+                        className="object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]"
+                      />
+                      {/* Subtle Dark Overlay on hover */}
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+                    </div>
+                  </div>
+                  
+                  {/* Text Label */}
+                  <span className={`uppercase tracking-[0.15em] text-[10px] md:text-xs font-semibold text-center max-w-[120px] transition-colors duration-700 ${isNotHovered ? 'text-gray-400' : 'text-[#111111]'}`}>
+                    {category.title}
+                  </span>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

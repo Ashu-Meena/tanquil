@@ -35,7 +35,7 @@ export default function Header() {
     fetchCategories();
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
   // Close mobile menu on route change
   useEffect(() => {

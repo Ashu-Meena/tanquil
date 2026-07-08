@@ -80,7 +80,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="absolute inset-0 bg-white p-8 md:p-12 shadow-sm border border-[#EFEFEF] flex flex-col justify-between"
+              className="absolute inset-0 bg-white p-6 md:p-12 shadow-sm border border-[#EFEFEF] flex flex-col justify-between"
             >
               <div>
                 <div className="flex justify-center items-center gap-1 mb-8 text-[#C7A17A]">

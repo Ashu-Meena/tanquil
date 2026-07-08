@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { useState } from "react";
 
 interface Collection {
   id: string | number;
@@ -12,22 +13,14 @@ interface Collection {
   image: string;
 }
 
-const getBentoClass = (index: number, total: number) => {
-  if (total === 4) {
-    if (index === 0) return "col-span-2 md:col-span-2 row-span-2 aspect-[4/5] md:aspect-auto min-h-[300px] md:min-h-[400px]";
-    if (index === 1) return "col-span-2 md:col-span-2 row-span-1 aspect-square md:aspect-[16/9]";
-    if (index === 2) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
-    if (index === 3) return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-square";
-  }
-  return "col-span-1 md:col-span-1 row-span-1 aspect-[4/5] md:aspect-[3/4]";
-};
-
 export default function TrendingMosaic({ collections }: { collections: Collection[] }) {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   if (!collections || collections.length === 0) return null;
 
   return (
     <section className="py-24 bg-[#FAF8F5]">
-      <div className="container mx-auto px-6 lg:px-12">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12">
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
           <div className="max-w-2xl">
             <motion.h2 
@@ -55,51 +48,58 @@ export default function TrendingMosaic({ collections }: { collections: Collectio
           </Link>
         </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 grid-flow-dense gap-3 md:gap-6">
-          {collections.map((col, index) => (
-            <Link
-              key={col.id}
-              href={`/collections/${col.slug}`}
-              className={`relative overflow-hidden group rounded-sm bg-[#EFEFEF] ${getBentoClass(index, collections.length)}`}
-              aria-label={`Shop ${col.title}`}
-            >
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1, duration: 0.8, ease: "easeOut" }}
-                className="w-full h-full relative"
+        {/* Hover Accordion Layout */}
+        <div className="flex flex-col md:flex-row h-[700px] md:h-[500px] lg:h-[600px] gap-2 md:gap-4 w-full">
+          {collections.map((col, index) => {
+            const isHovered = hoveredIndex === index;
+            const isNotHovered = hoveredIndex !== null && !isHovered;
+            
+            return (
+              <Link
+                key={col.id}
+                href={`/collections/${col.slug}`}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                className="relative overflow-hidden rounded-sm group cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex-1 min-h-[100px] md:min-w-[80px]"
+                style={{
+                  flex: hoveredIndex === null ? 1 : isHovered ? 4 : 0.5,
+                }}
+                aria-label={`Shop ${col.title}`}
               >
-                <Image 
-                  src={col.image} 
-                  alt={col.title} 
-                  fill 
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover group-hover:scale-[1.03] transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,1,0.5,1)]" 
-                />
-                
-                {/* Elegant Overlay */}
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/30 transition-colors duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
-                
-                {/* Content */}
-                <div className="absolute inset-x-0 bottom-0 p-3 md:p-8 flex items-end justify-between">
-                  <div className="transform translate-y-2 md:translate-y-4 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                    <span className="text-[#C7A17A] text-[8px] md:text-[10px] font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] mb-1 md:mb-3 block md:opacity-0 group-hover:opacity-100 transition-opacity duration-500 md:delay-100">
-                      Collection {String(index + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="font-serif text-xl md:text-4xl text-white font-light tracking-wide">{col.title}</h3>
-                  </div>
+                <div className="w-full h-full relative">
+                  <Image 
+                    src={col.image} 
+                    alt={col.title} 
+                    fill 
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-[2s] ease-[cubic-bezier(0.25,1,0.5,1)]" 
+                  />
                   
-                  {/* Floating Action Button */}
-                  <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out delay-100 group-hover:bg-white group-hover:text-[#111111] text-white">
-                    <ArrowUpRight className="w-5 h-5" />
+                  {/* Elegant Overlay */}
+                  <div className={`absolute inset-0 transition-colors duration-700 ${isNotHovered ? 'bg-black/60' : 'bg-black/20 group-hover:bg-black/40'}`} />
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent transition-opacity duration-700 ${isNotHovered ? 'opacity-40' : 'opacity-80'}`} />
+                  
+                  {/* Content */}
+                  <div className="absolute inset-x-0 bottom-0 p-4 md:p-8 flex items-end justify-between h-full">
+                    <div className={`transform transition-all duration-700 ease-out flex flex-col justify-end h-full ${isHovered ? 'translate-y-0' : 'translate-y-2 md:translate-y-4'}`}>
+                      <span className={`text-[#C7A17A] text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] md:tracking-[0.3em] mb-2 md:mb-3 block transition-all duration-700 ${isNotHovered ? 'opacity-50' : 'opacity-100'}`}>
+                        Collection {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <h3 className={`font-serif text-2xl md:text-4xl lg:text-5xl text-white font-light tracking-wide mb-2 md:mb-4 transition-all duration-700 ${isNotHovered ? 'opacity-0 md:opacity-100 md:-rotate-90 md:origin-bottom-left md:translate-x-4 md:-translate-y-4 md:text-2xl whitespace-nowrap' : 'opacity-100 md:rotate-0 md:origin-bottom-left md:translate-x-0 md:translate-y-0'}`}>
+                        {col.title}
+                      </h3>
+                      
+                      <div className={`overflow-hidden transition-all duration-700 ease-out ${isHovered ? 'max-h-[50px] opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'}`}>
+                         <span className="inline-flex items-center gap-2 text-white uppercase tracking-widest text-[10px] md:text-xs font-medium hover:text-[#C7A17A] transition-colors">
+                           Explore Edit <ArrowUpRight className="w-4 h-4" />
+                         </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

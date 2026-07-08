@@ -78,8 +78,7 @@ export default async function Home() {
     .from("categories")
     .select("*")
     .eq("is_active", true)
-    .order("display_order", { ascending: true })
-    .limit(4);
+    .order("display_order", { ascending: true });
 
   const mappedCategories = categories?.map(c => ({
     id: c.id,

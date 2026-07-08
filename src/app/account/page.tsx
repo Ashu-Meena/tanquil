@@ -92,7 +92,7 @@ export default function AccountPage() {
       }
 
       // Fetch orders
-      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*, product:products(images))').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
+      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*)').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
       if (userOrders) {
         setOrders(userOrders);
       }
