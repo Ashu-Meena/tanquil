@@ -38,7 +38,17 @@ export default function AccountPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [addresses, setAddresses] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<any[]>([]);
-  const [invoiceSettings, setInvoiceSettings] = useState<any>(null);
+  const [invoiceSettings, setInvoiceSettings] = useState<any>({
+    companyName: "Tranquil",
+    tagline: "LUXURY FASHION & APPAREL",
+    addressLine1: "123 Serenity Avenue, Fashion District",
+    addressLine2: "New Delhi, Delhi 110001, India",
+    gstin: "07AABCU9603R1ZX",
+    email: "support@tranquil.co.in",
+    phone: "+91 98765 43210",
+    terms: "Returns accepted within 7 days of delivery.\nItems must be unworn with original tags attached.\nThis is a computer generated invoice and requires no signature.",
+    signatory: "Authorized Signatory"
+  });
   const [selectedOrderToPrint, setSelectedOrderToPrint] = useState<any>(null);
   
   const addToCart = useCartStore((state) => state.addItem);
@@ -100,7 +110,7 @@ export default function AccountPage() {
       }
 
       // Fetch invoice settings
-      const { data: invData } = await supabase.from('store_settings').select('value').eq('id', 'invoice_settings').single();
+      const { data: invData } = await supabase.from('store_settings').select('value').eq('key', 'invoice_settings').single();
       if (invData?.value) {
         setInvoiceSettings(invData.value);
       }
