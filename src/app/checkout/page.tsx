@@ -188,6 +188,21 @@ export default function CheckoutPage() {
           };
         }
 
+        // 0. Pre-validate Cart Items to prevent ghost orders
+        const productIds = cartItems.map(item => item.id);
+        const { data: validProducts, error: valErr } = await supabase
+          .from('products')
+          .select('id')
+          .in('id', productIds);
+          
+        if (valErr) throw valErr;
+        
+        if (!validProducts || validProducts.length !== productIds.length) {
+          alert("Some items in your cart are no longer available in our store. Please review and update your cart.");
+          setIsSubmitting(false);
+          return;
+        }
+
         // 1. Generate Order Number & ID
         let orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
         try {
