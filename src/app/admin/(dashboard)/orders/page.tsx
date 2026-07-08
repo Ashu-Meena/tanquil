@@ -23,6 +23,7 @@ interface Order {
   transaction_id?: string;
   screenshot_url?: string;
   payment_status: string;
+  order_number?: string;
 }
 
 const STATUS_OPTIONS = [
