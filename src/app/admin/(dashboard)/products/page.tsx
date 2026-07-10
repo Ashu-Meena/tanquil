@@ -99,7 +99,8 @@ export default function ProductsPage() {
     if (error) {
       // Revert if error
       setProducts(previousProducts);
-      toast.error(`Failed to delete product: ${error.message}`);
+      console.error("Delete product error:", error);
+      toast.error(`Failed to complete operation. Please try again or check the logs.`);
     } else {
       toast.success("Product deleted successfully");
     }

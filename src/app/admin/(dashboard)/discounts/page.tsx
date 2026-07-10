@@ -65,7 +65,7 @@ export default function DiscountsPage() {
       setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
     } catch (error: any) {
       console.error(error);
-      toast.error("Error saving coupon: " + error.message);
+      toast.error("Failed to complete operation. Please try again or check the logs.");
     } finally {
       setSaving(false);
       fetchCoupons();

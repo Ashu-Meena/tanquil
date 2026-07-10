@@ -25,7 +25,27 @@ export function verifyToken(token: string, sessionSecret: string): boolean {
   }
 }
 
+import { checkExponentialBackoff, resetExponentialBackoff } from "@/lib/rate-limit";
+
+import { z } from "zod";
+
+const loginSchema = z.object({
+  password: z.string().min(8, "Password must be at least 8 characters").max(100, "Password too long"),
+}).strict();
+
 export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for") || "unknown";
+  const rateLimitResult = checkExponentialBackoff(ip, "admin");
+  
+  if (!rateLimitResult.success) {
+    return NextResponse.json(
+      { error: "Too many login attempts. Please try again later." },
+      { 
+        status: 429, 
+        headers: { "Retry-After": Math.ceil(rateLimitResult.retryAfterMs! / 1000).toString() }
+      }
+    );
+  }
   const adminSecret = process.env.ADMIN_SECRET;
   const sessionSecret = process.env.SESSION_SECRET;
 
@@ -36,14 +56,18 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let body: { password?: string };
+  let body: z.infer<typeof loginSchema>;
   try {
-    body = await req.json();
-  } catch {
+    const rawBody = await req.json();
+    body = loginSchema.parse(rawBody);
+  } catch (err: any) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json({ error: "Invalid request format.", details: err.issues }, { status: 400 });
+    }
     return NextResponse.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  const submitted = body.password ?? "";
+  const submitted = body.password;
 
   // timingSafeEqual prevents timing-based password guessing
   const isMatch = (() => {
@@ -72,6 +96,8 @@ export async function POST(req: NextRequest) {
     maxAge: COOKIE_MAX_AGE,
     path: "/",
   });
+
+  resetExponentialBackoff(ip, "admin");
 
   return response;
 }

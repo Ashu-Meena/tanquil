@@ -221,7 +221,8 @@ export default function EditProductPage() {
     const { error } = await supabase.from("products").update(payload).eq("id", productId);
 
     if (error) {
-      toast.error("Error updating product: " + error.message);
+      console.error("Product update error:", error);
+      toast.error("Failed to complete operation. Please try again or check the logs.");
       setLoading(false);
       return;
     }
@@ -276,7 +277,8 @@ export default function EditProductPage() {
     const { error: varError } = await supabase.from("product_variants").insert(variantPayloads);
     
     if (varError) {
-      toast.error("Product updated, but variants failed: " + varError.message);
+      console.error("Product variant update error:", varError);
+      toast.error("Product updated, but some variants failed. Please check the logs.");
     } else {
       toast.success("Product updated successfully!");
     }

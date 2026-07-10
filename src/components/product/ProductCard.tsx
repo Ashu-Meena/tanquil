@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, Eye } from "lucide-react";
 import { useWishlistStore } from "@/store/useWishlistStore";
+import { useCartStore } from "@/store/useCartStore";
 
 interface CardProduct {
   id: string | number;
@@ -18,8 +19,12 @@ interface CardProduct {
 
 export default function ProductCard({ product }: { product: CardProduct }) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isSelectingSize, setIsSelectingSize] = useState(false);
   
   const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
+  const { addItem, openCart } = useCartStore();
+
+  const sizes = ["XS", "S", "M", "L", "XL"];
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -33,11 +38,30 @@ export default function ProductCard({ product }: { product: CardProduct }) {
     window.location.href = `/products/${product.slug || product.id}`;
   };
 
+  const handleAddToCartWithSize = (e: React.MouseEvent, size: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({
+      id: String(product.id),
+      name: product.name,
+      price: product.price,
+      image: product.images[0] || "",
+      color: "Default",
+      size: size,
+      quantity: 1,
+    });
+    setIsSelectingSize(false);
+    openCart();
+  };
+
   return (
     <div 
       className="group flex flex-col"
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setIsSelectingSize(false);
+      }}
     >
       <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-[#FAF8F5] mb-4">
         {/* Badges */}
@@ -86,12 +110,33 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         {/* Hover Actions Panel (Desktop Only) */}
         <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
           <div className="bg-white/95 backdrop-blur-md p-3 rounded-sm shadow-xl">
-            <button
-              onClick={handleQuickView}
-              className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
-            >
-              Select Options
-            </button>
+            {isSelectingSize ? (
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] text-center uppercase tracking-widest text-[#666666]">Select Size</span>
+                <div className="flex justify-center gap-1">
+                  {sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={(e) => handleAddToCartWithSize(e, size)}
+                      className="w-8 h-8 flex items-center justify-center border border-[#EFEFEF] text-xs hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-colors"
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setIsSelectingSize(true);
+                }}
+                className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
+              >
+                Quick Add to Cart
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -114,12 +159,33 @@ export default function ProductCard({ product }: { product: CardProduct }) {
       </div>
         
         {/* Quick View/Add Button */}
-        <Link 
-          href={`/products/${product.slug || product.id}`}
-          className="mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors block text-center md:hidden"
-        >
-          Select Options
-        </Link>
+        {isSelectingSize ? (
+          <div className="mt-3 flex flex-col gap-2 md:hidden">
+            <span className="text-[10px] text-center uppercase tracking-widest text-[#666666]">Select Size</span>
+            <div className="flex justify-center gap-2">
+              {sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={(e) => handleAddToCartWithSize(e, size)}
+                  className="w-10 h-10 flex items-center justify-center border border-[#EFEFEF] bg-[#FAF8F5] text-xs hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-colors"
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsSelectingSize(true);
+            }}
+            className="mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors block text-center md:hidden"
+          >
+            Quick Add to Cart
+          </button>
+        )}
     </div>
   );
 }

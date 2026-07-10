@@ -25,7 +25,7 @@ export default function MobileBottomNav() {
     { name: "Shop", href: "/collections/all", icon: LayoutGrid },
 
     { name: "Cart", action: openCart, icon: ShoppingBag, badge: totalItems },
-    { name: "Profile", href: "/account", icon: User },
+    { name: "Profile", href: "/account?tab=home", icon: User },
   ];
 
   return (

@@ -158,7 +158,8 @@ export default function AddProductPage() {
     const { data: product, error } = await supabase.from("products").insert([payload]).select().single();
 
     if (error || !product) {
-      toast.error("Error saving product: " + (error?.message || "Unknown error"));
+      console.error("Product creation error:", error);
+      toast.error("Failed to save product. Please try again or check the logs.");
       setLoading(false);
       return;
     }
@@ -206,7 +207,8 @@ export default function AddProductPage() {
     const { error: varError } = await supabase.from("product_variants").insert(variantPayloads);
     
     if (varError) {
-      toast.error("Product saved, but variants failed: " + varError.message);
+      console.error("Product variants creation error:", varError);
+      toast.error("Product saved, but some variants failed to create. Please check the logs.");
     } else {
       toast.success("Product created successfully!");
     }

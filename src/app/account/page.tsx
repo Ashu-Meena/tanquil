@@ -182,7 +182,8 @@ function AccountContent() {
     setIsUpdatingPassword(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
-      showFeedback('Error updating password: ' + error.message);
+      console.error("Password update error:", error);
+      showFeedback('Error updating password. Please try again.');
     } else {
       setNewPassword("");
       showFeedback('Password updated successfully! ✓');
@@ -281,7 +282,8 @@ function AccountContent() {
         }
       });
       if (error) {
-        showFeedback(error.message);
+        console.error("Auth error:", error);
+        showFeedback('Authentication error. Please check your details and try again.');
       } else {
         // Create profile directly for immediate access if needed
         if (data.user) {

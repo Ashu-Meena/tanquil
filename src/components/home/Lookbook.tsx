@@ -39,16 +39,11 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
   const video = isVideo(item.url);
 
   const handleMouseEnter = () => {
-    if (video && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
+    // We autoPlay now, so no need to play on hover
   };
 
   const handleMouseLeave = () => {
-    if (video && videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
+    // Keep playing
   };
 
   const toggleMute = (e: React.MouseEvent) => {
@@ -75,6 +70,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
             muted={isMuted}
             loop
             playsInline
+            autoPlay
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
           />
           <button 

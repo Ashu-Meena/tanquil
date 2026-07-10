@@ -25,7 +25,8 @@ export default function AdminLogin() {
     });
 
     if (authError) {
-      setError(authError.message);
+      console.error("Admin login error:", authError);
+      setError("Authentication failed. Please check your credentials.");
       setLoading(false);
       return;
     }

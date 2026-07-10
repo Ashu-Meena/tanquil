@@ -184,7 +184,7 @@ export default function HomepageManager() {
         const { data, error } = await supabase.from('homepage_sections').insert([item]).select().single();
         if (error) {
           console.error("Save error:", error);
-          toast.error("Error saving section: " + error.message);
+          toast.error("Failed to complete operation. Please try again or check the logs.");
         }
         if (data) {
           item.id = data.id;

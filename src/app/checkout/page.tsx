@@ -185,7 +185,8 @@ export default function CheckoutPage() {
     const { data, error } = await supabase.from('addresses').insert(newAddress).select().single();
     
     if (error) {
-      setFormError("Failed to save address: " + error.message);
+      console.error("Address save error:", error);
+      setFormError("An unexpected error occurred while saving your address. Please try again.");
     } else if (data) {
       setSavedAddresses([data, ...savedAddresses]);
       setSelectedAddress(data.id);
@@ -196,8 +197,23 @@ export default function CheckoutPage() {
 
   const handleScreenshotUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setPaymentScreenshot(e.target.files[0]);
-      setPaymentScreenshotPreview(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setFormError("File size must be less than 5MB");
+        return;
+      }
+      
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setFormError("Only image files are allowed");
+        return;
+      }
+      
+      setFormError(""); // Clear any previous errors
+      setPaymentScreenshot(file);
+      setPaymentScreenshotPreview(URL.createObjectURL(file));
     }
   };
 
@@ -343,7 +359,8 @@ export default function CheckoutPage() {
         router.push('/checkout/success');
       }
     } catch (err: any) {
-      setFormError(err.message || "Error placing order. Please try again.");
+      console.error("Order placement error:", err);
+      setFormError("An unexpected error occurred while placing your order. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -585,7 +602,7 @@ export default function CheckoutPage() {
                               <p className="text-sm font-medium mb-4">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
                               <div className="bg-white p-4 rounded-xl shadow-sm border border-[#EFEFEF] mb-4">
                                 <Image 
-                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`)}`} 
+                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`)}`} 
                                   alt="UPI QR Code" 
                                   width={200} 
                                   height={200} 
@@ -596,16 +613,16 @@ export default function CheckoutPage() {
                               <p className="text-xs text-[#666666] max-w-[250px] mb-6">Open any UPI app and scan the QR code to complete your purchase securely.</p>
                               
                               <div className="w-full max-w-[300px] flex flex-col gap-3 mb-8">
-                                <a href={`phonepe://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-[#5E328A] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#4d2972] transition-colors shadow-sm">
+                                <a href={`phonepe://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#5E328A] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#4d2972] transition-colors shadow-sm">
                                   Pay using PhonePe
                                 </a>
-                                <a href={`paytmmp://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-[#002970] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#001d52] transition-colors shadow-sm">
+                                <a href={`paytmmp://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#002970] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#001d52] transition-colors shadow-sm">
                                   Pay using Paytm
                                 </a>
-                                <a href={`tez://upi/pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm">
+                                <a href={`tez://upi/pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm">
                                   Pay using Google Pay
                                 </a>
-                                <a href={`upi://pay?pa=7827555428@slc&pn=Tranquil&am=${total}&cu=INR`} className="w-full bg-[#111111] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden mt-2">
+                                <a href={`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#111111] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden mt-2">
                                   Other UPI Apps
                                 </a>
                               </div>

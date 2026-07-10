@@ -60,7 +60,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
       router.push("/admin/categories");
     } catch (error: any) {
       console.error("Error updating category:", error);
-      toast.error("Failed to update category: " + error.message);
+      toast.error("Failed to complete operation. Please try again or check the logs.");
     } finally {
       setSaving(false);
     }

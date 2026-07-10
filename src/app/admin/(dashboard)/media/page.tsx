@@ -47,6 +47,20 @@ const [files, setFiles] = useState<any[]>([]);
       if (!event.target.files || event.target.files.length === 0) return;
       
       const file = event.target.files[0];
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size must be less than 5MB");
+        setUploading(false);
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error("Only image files are allowed");
+        setUploading(false);
+        return;
+      }
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
@@ -60,7 +74,7 @@ const [files, setFiles] = useState<any[]>([]);
       fetchFiles();
     } catch (error: any) {
       console.error("Upload error:", error);
-      toast.error("Error uploading image: " + error.message);
+      toast.error("Failed to complete operation. Please try again or check the logs.");
     } finally {
       setUploading(false);
     }
@@ -71,12 +85,14 @@ const [files, setFiles] = useState<any[]>([]);
     try {
       const { data, error } = await supabase.storage.from(bucketName).remove([imageToDelete]);
       if (error) {
-        toast.error("Failed to delete: " + error.message);
+        console.error("Storage delete error:", error);
+        toast.error("Failed to complete operation. Please try again or check the logs.");
       } else {
         toast.success("Image deleted successfully");
       }
     } catch (err: any) {
-      toast.error("Error deleting image: " + err.message);
+      console.error("Storage delete try/catch error:", err);
+      toast.error("Failed to complete operation. Please try again or check the logs.");
     }
     fetchFiles();
     setImageToDelete(null);
