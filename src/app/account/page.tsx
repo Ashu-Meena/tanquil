@@ -608,31 +608,49 @@ function AccountContent() {
                                   </p>
                                 </div>
                               ) : (
-                                <div className="relative">
-                                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded-full bg-[#EFEFEF]">
-                                    <div style={{ width: `${(
-                                      order.status === 'pending_verification' ? 0 :
-                                      order.status === 'confirmed' || order.status === 'packed' ? 33.3 :
-                                      order.status === 'shipped' || order.status === 'out_for_delivery' ? 66.6 :
-                                      order.status === 'delivered' ? 100 : 0
-                                    )}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#C7A17A] transition-all duration-500"></div>
+                                <div className="relative pb-8 pt-2">
+                                    {/* The Background Bar */}
+                                    <div className="absolute top-[14px] md:top-[15px] left-0 w-full h-[2px] bg-[#EFEFEF]"></div>
+                                    
+                                    {/* The Active Bar */}
+                                    <div 
+                                      className="absolute top-[14px] md:top-[15px] left-0 h-[2px] bg-[#111111] transition-all duration-700 ease-out" 
+                                      style={{ width: `${(
+                                        order.status === 'pending_verification' ? 0 :
+                                        ['confirmed', 'packed'].includes(order.status) ? 33.3 :
+                                        ['shipped', 'out_for_delivery'].includes(order.status) ? 66.6 :
+                                        order.status === 'delivered' ? 100 : 0
+                                      )}%` }}
+                                    ></div>
+                                    
+                                    {/* The Nodes */}
+                                    <div className="relative flex justify-between z-10">
+                                      {["Pending", "Confirmed", "Shipped", "Delivered"].map((status, idx) => {
+                                        const currentStepIndex = (
+                                          order.status === 'pending_verification' ? 0 :
+                                          ['confirmed', 'packed'].includes(order.status) ? 1 :
+                                          ['shipped', 'out_for_delivery'].includes(order.status) ? 2 :
+                                          order.status === 'delivered' ? 3 : 0
+                                        );
+                                        
+                                        const isCompleted = currentStepIndex >= idx;
+                                        const isActive = currentStepIndex === idx;
+                                        
+                                        return (
+                                          <div key={status} className="flex flex-col items-center relative w-8">
+                                            <div className={`w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center bg-white border-[2px] transition-colors duration-500 ${isCompleted ? 'border-[#111111]' : 'border-[#EFEFEF]'}`}>
+                                              {isCompleted && <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#111111]"></div>}
+                                            </div>
+                                            <span className={`absolute top-6 whitespace-nowrap text-[9px] sm:text-[10px] md:text-xs tracking-wider uppercase font-medium ${isActive ? 'text-[#111111] font-bold' : isCompleted ? 'text-[#111111]' : 'text-[#999999]'}`}>
+                                              {/* Show all on sm screens, only active on mobile */}
+                                              <span className="hidden sm:inline">{status}</span>
+                                              <span className="sm:hidden">{isActive ? status : ''}</span>
+                                            </span>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
                                   </div>
-                                  <div className="flex justify-between text-[10px] sm:text-xs font-medium uppercase tracking-widest text-[#666666]">
-                                    {["Pending", "Confirmed", "Shipped", "Delivered"].map((status, idx) => {
-                                      const isActive = (
-                                        (idx === 0) || 
-                                        (idx === 1 && ['confirmed', 'packed', 'shipped', 'out_for_delivery', 'delivered'].includes(order.status)) ||
-                                        (idx === 2 && ['shipped', 'out_for_delivery', 'delivered'].includes(order.status)) ||
-                                        (idx === 3 && order.status === 'delivered')
-                                      );
-                                      return (
-                                        <div key={status} className={`text-center ${isActive ? 'text-[#111111] font-bold' : ''}`}>
-                                          {status}
-                                        </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
                               )}
                             </div>
                             
