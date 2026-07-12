@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Truck, ShieldCheck, RefreshCw, Lock, Sparkles } from "lucide-react";
+import { Truck, ShieldCheck, ArrowLeftRight, Lock, Sparkles } from "lucide-react";
 
 const features = [
   {
@@ -15,9 +15,9 @@ const features = [
     description: "Crafted with the finest fabrics and meticulous attention to detail."
   },
   {
-    icon: RefreshCw,
-    title: "Easy Returns",
-    description: "Hassle-free 7-day return and exchange policy for your peace of mind."
+    icon: ArrowLeftRight,
+    title: "Exchange Available",
+    description: "Need a different size? We offer size exchanges within 48 hours of delivery."
   },
   {
     icon: Lock,

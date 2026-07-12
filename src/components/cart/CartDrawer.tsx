@@ -251,7 +251,7 @@ export default function CartDrawer() {
                 </span>
               </div>
               <p className="text-[10px] uppercase tracking-widest text-[#999999] mb-6 text-center">
-                Taxes and shipping calculated at checkout
+                Shipping calculated at checkout
               </p>
               <button 
                 onClick={handleCheckout}

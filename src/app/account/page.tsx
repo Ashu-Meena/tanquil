@@ -615,8 +615,8 @@ function AccountContent() {
                               <button onClick={() => triggerPrint(order)} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
                                 <Printer className="w-4 h-4" /> Download Invoice
                               </button>
-                              <button onClick={() => showFeedback('To initiate a return, please contact us at returns@tranquil.co.in')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
-                                <RefreshCw className="w-4 h-4" /> Return Item
+                              <button onClick={() => window.open('https://wa.me/919226120292?text=Hey!%20I%20want%20to%20request%20an%20exchange%20for%20my%20recent%20order.', '_blank')} className="text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex items-center gap-2 border border-[#EFEFEF] bg-white px-4 py-2 hover:border-[#111111]">
+                                <RefreshCw className="w-4 h-4" /> Exchange Item
                               </button>
                             </div>
                           </div>
@@ -813,10 +813,10 @@ function AccountContent() {
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">New Password</label>
                         <input type="password" placeholder="Leave blank to keep current password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <button disabled={!newPassword || isUpdatingPassword} type="submit" className="bg-[#111111] hover:bg-[#C7A17A] disabled:opacity-50 disabled:hover:bg-[#111111] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors w-full">
+                          {isUpdatingPassword ? "Updating..." : "Update Password"}
+                        </button>
                       </div>
-                      <button disabled={!newPassword || isUpdatingPassword} type="submit" className="bg-[#111111] hover:bg-[#C7A17A] disabled:opacity-50 disabled:hover:bg-[#111111] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors w-full">
-                        {isUpdatingPassword ? "Updating..." : "Update Password"}
-                      </button>
                     </form>
                   </div>
                 </div>
@@ -834,15 +834,14 @@ function AccountContent() {
                     <div className="mt-4 text-sm text-gray-500 space-y-1">
                       <p>{invoiceSettings.addressLine1}</p>
                       <p>{invoiceSettings.addressLine2}</p>
-                      <p>GSTIN: {invoiceSettings.gstin}</p>
                       <p>{invoiceSettings.email} | {invoiceSettings.phone}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Tax Invoice</h2>
+                    <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Invoice</h2>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 text-left w-64 ml-auto">
                       <span className="font-semibold text-gray-800">Invoice No:</span>
-                      <span className="text-right uppercase">{selectedOrderToPrint.id.slice(0, 8)}</span>
+                      <span className="text-right uppercase">{selectedOrderToPrint.order_number || selectedOrderToPrint.id.slice(0, 8)}</span>
                       <span className="font-semibold text-gray-800">Date:</span>
                       <span className="text-right">{selectedOrderToPrint.created_at ? new Date(selectedOrderToPrint.created_at).toLocaleDateString('en-IN') : 'N/A'}</span>
                       <span className="font-semibold text-gray-800">Order No:</span>
@@ -906,19 +905,11 @@ function AccountContent() {
                   <div className="w-80">
                     <div className="flex justify-between py-2 text-sm text-gray-600">
                       <span>Subtotal</span>
-                      <span>₹{selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
+                      <span>₹{selectedOrderToPrint.subtotal?.toLocaleString('en-IN') ?? selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
                     </div>
                     <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-gray-200">
-                      <span>Shipping & Handling</span>
-                      <span>₹0</span>
-                    </div>
-                    <div className="flex justify-between py-2 text-sm text-gray-600">
-                      <span>Taxable Amount</span>
-                      <span>₹{(selectedOrderToPrint.total_amount * 0.82).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-                    </div>
-                    <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-[#111111]">
-                      <span>IGST (18%)</span>
-                      <span>₹{(selectedOrderToPrint.total_amount * 0.18).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+                      <span>Shipping &amp; Handling</span>
+                      <span>₹{selectedOrderToPrint.shipping_fee?.toLocaleString('en-IN') ?? 0}</span>
                     </div>
                     <div className="flex justify-between py-4 text-xl font-bold text-[#111111]">
                       <span>Grand Total</span>

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Lock, Wallet, Truck, ChevronLeft, ChevronRight, Check, Loader2, Plus } from "lucide-react";
+import { Lock, Wallet, ChevronLeft, ChevronRight, Check, Loader2, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
@@ -594,90 +594,89 @@ export default function CheckoutPage() {
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="p-8 bg-[#FAF8F5] border-b border-[#EFEFEF] flex flex-col items-center justify-center text-center">
-                              <div className="bg-[#FFF8E7] border border-[#F2D08E] text-[#B07B18] p-4 rounded-md mb-6 max-w-[350px] text-xs leading-relaxed text-left">
-                                <span className="font-bold block mb-1">Important:</span> 
-                                After completing your payment, you <strong>must return to this page</strong> to enter your Transaction Number and upload a payment screenshot. Then proceed to the next step and press <strong>Place Order</strong> to successfully complete your purchase.
-                              </div>
-                              <p className="text-sm font-medium mb-4">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
-                              <div className="bg-white p-4 rounded-xl shadow-sm border border-[#EFEFEF] mb-4">
-                                <Image 
-                                  src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`)}`} 
-                                  alt="UPI QR Code" 
-                                  width={200} 
-                                  height={200} 
-                                  className="rounded-lg"
-                                  unoptimized
-                                />
-                              </div>
-                              <p className="text-xs text-[#666666] max-w-[250px] mb-6">Open any UPI app and scan the QR code to complete your purchase securely.</p>
-                              
-                              <div className="w-full max-w-[300px] flex flex-col gap-3 mb-8">
-                                <a href={`phonepe://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#5E328A] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#4d2972] transition-colors shadow-sm">
-                                  Pay using PhonePe
-                                </a>
-                                <a href={`paytmmp://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#002970] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#001d52] transition-colors shadow-sm">
-                                  Pay using Paytm
-                                </a>
-                                <a href={`tez://upi/pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm">
-                                  Pay using Google Pay
-                                </a>
-                                <a href={`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#111111] text-white py-3 rounded-md flex items-center justify-center text-sm font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden mt-2">
-                                  Other UPI Apps
-                                </a>
-                              </div>
-                              
-                              <div className="w-full max-w-[300px] space-y-4 text-left border-t border-[#EFEFEF] pt-6">
-                                <div>
-                                  <label className="block text-[10px] font-medium text-[#666666] mb-2 uppercase tracking-wider">Transaction ID / UTR No.</label>
-                                  <input 
-                                    type="text" 
-                                    placeholder="Enter 12-digit UTR" 
-                                    value={transactionId}
-                                    onChange={(e) => setTransactionId(e.target.value)}
-                                    className="w-full bg-transparent border-b border-[#EFEFEF] pb-3 text-sm focus:outline-none focus:border-[#111111] transition-colors placeholder-[#999999]" 
-                                  />
+                            <div className="p-6 bg-[#FAF8F5] border-b border-[#EFEFEF]">
+                              {/* Two-column layout: note left, QR right */}
+                              <div className="flex flex-col sm:flex-row gap-6 items-start">
+
+                                {/* LEFT — Important note + UTR + screenshot */}
+                                <div className="flex-1 flex flex-col gap-5">
+                                  <div className="bg-[#FFF8E7] border border-[#F2D08E] text-[#B07B18] p-4 rounded-md text-xs leading-relaxed">
+                                    <span className="font-bold block mb-1">Important:</span>
+                                    After completing your payment, you <strong>must return to this page</strong> to enter your Transaction Number and upload a payment screenshot. Then proceed to the next step and press <strong>Place Order</strong> to successfully complete your purchase.
+                                  </div>
+
+                                  <div className="space-y-5">
+                                    <div>
+                                      <label className="block text-[10px] font-medium text-[#666666] mb-2 uppercase tracking-wider">Transaction ID / UTR No.</label>
+                                      <input
+                                        type="text"
+                                        placeholder="Enter 12-digit UTR"
+                                        value={transactionId}
+                                        onChange={(e) => setTransactionId(e.target.value)}
+                                        className="w-full bg-transparent border-b border-[#EFEFEF] pb-3 text-sm focus:outline-none focus:border-[#111111] transition-colors placeholder-[#999999]"
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="block text-[10px] font-medium text-[#666666] mb-3 uppercase tracking-wider">Payment Screenshot</label>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleScreenshotUpload}
+                                        className="w-full text-xs text-[#666666] file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer"
+                                      />
+                                      {paymentScreenshotPreview && (
+                                        <p className="text-xs text-[#2F855A] mt-2 flex items-center gap-1 font-medium">
+                                          <Check className="w-3 h-3" /> Screenshot attached
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="mt-6">
-                                  <label className="block text-[10px] font-medium text-[#666666] mb-3 uppercase tracking-wider">Payment Screenshot</label>
-                                  <input 
-                                    type="file" 
-                                    accept="image/*"
-                                    onChange={handleScreenshotUpload}
-                                    className="w-full text-xs text-[#666666] file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer" 
-                                  />
-                                  {paymentScreenshotPreview && (
-                                    <p className="text-xs text-[#2F855A] mt-2 flex items-center gap-1 font-medium">
-                                      <Check className="w-3 h-3" /> Screenshot attached
-                                    </p>
-                                  )}
+
+                                {/* RIGHT — QR + payee + app buttons */}
+                                <div className="flex flex-col items-center text-center shrink-0">
+                                  <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
+                                  <div className="bg-white p-3 rounded-xl shadow-sm border border-[#EFEFEF] mb-3">
+                                    <Image
+                                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`)}`}
+                                      alt="UPI QR Code"
+                                      width={180}
+                                      height={180}
+                                      className="rounded-lg"
+                                      unoptimized
+                                    />
+                                  </div>
+                                  <p className="text-sm font-semibold text-[#111111]">Gehna Vinod Motwani</p>
+                                  <p className="text-xs text-[#666666] mt-1 flex items-center justify-center gap-2 mb-3">
+                                    <span className="font-mono tracking-wide">{process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => navigator.clipboard.writeText(process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici')}
+                                      className="text-[#C7A17A] hover:text-[#111111] transition-colors"
+                                      title="Copy UPI ID"
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                    </button>
+                                  </p>
+                                  <p className="text-xs text-[#666666] mb-4">Open any UPI app and scan to pay securely.</p>
+                                  <div className="w-full flex flex-col gap-2">
+                                    <a href={`phonepe://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#5E328A] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#4d2972] transition-colors shadow-sm lg:hidden">
+                                      Pay using PhonePe
+                                    </a>
+                                    <a href={`paytmmp://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#002970] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#001d52] transition-colors shadow-sm lg:hidden">
+                                      Pay using Paytm
+                                    </a>
+                                    <a href={`tez://upi/pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm lg:hidden">
+                                      Pay using Google Pay
+                                    </a>
+                                    <a href={`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#111111] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden">
+                                      Other UPI Apps
+                                    </a>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                      
-                      <label 
-                        className="flex items-center gap-3 p-4 cursor-pointer hover:bg-[#FAF8F5] transition-colors border-t border-[#EFEFEF]"
-                        onClick={() => setPaymentMethod("cod")}
-                      >
-                        <input type="radio" name="payment" checked={paymentMethod === "cod"} onChange={() => setPaymentMethod("cod")} className="accent-[#C7A17A]" />
-                        <Truck className="w-5 h-5 text-[#666666]" />
-                        <span>Cash on Delivery (COD)</span>
-                      </label>
-                      
-                      <AnimatePresence>
-                        {paymentMethod === "cod" && (
-                          <motion.div 
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="p-6 bg-[#FAF8F5] border-t border-[#EFEFEF]">
-                              <p className="text-sm text-[#666666] text-center">Pay with cash when your order is delivered to your doorstep.</p>
-                            </div>
+
+                              </div>{/* end flex row */}
+                            </div>{/* end p-6 outer */}
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -713,7 +712,7 @@ export default function CheckoutPage() {
                       </div>
                       <div className="flex justify-between">
                         <div className="text-[#666666]">Payment</div>
-                        <div className="text-[#111111]">{paymentMethod === "upi" ? "UPI QR Code" : "Cash on Delivery"}</div>
+                        <div className="text-[#111111]">UPI QR Code</div>
                         <button onClick={() => setCurrentStep(1)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                     </div>
@@ -821,10 +820,7 @@ export default function CheckoutPage() {
                     <span className="text-[#111111] font-medium font-[family-name:var(--font-montserrat)]">₹{shipping.toLocaleString('en-IN')}</span>
                   )}
                 </div>
-                <div className="flex justify-between text-[#666666]">
-                  <span>Taxes</span>
-                  <span className="text-[#111111]">Calculated at checkout</span>
-                </div>
+
                 <div className="flex justify-between items-center border-t border-[#EFEFEF] mt-6 pt-6">
                   <span className="font-serif text-xl">Total</span>
                   <span className="font-serif text-2xl font-[family-name:var(--font-montserrat)]">₹{total.toLocaleString('en-IN')}</span>

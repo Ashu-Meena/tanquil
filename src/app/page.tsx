@@ -7,6 +7,7 @@ import FashionStories from "@/components/home/FashionStories";
 import Lookbook from "@/components/home/Lookbook";
 import Reviews from "@/components/home/Reviews";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
+import VisitStore from "@/components/home/VisitStore";
 import { createClient } from "@/utils/supabase/server";
 
 export default async function Home() {
@@ -137,6 +138,7 @@ export default async function Home() {
       {editorialStories.length > 0 ? <FashionStories stories={editorialStories} /> : <FashionStories />}
       <Lookbook items={instagramItems} />
       {realReviews.length > 0 ? <Reviews reviews={realReviews} /> : <Reviews />}
+      <VisitStore />
       <WhyChooseUs />
     </>
   );

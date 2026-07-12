@@ -133,6 +133,9 @@ export default function OrdersPage() {
     setSelectedOrder(prev => prev ? { 
       ...prev, notes: internalNotes, tracking_id: trackingId, courier_name: courierName 
     } : null);
+    
+    toast.success("Fulfillment details saved and updated on customer's account.");
+    
     setUpdating(false);
   };
     
@@ -545,15 +548,14 @@ export default function OrdersPage() {
               <div className="mt-4 text-sm text-gray-500 space-y-1">
                 <p>{invoiceSettings.addressLine1}</p>
                 <p>{invoiceSettings.addressLine2}</p>
-                <p>GSTIN: {invoiceSettings.gstin}</p>
                 <p>{invoiceSettings.email} | {invoiceSettings.phone}</p>
               </div>
             </div>
             <div className="text-right">
-              <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Tax Invoice</h2>
+              <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Invoice</h2>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 text-left w-64 ml-auto">
                 <span className="font-semibold text-gray-800">Invoice No:</span>
-                <span className="text-right uppercase">{selectedOrder.id.slice(0, 8)}</span>
+                <span className="text-right uppercase">{selectedOrder.order_number || selectedOrder.id.slice(0, 8)}</span>
                 <span className="font-semibold text-gray-800">Date:</span>
                 <span className="text-right">{selectedOrder.created_at ? new Date(selectedOrder.created_at).toLocaleDateString('en-IN') : 'N/A'}</span>
                 <span className="font-semibold text-gray-800">Order No:</span>
@@ -617,19 +619,11 @@ export default function OrdersPage() {
             <div className="w-80">
               <div className="flex justify-between py-2 text-sm text-gray-600">
                 <span>Subtotal</span>
-                <span>₹{selectedOrder.total_amount?.toLocaleString('en-IN')}</span>
+                <span>₹{selectedOrder.subtotal?.toLocaleString('en-IN') ?? selectedOrder.total_amount?.toLocaleString('en-IN')}</span>
               </div>
               <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-gray-200">
-                <span>Shipping & Handling</span>
-                <span>₹0</span>
-              </div>
-              <div className="flex justify-between py-2 text-sm text-gray-600">
-                <span>Taxable Amount</span>
-                <span>₹{(selectedOrder.total_amount * 0.82).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-              </div>
-              <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-[#111111]">
-                <span>IGST (18%)</span>
-                <span>₹{(selectedOrder.total_amount * 0.18).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
+                <span>Shipping &amp; Handling</span>
+                <span>₹{selectedOrder.shipping_fee?.toLocaleString('en-IN') ?? 0}</span>
               </div>
               <div className="flex justify-between py-4 text-xl font-bold text-[#111111]">
                 <span>Grand Total</span>

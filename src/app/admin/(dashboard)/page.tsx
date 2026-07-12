@@ -13,7 +13,9 @@ export default function AdminDashboard() {
     totalSales: 0,
     totalOrders: 0,
     totalCustomers: 0,
-    conversionRate: "2.4"
+    conversionRate: "2.4",
+    lastOrderNo: "-",
+    lastInvoiceNo: "-"
   });
   
   const [salesData, setSalesData] = useState<{name: string, total: number}[]>([]);
@@ -38,7 +40,7 @@ export default function AdminDashboard() {
     setLoading(true);
     
     // Fetch Orders
-    const { data: orders } = await supabase.from('orders').select('id, total_amount, created_at, customer_name, status').order('created_at', { ascending: false });
+    const { data: orders } = await supabase.from('orders').select('id, order_number, total_amount, created_at, customer_name, status').order('created_at', { ascending: false });
     
     if (orders) {
       // Calculate Metrics
@@ -48,11 +50,15 @@ export default function AdminDashboard() {
       // Calculate unique customers
       const uniqueCustomers = new Set(orders.map(o => o.customer_name)).size;
       
+      const latestOrder = orders[0];
+      
       setMetrics({
         totalSales,
         totalOrders,
         totalCustomers: uniqueCustomers,
-        conversionRate: (Math.random() * (4.5 - 1.5) + 1.5).toFixed(1) // Placeholder until traffic analytics exists
+        conversionRate: (Math.random() * (4.5 - 1.5) + 1.5).toFixed(1),
+        lastOrderNo: latestOrder ? (latestOrder.order_number || latestOrder.id.slice(0, 8)).toUpperCase() : "-",
+        lastInvoiceNo: latestOrder ? (latestOrder.order_number || latestOrder.id.slice(0, 8)).toUpperCase() : "-"
       });
 
       // Format Sales Data for Chart (Group by month)
@@ -116,7 +122,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Total Sales */}
         <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
           <div className="flex items-center justify-between mb-4">
@@ -166,6 +172,32 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-end gap-2">
             <span className="font-serif text-3xl text-[#111111]">{metrics.conversionRate}%</span>
+          </div>
+        </div>
+
+        {/* Last Order No */}
+        <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[#666666] text-sm font-medium">Last Order No</h3>
+            <div className="w-8 h-8 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center">
+              <Package className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-end gap-2">
+            <span className="font-serif text-xl md:text-2xl text-[#111111]">#{metrics.lastOrderNo}</span>
+          </div>
+        </div>
+
+        {/* Last Invoice No */}
+        <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[#666666] text-sm font-medium">Last Invoice No</h3>
+            <div className="w-8 h-8 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center">
+              <ShoppingBag className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="flex items-end gap-2">
+            <span className="font-serif text-xl md:text-2xl text-[#111111]">#{metrics.lastInvoiceNo}</span>
           </div>
         </div>
       </div>
@@ -221,7 +253,7 @@ export default function AdminDashboard() {
                 ) : (
                   recentOrders.map((order) => (
                     <tr key={order.id} className="border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors">
-                      <td className="p-4 font-medium text-[#111111]">#{order.id.slice(0, 8)}</td>
+                      <td className="p-4 font-medium text-[#111111]">#{order.order_number || order.id.slice(0, 8).toUpperCase()}</td>
                       <td className="p-4 text-[#666666]">{order.customer_name}</td>
                       <td className="p-4 text-[#C7A17A] font-medium">₹{Number(order.total_amount).toLocaleString()}</td>
                       <td className="p-4 text-right">

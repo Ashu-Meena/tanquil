@@ -1,25 +1,95 @@
 import Link from "next/link";
+import Image from "next/image";
 
-export const metadata = { title: "About Us | Tranquil", description: "The story behind Tranquil luxury fashion." };
+export const metadata = {
+  title: "Our Story | Tranquil",
+  description: "Tranquil was founded by a Gen Z girl who was tired of boring prints and outdated designs. Modern clothes for Gen Z girls and modern women who want to stand out.",
+};
 
 export default function AboutPage() {
   return (
-    <div className="bg-white min-h-screen pt-32 pb-24">
-      <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
-        <p className="text-xs text-[#666666] uppercase tracking-widest mb-4"><Link href="/" className="hover:text-[#C7A17A]">Home</Link> / About</p>
-        <h1 className="font-serif text-5xl text-[#111111] mb-10">Our Story</h1>
-        <div className="space-y-6 text-[#555555] leading-relaxed text-lg">
-          <p>Tranquil was born out of a simple belief: <strong className="text-[#111111]">every woman deserves to feel extraordinary</strong>. Founded in 2023 in Mumbai, we design luxury fashion pieces that blend couture-inspired craftsmanship with modern silhouettes.</p>
-          <p>Each piece in our collection is thoughtfully designed, constructed from the finest fabrics sourced from Surat, Varanasi, and international mills. We collaborate with master artisans who bring intricate embellishments and handcrafted details to life.</p>
-          <p>Our mission is to make statement luxury fashion accessible to the modern Indian woman — for every evening, every celebration, and every moment that deserves a little extra magic.</p>
+    <div className="bg-white min-h-screen">
+
+      {/* Hero — full-width dark banner */}
+      <div className="bg-[#111111] pt-40 pb-20 text-center px-6">
+        <p className="text-xs text-[#666666] uppercase tracking-widest mb-8">
+          <Link href="/" className="hover:text-[#C7A17A] transition-colors">Home</Link>
+          <span className="mx-2">/</span>
+          <span className="text-[#999999]">About</span>
+        </p>
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <div className="bg-white rounded-sm p-6 w-40 h-40 flex items-center justify-center shadow-2xl">
+            <Image
+              src="/logo.jpg"
+              alt="Tranquil Logo"
+              width={120}
+              height={120}
+              className="object-contain"
+              priority
+            />
+          </div>
         </div>
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-[#EFEFEF] pt-16">
-          {[{ num: "2023", label: "Founded" }, { num: "1,200+", label: "Happy Customers" }, { num: "100%", label: "Handcrafted" }].map(stat => (
-            <div key={stat.num} className="text-center">
-              <p className="font-serif text-4xl text-[#C7A17A] mb-2">{stat.num}</p>
-              <p className="text-sm uppercase tracking-widest text-[#666666]">{stat.label}</p>
+        <h1 className="font-serif text-5xl lg:text-6xl text-white mb-4">Our Story</h1>
+        <p className="text-[#999999] text-sm uppercase tracking-[0.3em]">The outfit plug you didn&apos;t know you needed</p>
+      </div>
+
+      {/* Story body */}
+      <div className="container mx-auto px-6 lg:px-12 max-w-3xl py-20">
+
+        {/* Opening hook */}
+        <p className="font-serif text-3xl lg:text-4xl text-[#111111] leading-snug mb-12 text-center">
+          Hey girl, welcome to your<br />
+          <span className="text-[#C7A17A]">dream wardrobe.</span>
+        </p>
+
+        <div className="space-y-7 text-[#555555] leading-relaxed text-lg">
+          <p>
+            Tranquil was founded by a <strong className="text-[#111111]">Gen Z girl</strong> who was tired of seeing the same old boring prints and outdated designs everywhere. We realized that finding clothes that actually match the Pinterest boards in our heads shouldn&apos;t be so hard. So, we decided to make them ourselves.
+          </p>
+          <p>
+            At Tranquil, we design <strong className="text-[#111111]">modern clothes for Gen Z girls and modern women</strong> who want to stand out, not blend in. We create the exact pieces you&apos;ve been searching for — from the ultimate aesthetic beachwear and dream birthday dresses to the perfect outfits for dinner dates, brunch runs, and girl&apos;s day outings — and yes, even your mom&apos;s chic kitty parties!
+          </p>
+          <p>
+            <strong className="text-[#111111]">No boring prints. No recycled designs.</strong> Just unique, freshly designed pieces that actually belong in a modern wardrobe.
+          </p>
+          <p>
+            We know what you want to wear before you even know it. Consider us your official <span className="italic text-[#C7A17A] font-medium">outfit plug</span>.
+          </p>
+        </div>
+
+        {/* Divider */}
+        <div className="flex items-center gap-4 my-16">
+          <div className="flex-1 h-px bg-[#EFEFEF]" />
+          <span className="text-[#C7A17A] text-xl font-serif">✦</span>
+          <div className="flex-1 h-px bg-[#EFEFEF]" />
+        </div>
+
+        {/* Values */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
+          {[
+            { icon: "✦", title: "Unique Designs", body: "No boring prints. Every piece is freshly designed — you won't find it anywhere else." },
+            { icon: "✦", title: "Made for You", body: "From beachwear to birthday looks to brunch fits — we've got every occasion covered." },
+            { icon: "✦", title: "Gen Z Energy", body: "Founded by a Gen Z girl, designed for the girls who set the trends, not follow them." },
+          ].map((v) => (
+            <div key={v.title} className="p-6 border border-[#EFEFEF] rounded-sm hover:border-[#C7A17A] transition-colors group">
+              <span className="text-[#C7A17A] text-2xl block mb-3">{v.icon}</span>
+              <h3 className="font-serif text-lg text-[#111111] mb-2">{v.title}</h3>
+              <p className="text-[#888888] text-sm leading-relaxed">{v.body}</p>
             </div>
           ))}
+        </div>
+
+        {/* CTA */}
+        <div className="text-center bg-[#FAF8F5] border border-[#EFEFEF] p-10">
+          <p className="font-serif text-2xl text-[#111111] mb-2">Ready to upgrade your wardrobe?</p>
+          <p className="text-[#888888] text-sm mb-6">Shop the latest drops — new styles added regularly.</p>
+          <Link
+            href="/collections/all"
+            className="inline-block bg-[#111111] hover:bg-[#C7A17A] text-white px-10 py-4 uppercase tracking-widest text-xs font-medium transition-colors"
+          >
+            Shop Now
+          </Link>
         </div>
       </div>
     </div>
