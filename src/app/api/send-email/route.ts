@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { checkFixedWindow, RATE_LIMIT_CONFIG } from '@/lib/rate-limit';
+import { createClient } from '@/utils/supabase/server';
 
 import { z } from "zod";
 
@@ -23,6 +24,14 @@ export async function POST(request: Request) {
           headers: { "Retry-After": Math.ceil(rateLimitResult.retryAfterMs! / 1000).toString() }
         }
       );
+    }
+    
+    // Security check: Must be authenticated
+    const supabase = await createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     let body: z.infer<typeof emailSchema>;

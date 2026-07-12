@@ -27,15 +27,6 @@ export default function AdminDashboard() {
     fetchDashboardData();
   }, []);
 
-  const handleMakeAdmin = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { error } = await supabase.from('profiles').update({ is_admin: true, role: 'super_admin' }).eq('id', user.id);
-      if (error) { console.error("Admin promotion error:", error); toast.error("Failed to complete operation. Please try again."); }
-      else toast.info('You are now an Admin! Please reload the page.');
-    }
-  };
-
   const fetchDashboardData = async () => {
     setLoading(true);
     

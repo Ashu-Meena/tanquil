@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Lock, Wallet, ChevronLeft, ChevronRight, Check, Loader2, Plus, Trash2, Minus } from "lucide-react";
+import { Lock, Wallet, ChevronLeft, ChevronRight, Check, Loader2, Plus, Trash2, Minus, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
@@ -632,17 +632,33 @@ export default function CheckoutPage() {
                                     </div>
                                     <div>
                                       <label className="block text-[10px] font-medium text-[#666666] mb-3 uppercase tracking-wider">Payment Screenshot</label>
-                                      <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleScreenshotUpload}
-                                        className="w-full text-xs text-[#666666] file:mr-4 file:py-2.5 file:px-6 file:rounded-full file:border-0 file:text-[10px] file:uppercase file:tracking-widest file:font-medium file:bg-[#111111] file:text-white hover:file:bg-[#C7A17A] file:transition-colors file:cursor-pointer cursor-pointer"
-                                      />
-                                      {paymentScreenshotPreview && (
-                                        <p className="text-xs text-[#2F855A] mt-2 flex items-center gap-1 font-medium">
-                                          <Check className="w-3 h-3" /> Screenshot attached
-                                        </p>
-                                      )}
+                                      <div className="relative border-2 border-dashed border-[#EFEFEF] rounded-md p-6 text-center hover:bg-[#F9F9F9] transition-colors group">
+                                        <input
+                                          type="file"
+                                          accept="image/*"
+                                          onChange={handleScreenshotUpload}
+                                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        />
+                                        {paymentScreenshotPreview ? (
+                                          <div className="flex flex-col items-center justify-center gap-2">
+                                            <div className="relative w-20 h-20 rounded-md overflow-hidden border border-[#EFEFEF]">
+                                              <Image src={paymentScreenshotPreview} alt="Screenshot" fill className="object-cover" />
+                                            </div>
+                                            <p className="text-xs text-[#2F855A] flex items-center gap-1 font-medium mt-1">
+                                              <Check className="w-3 h-3" /> Screenshot attached
+                                            </p>
+                                            <p className="text-[10px] text-[#666666] group-hover:text-[#C7A17A] transition-colors">Tap to change image</p>
+                                          </div>
+                                        ) : (
+                                          <div className="flex flex-col items-center justify-center gap-2">
+                                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#999999] group-hover:text-[#111111] transition-colors">
+                                              <Upload className="w-4 h-4" />
+                                            </div>
+                                            <p className="text-sm font-medium text-[#111111] mt-1">Upload Screenshot</p>
+                                            <p className="text-xs text-[#999999]">Tap or drag image here (Max 5MB)</p>
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
