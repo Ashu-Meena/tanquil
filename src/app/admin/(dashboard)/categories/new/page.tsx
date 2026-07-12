@@ -9,6 +9,7 @@ import ImageUploader from "@/components/admin/ImageUploader";
 import { toast } from "@/store/useToastStore";
 
 export default function NewCategoryPage() {
+  const supabase = createClient();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   
