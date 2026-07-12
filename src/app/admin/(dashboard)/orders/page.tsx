@@ -12,6 +12,8 @@ interface Order {
   customer_email: string;
   customer_phone: string;
   total_amount: number;
+  subtotal?: number;
+  shipping_fee?: number;
   status: string;
   payment_method: string;
   utr_number?: string;
