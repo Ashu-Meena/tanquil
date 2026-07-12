@@ -49,6 +49,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
+        <div dangerouslySetInnerHTML={{ __html: '<!-- Website designed and developed by Samvix Technologies -->' }} style={{ display: 'none' }} />
         <Preloader />
         <Header />
         <main className="flex-1">{children}</main>

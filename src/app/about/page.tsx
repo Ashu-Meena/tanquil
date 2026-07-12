@@ -91,6 +91,11 @@ export default function AboutPage() {
             Shop Now
           </Link>
         </div>
+
+        {/* Attribution */}
+        <div className="mt-12 text-center text-sm text-[#888888]">
+          This website was designed and developed by <a href="https://samvix-technologies.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#C7A17A] hover:text-[#111111] transition-colors">Samvix Technologies</a>.
+        </div>
       </div>
     </div>
   );

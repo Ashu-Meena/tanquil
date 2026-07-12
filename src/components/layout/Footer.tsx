@@ -176,7 +176,10 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="pt-8 border-t border-[#333333] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#666666]">
-          <p>&copy; {new Date().getFullYear()} Tranquil. All Rights Reserved.</p>
+          <div className="flex flex-col items-center md:items-start gap-1">
+            <p>&copy; {new Date().getFullYear()} Tranquil. All Rights Reserved.</p>
+            <p>Designed & Developed by <a href="https://samvix-technologies.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#C7A17A] hover:text-white transition-colors">Samvix Technologies</a></p>
+          </div>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
