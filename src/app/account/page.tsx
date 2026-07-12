@@ -62,7 +62,7 @@ function AccountContent() {
     gstin: "07AABCU9603R1ZX",
     email: "support@tranquil.co.in",
     phone: "+91 98765 43210",
-    terms: "Returns accepted within 7 days of delivery.\nItems must be unworn with original tags attached.\nThis is a computer generated invoice and requires no signature.",
+    terms: "Exchanges accepted within 72 hours of delivery.\nItems must be unworn with original tags attached.\nThis is a computer generated invoice and requires no signature.",
     signatory: "Authorized Signatory"
   });
   const [selectedOrderToPrint, setSelectedOrderToPrint] = useState<any>(null);
