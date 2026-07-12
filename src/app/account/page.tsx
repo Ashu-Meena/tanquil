@@ -530,14 +530,14 @@ function AccountContent() {
             )}
 
             {activeTab === "orders" && (
-              <div className="bg-white border border-[#EFEFEF] p-8 lg:p-12 rounded-sm shadow-sm">
-                <div className="mb-6 flex items-center text-sm font-medium">
+              <div className="bg-white md:border border-[#EFEFEF] py-6 md:p-8 lg:p-12 md:rounded-sm md:shadow-sm -mx-6 md:mx-0">
+                <div className="px-6 md:px-0 mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-[#C7A17A] hover:underline">Your Account</button>
                   <span className="mx-2 text-[#999999]">›</span>
                   <span className="text-[#111111]">Your Orders</span>
                 </div>
-                <h2 className="font-serif text-3xl text-[#111111] mb-8">Order History</h2>
-                <div className="space-y-8">
+                <h2 className="px-6 md:px-0 font-serif text-2xl md:text-3xl text-[#111111] mb-6 md:mb-8">Order History</h2>
+                <div className="space-y-4 md:space-y-8">
                   {orders.length === 0 ? (
                     <div className="text-center py-12 border border-dashed border-[#EFEFEF]">
                       <Package className="w-12 h-12 text-[#EFEFEF] mx-auto mb-4" />
@@ -548,11 +548,11 @@ function AccountContent() {
                     orders.map(order => {
 
                       return (
-                        <div key={order.id} className="border border-[#EFEFEF] rounded-sm overflow-hidden mb-4 lg:mb-8 bg-white">
+                        <div key={order.id} className="border-y md:border border-[#EFEFEF] md:rounded-sm overflow-hidden mb-2 bg-white">
                           
                           {/* --- MOBILE COMPACT HEADER (Flipkart style) --- */}
                           <div 
-                            className="md:hidden p-4 border-b border-[#EFEFEF] flex items-center justify-between cursor-pointer" 
+                            className="md:hidden p-4 px-6 md:px-4 border-b border-[#EFEFEF] flex items-center justify-between cursor-pointer" 
                             onClick={() => toggleOrderExpand(order.id)}
                           >
                             <div className="flex gap-4 items-center w-full pr-4">
@@ -564,9 +564,10 @@ function AccountContent() {
                                 )}
                               </div>
                               <div className="flex-1">
-                                <p className={`text-xs font-bold mb-1 uppercase tracking-wider ${order.status === 'delivered' ? 'text-green-600' : 'text-orange-500'}`}>
+                                <p className={`text-[10px] md:text-xs font-bold mb-1 uppercase tracking-wider ${order.status === 'delivered' ? 'text-green-600' : 'text-orange-500'}`}>
                                   {order.status === 'delivered' ? `Delivered on ${new Date(order.updated_at || order.created_at).toLocaleDateString('en-US', {day:'numeric', month:'short'})}` : order.status.charAt(0).toUpperCase() + order.status.slice(1).replace('_', ' ')}
                                 </p>
+                                <p className="text-xs text-[#999999] mb-1 font-medium tracking-wide">ORDER #{(order.order_number || order.id.split('-')[0]).toUpperCase()}</p>
                                 <p className="text-sm text-[#111111] line-clamp-1 font-medium">{order.items?.[0]?.product_name || order.items?.[0]?.name || 'Order Item'}</p>
                                 {order.items?.length > 1 && <p className="text-xs text-[#666666] mt-0.5">+{order.items.length - 1} more items</p>}
                               </div>
