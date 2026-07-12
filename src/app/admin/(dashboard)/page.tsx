@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { IndianRupee, Users, Package } from "lucide-react";
+import { IndianRupee, Users, Package, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 
 
