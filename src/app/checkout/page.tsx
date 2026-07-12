@@ -39,9 +39,26 @@ export default function CheckoutPage() {
   
   const { items: cartItems, clearCart, updateQuantity, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
+  const [paymentRef, setPaymentRef] = useState("");
   
   useEffect(() => {
     setMounted(true);
+    
+    async function initOrderRef() {
+      let tempId = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+      try {
+        const supabase = createClient();
+        const { data: seqNumber, error } = await supabase.rpc('generate_order_number');
+        if (!error && seqNumber) {
+          tempId = seqNumber;
+        }
+      } catch (e) {
+        console.error("RPC fallback to random order number", e);
+      }
+      setPaymentRef(tempId);
+    }
+    
+    initOrderRef();
   }, []);
 
   useEffect(() => {
@@ -277,16 +294,9 @@ export default function CheckoutPage() {
           return;
         }
 
-        // 1. Generate Order Number & ID
-        let orderNumber = `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
-        try {
-          const { data: seqNumber, error: rpcError } = await supabase.rpc('generate_order_number');
-          if (!rpcError && seqNumber) {
-            orderNumber = seqNumber;
-          }
-        } catch (e) {
-          console.error("RPC fallback to random order number", e);
-        }
+        // 1. Use the pre-generated Order Number
+        let orderNumber = paymentRef || `ORD-${Date.now().toString().slice(-6)}-${Math.floor(Math.random() * 1000)}`;
+
         const orderId = crypto.randomUUID();
 
         // 2. Insert Order
@@ -640,9 +650,9 @@ export default function CheckoutPage() {
                                 {/* RIGHT — QR + payee + app buttons */}
                                 <div className="flex flex-col items-center text-center shrink-0">
                                   <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-[#111111]">₹{total.toLocaleString('en-IN')}</span></p>
-                                  <div className="bg-white p-3 rounded-xl shadow-sm border border-[#EFEFEF] mb-3">
-                                    <Image
-                                      src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`)}`}
+                                    <div className="bg-white p-3 rounded-xl shadow-sm border border-[#EFEFEF] mb-3">
+                                      <Image
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`)}`}
                                       alt="UPI QR Code"
                                       width={180}
                                       height={180}
@@ -664,16 +674,16 @@ export default function CheckoutPage() {
                                   </p>
                                   <p className="text-xs text-[#666666] mb-4">Open any UPI app and scan to pay securely.</p>
                                   <div className="w-full flex flex-col gap-2">
-                                    <a href={`phonepe://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#5E328A] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#4d2972] transition-colors shadow-sm lg:hidden">
+                                    <a href={`phonepe://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-[#5E328A] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#4d2972] transition-colors shadow-sm lg:hidden">
                                       Pay using PhonePe
                                     </a>
-                                    <a href={`paytmmp://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#002970] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#001d52] transition-colors shadow-sm lg:hidden">
+                                    <a href={`paytmmp://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-[#002970] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#001d52] transition-colors shadow-sm lg:hidden">
                                       Pay using Paytm
                                     </a>
-                                    <a href={`tez://upi/pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm lg:hidden">
+                                    <a href={`tez://upi/pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-white border border-[#EFEFEF] text-[#111111] py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#FAF8F5] transition-colors shadow-sm lg:hidden">
                                       Pay using Google Pay
                                     </a>
-                                    <a href={`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'fallback@upi'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR`} className="w-full bg-[#111111] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden">
+                                    <a href={`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-[#111111] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#333333] transition-colors shadow-sm lg:hidden">
                                       Other UPI Apps
                                     </a>
                                   </div>
