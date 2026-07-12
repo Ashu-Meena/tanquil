@@ -104,12 +104,6 @@ export default function AdminDashboard() {
           <h1 className="text-2xl font-serif text-[#111111]">Dashboard Overview</h1>
           <p className="text-sm text-[#666666] mt-1">Welcome back. Here's what's happening today.</p>
         </div>
-        <button 
-          onClick={handleMakeAdmin}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-sm text-sm uppercase tracking-wider"
-        >
-          Fix Admin Permissions
-        </button>
       </div>
 
       {/* Metrics Grid */}
