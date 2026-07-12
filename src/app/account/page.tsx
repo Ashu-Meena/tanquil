@@ -49,6 +49,7 @@ function AccountContent() {
   const [authFirstName, setAuthFirstName] = useState("");
   const [authLastName, setAuthLastName] = useState("");
   const [authLoading, setAuthLoading] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [orders, setOrders] = useState<any[]>([]);
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
   
@@ -147,30 +148,35 @@ function AccountContent() {
 
   const triggerPrint = (order: any) => {
     setSelectedOrderToPrint(order);
+    showFeedback("Preparing invoice for download...");
+    
     setTimeout(async () => {
-      const printContent = document.getElementById("invoice-content");
-      if (!printContent) return;
-      
-      printContent.classList.remove("hidden");
-      printContent.style.display = "block";
+      try {
+        const printContent = document.getElementById("invoice-content");
+        if (!printContent) {
+          showFeedback("Error finding invoice template.");
+          return;
+        }
 
-      // @ts-ignore
-      const html2pdf = (await import('html2pdf.js')).default;
-      
-      const invoiceName = order?.order_number || order?.id.slice(0,8) || 'invoice';
-      const opt = {
-        margin:       10,
-        filename:     `invoice-${invoiceName}.pdf`,
-        image:        { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-      };
-
-      await html2pdf().set(opt).from(printContent).save();
-
-      printContent.style.display = "";
-      printContent.classList.add("hidden");
-    }, 100);
+        const html2canvas = (await import('html2canvas-pro')).default;
+        const jsPDF = (await import('jspdf')).jsPDF;
+        
+        const invoiceName = order?.order_number || order?.id.slice(0,8) || 'invoice';
+        
+        const canvas = await html2canvas(printContent, { scale: 2, useCORS: true });
+        const imgData = canvas.toDataURL('image/jpeg', 0.98);
+        const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'JPEG', 10, 10, pdfWidth - 20, pdfHeight - 20);
+        pdf.save(`invoice-${invoiceName}.pdf`);
+      } catch (err) {
+        console.error("PDF Generation Error:", err);
+        showFeedback("Failed to download PDF.");
+      }
+    }, 500);
   };
 
   const handleSignOut = async () => {
@@ -319,8 +325,7 @@ function AccountContent() {
             email: authEmail
           });
         }
-        showFeedback('Account created! Logging you in...');
-        setTimeout(() => window.location.reload(), 1500);
+        setRegistrationSuccess(true);
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({
@@ -341,8 +346,22 @@ function AccountContent() {
       <div className="bg-[#FAF8F5] min-h-screen pt-32 pb-24 flex justify-center items-center">
         <div className="container mx-auto px-6 lg:px-12 flex justify-center">
           <div className="bg-white border border-[#EFEFEF] p-8 lg:p-12 max-w-md w-full shadow-sm">
-            
-            {feedbackMessage && (
+            {registrationSuccess ? (
+              <div className="text-center py-8 animate-in fade-in zoom-in duration-300">
+                <div className="w-16 h-16 bg-[#FAF8F5] rounded-full flex items-center justify-center mx-auto mb-6 text-[#C7A17A]">
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                </div>
+                <h2 className="font-serif text-3xl text-[#111111] mb-4">Check your email</h2>
+                <p className="text-[#666666] mb-8 leading-relaxed">
+                  We've sent a confirmation link to <br /><span className="font-medium text-[#111111]">{authEmail}</span>.<br />Please click the link to verify your account and complete registration.
+                </p>
+                <button onClick={() => { setRegistrationSuccess(false); setAuthMode("login"); }} className="bg-[#111111] text-white px-8 py-3 uppercase tracking-widest text-xs font-medium hover:bg-[#C7A17A] transition-colors w-full">
+                  Return to login
+                </button>
+              </div>
+            ) : (
+              <>
+                {feedbackMessage && (
               <div className="mb-6 bg-[#111111] text-white px-4 py-3 text-sm text-center">
                 {feedbackMessage}
               </div>
@@ -420,6 +439,8 @@ function AccountContent() {
                 </>
               )}
             </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -704,9 +725,11 @@ function AccountContent() {
                               )}
                               
                               <div className="flex flex-wrap gap-2 w-full lg:w-auto">
-                                <button onClick={() => triggerPrint(order)} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex justify-center items-center gap-1.5 border border-[#EFEFEF] bg-white px-3 py-2.5 md:py-2 hover:border-[#111111]">
-                                  <FileDown className="w-3 h-3 md:w-4 md:h-4" /> Download Invoice
-                                </button>
+                                {order.payment_status === 'paid' && (
+                                  <button onClick={() => triggerPrint(order)} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex justify-center items-center gap-1.5 border border-[#EFEFEF] bg-white px-3 py-2.5 md:py-2 hover:border-[#111111]">
+                                    <FileDown className="w-3 h-3 md:w-4 md:h-4" /> Download Invoice
+                                  </button>
+                                )}
                                 <button onClick={() => window.open(`https://wa.me/919226120292?text=Hey!%20I%20need%20help%20with%20my%20order%20${order.order_number || order.id.split('-')[0]}`, '_blank')} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium text-white bg-green-600 hover:bg-green-700 transition-colors flex justify-center items-center gap-1.5 px-3 py-2.5 md:py-2 rounded-sm shadow-sm">
                                   <MessageCircle className="w-3 h-3 md:w-4 md:h-4" /> Need Help?
                                 </button>
@@ -918,7 +941,8 @@ function AccountContent() {
 
             {/* Hidden Printable Invoice Template */}
             {selectedOrderToPrint && invoiceSettings && (
-              <div id="invoice-content" className="hidden print:block p-10 bg-white text-black max-w-4xl mx-auto font-sans leading-relaxed">
+              <div className="overflow-hidden h-0 w-0 absolute -left-[9999px]">
+                <div id="invoice-content" className="p-10 bg-white text-black w-[800px] font-sans leading-relaxed">
                 {/* Header */}
                 <div className="flex justify-between items-start border-b-2 border-[#111111] pb-8 mb-8">
                   <div>
@@ -1026,6 +1050,7 @@ function AccountContent() {
                     <p className="italic">{invoiceSettings.signatory}</p>
                   </div>
                 </div>
+              </div>
               </div>
             )}
           </main>

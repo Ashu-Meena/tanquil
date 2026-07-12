@@ -151,29 +151,27 @@ export default function OrdersPage() {
   const printInvoice = async () => {
     const printContent = document.getElementById("invoice-content");
     if (!printContent) return;
-    
-    // Temporarily show the content so it can be rendered by html2pdf
-    printContent.classList.remove("hidden");
-    printContent.style.display = "block";
 
-    // Dynamic import to avoid SSR window issues
-    // @ts-ignore
-    const html2pdf = (await import('html2pdf.js')).default;
-    
-    const invoiceName = selectedOrder?.order_number || selectedOrder?.id.slice(0,8) || 'invoice';
-    const opt = {
-      margin:       10,
-      filename:     `invoice-${invoiceName}.pdf`,
-      image:        { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
-    };
-
-    await html2pdf().set(opt).from(printContent).save();
-
-    // Hide it back
-    printContent.style.display = "";
-    printContent.classList.add("hidden");
+    try {
+      // Dynamic import to avoid SSR window issues
+      const html2canvas = (await import('html2canvas-pro')).default;
+      const jsPDF = (await import('jspdf')).jsPDF;
+      
+      const invoiceName = selectedOrder?.order_number || selectedOrder?.id.slice(0,8) || 'invoice';
+      
+      const canvas = await html2canvas(printContent, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'JPEG', 10, 10, pdfWidth - 20, pdfHeight - 20);
+      pdf.save(`invoice-${invoiceName}.pdf`);
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      toast.error("Failed to generate PDF.");
+    }
   };
 
   const filteredOrders = orders.filter(o => {
@@ -558,8 +556,9 @@ export default function OrdersPage() {
 
       {/* Hidden Printable Invoice Template */}
       {selectedOrder && (
-        <div id="invoice-content" className="hidden print:block p-10 bg-white text-black max-w-4xl mx-auto font-sans leading-relaxed">
-          {/* Header */}
+        <div className="overflow-hidden h-0 w-0 absolute -left-[9999px]">
+          <div id="invoice-content" className="p-10 bg-white text-black w-[800px] font-sans leading-relaxed">
+            {/* Header */}
           <div className="flex justify-between items-start border-b-2 border-[#111111] pb-8 mb-8">
             <div>
               <h1 className="text-4xl font-serif font-bold tracking-widest uppercase mb-2">{invoiceSettings.companyName}</h1>
@@ -666,6 +665,7 @@ export default function OrdersPage() {
               <p className="italic">{invoiceSettings.signatory}</p>
             </div>
           </div>
+        </div>
         </div>
       )}
 
