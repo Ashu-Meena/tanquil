@@ -152,11 +152,36 @@ export default function OrdersPage() {
     const printContent = document.getElementById("invoice-content");
     if (!printContent) return;
     
-    const originalContents = document.body.innerHTML;
-    document.body.innerHTML = printContent.innerHTML;
-    window.print();
-    document.body.innerHTML = originalContents;
-    window.location.reload(); // Reload to restore React bindings after print hack
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "none";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (doc) {
+      doc.open();
+      doc.write("<html><head><title>Invoice</title>");
+      
+      const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+      styles.forEach((style) => {
+        doc.write(style.outerHTML);
+      });
+      
+      doc.write("</head><body>");
+      doc.write(printContent.innerHTML);
+      doc.write("</body></html>");
+      doc.close();
+
+      setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        setTimeout(() => {
+          document.body.removeChild(iframe);
+        }, 1000);
+      }, 500);
+    }
   };
 
   const filteredOrders = orders.filter(o => {
