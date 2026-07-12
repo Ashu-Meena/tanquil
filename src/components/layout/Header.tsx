@@ -108,7 +108,7 @@ export default function Header() {
 
           {/* Center: Brand Logo */}
           <div className="flex-1 flex justify-center">
-            <Link href="/" className="font-serif text-2xl lg:text-3xl tracking-widest uppercase hover:opacity-80 transition-opacity">
+            <Link href="/" prefetch={true} className="font-serif text-2xl lg:text-3xl tracking-widest uppercase hover:opacity-80 transition-opacity">
               Tranquil
             </Link>
           </div>

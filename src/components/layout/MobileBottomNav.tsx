@@ -36,19 +36,21 @@ export default function MobileBottomNav() {
           const isActive = item.href && pathname === item.href;
 
           const content = (
-            <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[#C7A17A]' : 'text-[#666666]'} hover:text-[#111111] transition-colors relative`}>
-              <Icon className={`w-5 h-5 ${isActive ? 'fill-current' : ''}`} />
+            <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[#C7A17A]' : 'text-[#666666]'} hover:text-[#111111] transition-colors`}>
+              <div className="relative">
+                <Icon className={`w-5 h-5 ${isActive ? 'fill-current' : ''}`} />
+                {mounted && item.badge !== undefined && item.badge > 0 && (
+                  <span className="absolute -top-1.5 -right-2 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                    {item.badge}
+                  </span>
+                )}
+              </div>
               <span className="text-[10px] font-medium tracking-wide">{item.name}</span>
-              {mounted && item.badge !== undefined && item.badge > 0 && (
-                <span className="absolute top-0 right-1/4 translate-x-2 -translate-y-1 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {item.badge}
-                </span>
-              )}
             </div>
           );
 
           return item.href ? (
-            <Link key={item.name} href={item.href} className="flex-1 h-full flex items-center justify-center">
+            <Link key={item.name} href={item.href} prefetch={true} className="flex-1 h-full flex items-center justify-center">
               {content}
             </Link>
           ) : (
