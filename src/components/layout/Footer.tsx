@@ -46,7 +46,7 @@ export default function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="bg-[#111111] text-white pt-12 pb-24 md:pb-10">
+    <footer className="bg-[#111111] text-white pt-8 md:pt-12 pb-16 md:pb-10">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="flex flex-col items-center text-center mb-12 border-b border-[#333333] pb-12">
           {/* WhatsApp Community */}

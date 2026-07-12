@@ -27,7 +27,7 @@ export default function NewCollection({ initialData = [] }: { initialData?: Prod
   };
 
   return (
-    <section className="py-24 bg-[#FAF8F5]">
+    <section className="py-12 md:py-24 bg-[#FAF8F5]">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-16">
           <motion.h2 

@@ -96,7 +96,7 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
   const displayStories = initialStories && initialStories.length > 0 ? initialStories : defaultStories;
 
   return (
-    <section className="py-32 bg-white overflow-hidden">
+    <section className="py-16 md:py-32 bg-white overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-20">
           <motion.h2 
@@ -118,7 +118,7 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
           </motion.p>
         </div>
 
-        <div className="space-y-32">
+        <div className="space-y-16 md:space-y-32">
           {displayStories.map((story) => (
             <StoryCard key={story.id} story={story} />
           ))}

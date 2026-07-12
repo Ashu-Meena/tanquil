@@ -110,7 +110,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
 export default function Lookbook({ items }: { items?: LookbookItem[] }) {
   const displayItems = items && items.length > 0 ? items : defaultItems;
   return (
-    <section className="py-24 bg-[#FAF8F5]">
+    <section className="py-12 md:py-24 bg-[#FAF8F5]">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-16">
           <motion.h2 

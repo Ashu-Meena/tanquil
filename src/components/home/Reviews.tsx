@@ -50,7 +50,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
   }, [displayReviews.length]);
 
   return (
-    <section className="py-24 md:py-32 bg-[#FAF8F5] overflow-hidden">
+    <section className="py-12 md:py-32 bg-[#FAF8F5] overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 flex flex-col items-center">
         <div className="text-center mb-16 md:mb-24">
           <motion.h2 

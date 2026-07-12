@@ -85,12 +85,12 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 sm:px-0"
+          className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-6 sm:px-0"
         >
           <MagneticButton>
             <Link
               href="/collections/new"
-              className="bg-white text-[#111111] px-12 py-5 uppercase tracking-widest text-sm font-bold hover:bg-[#C7A17A] hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block shadow-xl"
+              className="bg-white text-[#111111] px-8 py-4 md:px-12 md:py-5 uppercase tracking-widest text-xs md:text-sm font-bold hover:bg-[#C7A17A] hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block shadow-xl"
             >
               Shop New Arrivals
             </Link>
