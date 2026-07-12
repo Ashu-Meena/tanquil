@@ -44,6 +44,10 @@ export default function CheckoutPage() {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
+
   // Redirect if cart is empty after mount, unless order is completed
   useEffect(() => {
     if (mounted && cartItems.length === 0 && !orderCompleted) {

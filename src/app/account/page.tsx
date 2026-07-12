@@ -34,6 +34,10 @@ function AccountContent() {
     }
   }, [tabParam]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeTab]);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
