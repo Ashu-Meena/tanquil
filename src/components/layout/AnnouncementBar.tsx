@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 export default function AnnouncementBar() {
   const [announcements, setAnnouncements] = useState<string[]>([
@@ -12,6 +12,7 @@ export default function AnnouncementBar() {
 
   useEffect(() => {
     async function fetchAnnouncements() {
+      const supabase = createClient();
       const { data } = await supabase.from('store_settings').select('value').eq('key', 'announcement').single();
       if (data?.value?.messages && data.value.messages.length > 0) {
         setAnnouncements(data.value.messages);

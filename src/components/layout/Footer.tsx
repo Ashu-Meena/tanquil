@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import MagneticButton from "../ui/MagneticButton";
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 const InstagramIcon = ({ className }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -36,6 +36,7 @@ export default function Footer() {
 
   useEffect(() => {
     async function fetchInfo() {
+      const supabase = createClient();
       const { data } = await supabase.from('store_settings').select('value').eq('key', 'store_info').single();
       if (data?.value) setStoreInfo(data.value);
     }

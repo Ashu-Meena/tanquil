@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, Trash2, Printer, MessageCircle, ChevronDown, ChevronUp, Info, Star } from "lucide-react";
+import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, Trash2, FileDown, MessageCircle, ChevronDown, ChevronUp, Info, Star } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
@@ -705,7 +705,7 @@ function AccountContent() {
                               
                               <div className="flex flex-wrap gap-2 w-full lg:w-auto">
                                 <button onClick={() => triggerPrint(order)} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex justify-center items-center gap-1.5 border border-[#EFEFEF] bg-white px-3 py-2.5 md:py-2 hover:border-[#111111]">
-                                  <Printer className="w-3 h-3 md:w-4 md:h-4" /> Download Invoice
+                                  <FileDown className="w-3 h-3 md:w-4 md:h-4" /> Download Invoice
                                 </button>
                                 <button onClick={() => window.open(`https://wa.me/919226120292?text=Hey!%20I%20need%20help%20with%20my%20order%20${order.order_number || order.id.split('-')[0]}`, '_blank')} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium text-white bg-green-600 hover:bg-green-700 transition-colors flex justify-center items-center gap-1.5 px-3 py-2.5 md:py-2 rounded-sm shadow-sm">
                                   <MessageCircle className="w-3 h-3 md:w-4 md:h-4" /> Need Help?

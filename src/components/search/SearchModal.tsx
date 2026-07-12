@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 interface SearchProduct {
   id: string;
@@ -36,6 +36,7 @@ export default function SearchModal() {
     if (!isOpen) return;
     
     const fetchResults = async () => {
+      const supabase = createClient();
       if (query.trim().length === 0) {
         // Fetch suggested (trending) products when empty
         setIsSearching(true);

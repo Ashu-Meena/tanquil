@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/store/useCartStore";
 import { useSearchStore } from "@/store/useSearchStore";
 import AnnouncementBar from "./AnnouncementBar";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Header() {
   const pathname = usePathname();
@@ -29,6 +29,7 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
 
     const fetchCategories = async () => {
+      const supabase = createClient();
       const { data } = await supabase.from('categories').select('id, name, slug').eq('is_active', true).order('display_order', { ascending: true });
       if (data) setCategories(data);
     };

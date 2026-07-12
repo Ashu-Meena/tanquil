@@ -67,13 +67,13 @@ export default function OrdersPage() {
 
   const [invoiceSettings, setInvoiceSettings] = useState({
     companyName: "Tranquil",
-    tagline: "LUXURY FASHION & APPAREL",
-    addressLine1: "123 Serenity Avenue, Fashion District",
-    addressLine2: "New Delhi, Delhi 110001, India",
-    gstin: "07AABCU9603R1ZX",
-    email: "support@tranquil.co.in",
-    phone: "+91 98765 43210",
-    terms: "Exchanges accepted within 72 hours of delivery.\nItems must be unworn with original tags attached.\nThis is a computer generated invoice and requires no signature.",
+    tagline: "MODERN FASHION FOR GEN Z GIRLS",
+    addressLine1: "Kanwarram Park, Sant, Last Bungalow 3rd Lane,",
+    addressLine2: "Vaibhav Nagar, Pimpri Colony, Pune – 411017",
+    gstin: "",
+    email: "thetranquilstor@gmail.com",
+    phone: "+91 92261 20292",
+    terms: "All sales are final. No returns or cancellations.\nExchanges available within 72 hours of delivery (same product, different size only).\nThis is a computer generated invoice.",
     signatory: "Authorized Signatory"
   });
 
@@ -376,7 +376,7 @@ export default function OrdersPage() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-6 space-y-6">
+            <div className="p-6 pb-24 space-y-6">
               
               {/* Status Update Block */}
               <div className="bg-white p-5 border border-[#EFEFEF] rounded-sm flex flex-col md:flex-row md:justify-between items-start md:items-center gap-4">

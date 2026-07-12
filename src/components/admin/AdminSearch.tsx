@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Loader2, Package, ShoppingCart, User } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 export default function AdminSearch() {
   const [query, setQuery] = useState("");
@@ -37,6 +37,7 @@ export default function AdminSearch() {
   const performSearch = async (searchTerm: string) => {
     setLoading(true);
     setIsOpen(true);
+    const supabase = createClient();
     
     // We will search across products, orders, and customers
     // This is a simplified parallel search

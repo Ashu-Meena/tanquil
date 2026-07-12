@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Copy, Trash2, UploadCloud, Search, Check, ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { toast } from "@/store/useToastStore";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function MediaLibraryPage() {
+    const supabase = createClient();
     const [imageToDelete, setImageToDelete] = useState<string | null>(null);
-const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [search, setSearch] = useState("");

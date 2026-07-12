@@ -40,6 +40,7 @@ export default function CheckoutPage() {
   const { items: cartItems, clearCart, updateQuantity, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [paymentRef, setPaymentRef] = useState("");
+  const [addressLabel, setAddressLabel] = useState(""); // Fix: dedicated state for address name
   
   useEffect(() => {
     setMounted(true);
@@ -192,7 +193,7 @@ export default function CheckoutPage() {
     
     const newAddress = {
       user_id: session.user.id,
-      title: firstName || "Home",
+      title: addressLabel || "Home",
       name: userProfile?.first_name ? `${userProfile.first_name} ${userProfile.last_name || ""}`.trim() : "New Address",
       address_line1: addressLine1,
       address_line2: combinedAddressLine2,
@@ -256,10 +257,11 @@ export default function CheckoutPage() {
             .from('payment_screenshots')
             .upload(fileName, paymentScreenshot);
             
-          if (uploadData) {
-            const { data } = supabase.storage.from('payment_screenshots').getPublicUrl(fileName);
-            screenshotUrl = data.publicUrl;
+          if (uploadError || !uploadData) {
+            throw new Error("Failed to upload payment screenshot. Please try again.");
           }
+          const { data } = supabase.storage.from('payment_screenshots').getPublicUrl(fileName);
+          screenshotUrl = data.publicUrl;
         }
 
         let shippingAddr = null;
@@ -313,7 +315,7 @@ export default function CheckoutPage() {
           payment_method: paymentMethod,
           transaction_id: transactionId,
           screenshot_url: screenshotUrl,
-          status: 'pending',
+          status: 'pending_verification',
           payment_status: 'pending'
         });
 
@@ -332,7 +334,11 @@ export default function CheckoutPage() {
         }));
 
         const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
-        if (itemsError) throw itemsError;
+        if (itemsError) {
+          // Roll back: delete the orphan order to keep DB clean
+          await supabase.from('orders').delete().eq('id', orderId);
+          throw itemsError;
+        }
         
         // Send Order Confirmation Email
         const orderEmail = isLoggedIn && userProfile ? userProfile.email : email;
@@ -360,6 +366,13 @@ export default function CheckoutPage() {
           });
         } catch (emailErr) {
           console.error("Failed to send order email:", emailErr);
+        }
+
+        // Increment coupon used_count
+        if (appliedCoupon?.id) {
+          await supabase.from('coupons')
+            .update({ used_count: (appliedCoupon.used_count || 0) + 1 })
+            .eq('id', appliedCoupon.id);
         }
 
         setOrderCompleted(true);
@@ -528,7 +541,7 @@ export default function CheckoutPage() {
                             >
                               <div className="mt-4 space-y-4 border border-[#EFEFEF] p-6 rounded-sm bg-white">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
+                                  <input type="text" value={addressLabel} onChange={e => setAddressLabel(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                                   <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 focus:outline-none focus:border-[#111111] transition-colors text-sm placeholder-[#999999]" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -740,10 +753,30 @@ export default function CheckoutPage() {
                         </div>
                         <button onClick={() => setCurrentStep(0)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between border-b border-[#EFEFEF] pb-4 mb-4">
                         <div className="text-[#666666]">Payment</div>
                         <div className="text-[#111111]">UPI QR Code</div>
                         <button onClick={() => setCurrentStep(1)} className="text-[#C7A17A] hover:underline uppercase tracking-widest text-xs">Edit</button>
+                      </div>
+
+                      {/* Cart Items Summary */}
+                      <div className="pt-2">
+                        <p className="text-xs uppercase tracking-widest text-[#999999] mb-4 font-medium">Items in your order ({cartItems.reduce((s, i) => s + i.quantity, 0)})</p>
+                        <div className="space-y-4">
+                          {cartItems.map(item => (
+                            <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4 items-center">
+                              <div className="relative w-14 h-20 bg-[#FAF8F5] flex-shrink-0 rounded-sm overflow-hidden border border-[#EFEFEF]">
+                                <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#666666] text-white text-[9px] flex items-center justify-center rounded-full">{item.quantity}</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-[#111111] line-clamp-1">{item.name}</p>
+                                <p className="text-xs text-[#999999] mt-0.5">{item.color} / {item.size}</p>
+                              </div>
+                              <p className="text-sm font-medium text-[#111111] font-[family-name:var(--font-montserrat)]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </motion.div>

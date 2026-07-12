@@ -41,6 +41,30 @@ export default function PaymentsPage() {
     setFetching(false);
   };
 
+  const exportCSV = () => {
+    const headers = ["Order ID", "Date", "Customer Name", "Customer Email", "Amount", "Method", "UTR/Ref", "Status"];
+    const rows = transactions.map(tx => [
+      `#${tx.order_number || tx.id.slice(0, 8).toUpperCase()}`,
+      new Date(tx.created_at).toLocaleDateString(),
+      tx.customer_name,
+      tx.customer_email,
+      `₹${tx.total_amount}`,
+      tx.payment_method === 'bank_transfer' ? 'Bank Transfer' : tx.payment_method || 'Unknown',
+      tx.transaction_id || tx.utr_number || '-',
+      tx.status
+    ]);
+    const csvContent = [headers, ...rows].map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `payments_export_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-6">
@@ -48,7 +72,7 @@ export default function PaymentsPage() {
           <h1 className="font-serif text-3xl text-[#111111]">Payments</h1>
           <p className="text-sm text-[#666666] mt-1">Manage customer transactions.</p>
         </div>
-        <button className="flex items-center justify-center gap-2 bg-white border border-[#EFEFEF] text-[#111111] px-4 py-2 text-sm font-medium hover:bg-[#FAF8F5] transition-colors rounded-sm">
+        <button onClick={exportCSV} className="flex items-center justify-center gap-2 bg-white border border-[#EFEFEF] text-[#111111] px-4 py-2 text-sm font-medium hover:bg-[#FAF8F5] transition-colors rounded-sm">
           <Download className="w-4 h-4" /> Export CSV
         </button>
       </div>

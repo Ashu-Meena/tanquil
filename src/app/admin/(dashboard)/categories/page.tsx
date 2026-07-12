@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Tag, Image as ImageIcon } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function CategoriesPage() {
-    const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
-const [categories, setCategories] = useState<any[]>([]);
+  const supabase = createClient();
+  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 

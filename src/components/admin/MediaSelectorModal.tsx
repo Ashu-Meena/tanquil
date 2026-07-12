@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { UploadCloud, Search, ImageIcon, X, Loader2 } from "lucide-react";
 import { toast } from "@/store/useToastStore";
 
@@ -12,6 +12,7 @@ interface MediaSelectorModalProps {
 }
 
 export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorModalProps) {
+  const supabase = createClient();
   const [files, setFiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);

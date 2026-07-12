@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Save, Settings, Megaphone, Globe, Printer } from "lucide-react";
 import { toast } from "@/store/useToastStore";
 
@@ -41,6 +41,7 @@ export default function SettingsPage() {
   }, []);
 
   const fetchSettings = async () => {
+    const supabase = createClient();
     setLoading(true);
     const { data, error } = await supabase.from('store_settings').select('*');
     
@@ -57,13 +58,15 @@ export default function SettingsPage() {
 
       const inv = data.find(s => s.key === 'invoice_settings');
       if (inv?.value) {
-        setInvoiceInfo({ ...invoiceInfo, ...inv.value });
+        // Fix stale closure: use functional updater
+        setInvoiceInfo(prev => ({ ...prev, ...inv.value }));
       }
     }
     setLoading(false);
   };
 
   const handleSave = async () => {
+    const supabase = createClient();
     setSaving(true);
     
     // Save Store Info

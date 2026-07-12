@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Search, Save, AlertTriangle } from "lucide-react";
 import Image from "next/image";
+import { toast } from "@/store/useToastStore";
 
 export default function InventoryPage() {
   const [variants, setVariants] = useState<any[]>([]);
@@ -32,8 +33,13 @@ export default function InventoryPage() {
 
   const updateStock = async (id: string, newStock: number) => {
     setSavingId(id);
-    await supabase.from("product_variants").update({ stock_quantity: newStock }).eq("id", id);
+    const { error } = await supabase.from("product_variants").update({ stock_quantity: newStock }).eq("id", id);
     setSavingId(null);
+    if (error) {
+      toast.error("Failed to update stock. Please try again.");
+    } else {
+      toast.success("Stock updated successfully!");
+    }
   };
 
   const handleStockChange = (id: string, value: string) => {

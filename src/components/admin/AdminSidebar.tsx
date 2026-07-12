@@ -15,6 +15,8 @@ import {
   Tag,
   LogOut,
   Package,
+  Percent,
+  Globe,
   X
 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
@@ -27,9 +29,9 @@ const navItems = [
   { name: "Inventory", href: "/admin/inventory", icon: Package },
   { name: "Categories", href: "/admin/categories", icon: Tag },
   { name: "Customers", href: "/admin/customers", icon: Users },
-  { name: "Discounts", href: "/admin/discounts", icon: Tag },
+  { name: "Discounts", href: "/admin/discounts", icon: Percent },
   { name: "Media Library", href: "/admin/media", icon: ImageIcon },
-  { name: "Storefront", href: "/admin/storefront/homepage", icon: LayoutDashboard },
+  { name: "Storefront", href: "/admin/storefront/homepage", icon: Globe },
   { name: "Reviews", href: "/admin/reviews", icon: MessageSquare },
   { name: "Payments", href: "/admin/payments", icon: CreditCard },
   { name: "Shipping", href: "/admin/shipping", icon: Truck },
@@ -98,7 +100,7 @@ export function AdminSidebar() {
         })}
       </nav>
       
-      <div className="p-4 border-t border-[#EFEFEF]">
+      <div className="p-4 pb-6 border-t border-[#EFEFEF] pb-[max(1rem,env(safe-area-inset-bottom))]">
         <button 
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors rounded-sm"

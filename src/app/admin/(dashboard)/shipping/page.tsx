@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Save, Truck } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { toast } from "@/store/useToastStore";
 
 export default function ShippingPage() {
@@ -19,6 +19,7 @@ export default function ShippingPage() {
   }, []);
 
   const fetchSettings = async () => {
+    const supabase = createClient();
     setFetching(true);
     const { data, error } = await supabase
       .from('store_settings')
@@ -34,6 +35,7 @@ export default function ShippingPage() {
   
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    const supabase = createClient();
     setLoading(true);
     const { error } = await supabase
       .from('store_settings')

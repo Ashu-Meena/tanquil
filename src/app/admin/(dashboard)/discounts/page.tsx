@@ -63,6 +63,7 @@ export default function DiscountsPage() {
 
       setShowDrawer(false);
       setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
+      toast.success(formData.id ? "Discount updated!" : "Discount created successfully!");
     } catch (error: any) {
       console.error(error);
       toast.error("Failed to complete operation. Please try again or check the logs.");

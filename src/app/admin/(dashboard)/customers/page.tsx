@@ -21,6 +21,7 @@ export default function CustomersPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [rawOrdersCount, setRawOrdersCount] = useState(0);
+  const [sortDir, setSortDir] = useState<'asc'|'desc'>('desc');
 
   useEffect(() => {
     fetchCustomers();
@@ -72,11 +73,13 @@ export default function CustomersPage() {
     setLoading(false);
   };
 
-  const filteredCustomers = customers.filter(c => 
-    c.email.toLowerCase().includes(search.toLowerCase()) || 
-    c.first_name.toLowerCase().includes(search.toLowerCase()) ||
-    c.last_name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredCustomers = customers
+    .filter(c => 
+      c.email.toLowerCase().includes(search.toLowerCase()) || 
+      c.first_name.toLowerCase().includes(search.toLowerCase()) ||
+      c.last_name.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => sortDir === 'desc' ? b.total_orders - a.total_orders : a.total_orders - b.total_orders);
 
   return (
     <div className="space-y-6">
@@ -109,7 +112,10 @@ export default function CustomersPage() {
               <tr className="bg-white border-b border-[#EFEFEF] text-xs uppercase tracking-wider text-[#999999]">
                 <th className="p-4 font-medium">Customer Name</th>
                 <th className="p-4 font-medium">Contact</th>
-                <th className="p-4 font-medium flex items-center gap-1 cursor-pointer hover:text-[#111111]">
+                <th 
+                  className="p-4 font-medium flex items-center gap-1 cursor-pointer hover:text-[#111111]"
+                  onClick={() => setSortDir(d => d === 'desc' ? 'asc' : 'desc')}
+                >
                   Total Orders <ArrowUpDown className="w-3 h-3" />
                 </th>
                 <th className="p-4 font-medium">Total Spend</th>

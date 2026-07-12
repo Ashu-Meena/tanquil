@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { IndianRupee, ShoppingBag, TrendingUp, Users, ArrowUpRight, ArrowDownRight, Package } from "lucide-react";
+import { IndianRupee, Users, Package } from "lucide-react";
 import Link from "next/link";
-import { toast } from "@/store/useToastStore";
+
 
 export default function AdminDashboard() {
   const supabase = createClient();
@@ -13,19 +13,19 @@ export default function AdminDashboard() {
     totalSales: 0,
     totalOrders: 0,
     totalCustomers: 0,
-    conversionRate: "2.4",
     lastOrderNo: "-",
-    lastInvoiceNo: "-"
   });
   
   const [salesData, setSalesData] = useState<{name: string, total: number}[]>([]);
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [topProducts, setTopProducts] = useState<{name: string, quantity: number, revenue: number}[]>([]);
   const [loading, setLoading] = useState(true);
+  const [chartYear, setChartYear] = useState<'current' | 'last'>('current');
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartYear]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -47,17 +47,18 @@ export default function AdminDashboard() {
         totalSales,
         totalOrders,
         totalCustomers: uniqueCustomers,
-        conversionRate: (Math.random() * (4.5 - 1.5) + 1.5).toFixed(1),
         lastOrderNo: latestOrder ? (latestOrder.order_number || latestOrder.id.slice(0, 8)).toUpperCase() : "-",
-        lastInvoiceNo: latestOrder ? (latestOrder.order_number || latestOrder.id.slice(0, 8)).toUpperCase() : "-"
       });
 
-      // Format Sales Data for Chart (Group by month)
+      // Format Sales Data for Chart (Group by month) — filtered by selected year
       const monthlyTotals: { [key: string]: number } = {};
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const currentYear = new Date().getFullYear();
+      const targetYear = chartYear === 'last' ? currentYear - 1 : currentYear;
       
       orders.forEach(o => {
         const d = new Date(o.created_at);
+        if (d.getFullYear() !== targetYear) return;
         const month = monthNames[d.getMonth()];
         monthlyTotals[month] = (monthlyTotals[month] || 0) + Number(o.total_amount);
       });
@@ -107,7 +108,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {/* Total Sales */}
         <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
           <div className="flex items-center justify-between mb-4">
@@ -147,19 +148,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Conversion */}
-        <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[#666666] text-sm font-medium">Conversion Rate</h3>
-            <div className="w-8 h-8 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="flex items-end gap-2">
-            <span className="font-serif text-3xl text-[#111111]">{metrics.conversionRate}%</span>
-          </div>
-        </div>
-
         {/* Last Order No */}
         <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
           <div className="flex items-center justify-between mb-4">
@@ -172,19 +160,6 @@ export default function AdminDashboard() {
             <span className="font-serif text-xl md:text-2xl text-[#111111]">#{metrics.lastOrderNo}</span>
           </div>
         </div>
-
-        {/* Last Invoice No */}
-        <div className="bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-[#666666] text-sm font-medium">Last Invoice No</h3>
-            <div className="w-8 h-8 bg-gray-50 text-gray-600 rounded-full flex items-center justify-center">
-              <ShoppingBag className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="flex items-end gap-2">
-            <span className="font-serif text-xl md:text-2xl text-[#111111]">#{metrics.lastInvoiceNo}</span>
-          </div>
-        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -192,9 +167,13 @@ export default function AdminDashboard() {
         <div className="lg:col-span-2 bg-white p-6 border border-[#EFEFEF] shadow-sm rounded-sm">
           <div className="flex justify-between items-center mb-6">
             <h2 className="font-serif text-xl text-[#111111]">Revenue Analytics</h2>
-            <select className="text-sm border-none bg-[#FAF8F5] text-[#666666] focus:ring-0 rounded-sm px-3 py-1">
-              <option>This Year</option>
-              <option>Last Year</option>
+            <select 
+              value={chartYear}
+              onChange={e => setChartYear(e.target.value as 'current' | 'last')}
+              className="text-sm border-none bg-[#FAF8F5] text-[#666666] focus:ring-0 rounded-sm px-3 py-1"
+            >
+              <option value="current">This Year</option>
+              <option value="last">Last Year</option>
             </select>
           </div>
           <div className="h-[300px] w-full">
@@ -228,7 +207,7 @@ export default function AdminDashboard() {
               View All
             </Link>
           </div>
-          <div className="p-0">
+          <div className="p-0 overflow-x-auto">
             <table className="w-full text-left">
               <tbody className="text-sm">
                 {recentOrders.length === 0 ? (
@@ -259,7 +238,7 @@ export default function AdminDashboard() {
           </div>
         </div>
         {/* Top Selling Products */}
-        <div className="bg-white border border-[#EFEFEF] shadow-sm rounded-sm">
+        <div className="bg-white border border-[#EFEFEF] shadow-sm rounded-sm lg:col-span-3">
           <div className="p-6 border-b border-[#EFEFEF] flex justify-between items-center">
             <h2 className="font-serif text-xl text-[#111111]">Top Selling Products</h2>
             <Link href="/admin/products" className="text-sm text-[#C7A17A] hover:text-[#111111] transition-colors">

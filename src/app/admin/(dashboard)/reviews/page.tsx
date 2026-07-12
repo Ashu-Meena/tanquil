@@ -1,21 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 import { Search, Filter, Check, X, Trash2, Star } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function ReviewsPage() {
-    const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
-const [reviews, setReviews] = useState<any[]>([]);
+  const supabase = createClient();
+  const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   useEffect(() => {
     fetchReviews();
   }, []);
 
   const fetchReviews = async () => {
+    const supabase = createClient();
     setLoading(true);
     const { data, error } = await supabase
       .from("reviews")
@@ -31,21 +34,28 @@ const [reviews, setReviews] = useState<any[]>([]);
   };
 
   const updateReviewStatus = async (id: string, status: string) => {
+    const supabase = createClient();
     await supabase.from("reviews").update({ status }).eq("id", id);
     fetchReviews();
   };
 
   const deleteReview = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this review?")) {
-      await supabase.from("reviews").delete().eq("id", id);
-      fetchReviews();
-    }
+    setReviewToDelete(id);
+  };
+
+  const confirmDeleteReview = async () => {
+    if (!reviewToDelete) return;
+    const supabase = createClient();
+    await supabase.from("reviews").delete().eq("id", reviewToDelete);
+    setReviewToDelete(null);
+    fetchReviews();
   };
 
   const filteredReviews = reviews.filter(r => 
-    r.title?.toLowerCase().includes(search.toLowerCase()) ||
+    (r.title?.toLowerCase().includes(search.toLowerCase()) ||
     r.products?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    r.profiles?.email?.toLowerCase().includes(search.toLowerCase())
+    r.profiles?.email?.toLowerCase().includes(search.toLowerCase())) &&
+    (statusFilter === 'all' || r.status === statusFilter)
   );
 
   return (
@@ -70,9 +80,16 @@ const [reviews, setReviews] = useState<any[]>([]);
               className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-[#111111] placeholder:text-[#999999]"
             />
           </div>
-          <button className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#111111] transition-colors px-3 py-2 border border-[#EFEFEF] rounded-sm">
-            <Filter className="w-4 h-4" /> Filter
-          </button>
+          <select
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value)}
+            className="text-sm border border-[#EFEFEF] bg-white text-[#666666] rounded-sm px-3 py-2 focus:outline-none focus:border-[#C7A17A]"
+          >
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
         </div>
 
         {/* Table */}
@@ -152,5 +169,15 @@ const [reviews, setReviews] = useState<any[]>([]);
         </div>
       </div>
     </div>
+
+    {/* Confirm Delete Modal */}
+    <ConfirmModal
+      isOpen={!!reviewToDelete}
+      title="Delete Review"
+      message="Are you sure you want to permanently delete this review? This action cannot be undone."
+      confirmText="Delete"
+      onConfirm={confirmDeleteReview}
+      onClose={() => setReviewToDelete(null)}
+    />
   );
 }
