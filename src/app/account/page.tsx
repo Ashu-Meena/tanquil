@@ -147,42 +147,29 @@ function AccountContent() {
 
   const triggerPrint = (order: any) => {
     setSelectedOrderToPrint(order);
-    setTimeout(() => {
+    setTimeout(async () => {
       const printContent = document.getElementById("invoice-content");
       if (!printContent) return;
       
-      const iframe = document.createElement("iframe");
-      iframe.style.position = "absolute";
-      iframe.style.width = "0";
-      iframe.style.height = "0";
-      iframe.style.border = "none";
-      document.body.appendChild(iframe);
+      printContent.classList.remove("hidden");
+      printContent.style.display = "block";
 
-      const doc = iframe.contentWindow?.document;
-      if (doc) {
-        doc.open();
-        doc.write("<html><head><title>Invoice</title>");
-        
-        const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
-        styles.forEach((style) => {
-          doc.write(style.outerHTML);
-        });
-        
-        doc.write("</head><body>");
-        doc.write(printContent.innerHTML);
-        doc.write("</body></html>");
-        doc.close();
+      // @ts-ignore
+      const html2pdf = (await import('html2pdf.js')).default;
+      
+      const invoiceName = order?.order_number || order?.id.slice(0,8) || 'invoice';
+      const opt = {
+        margin:       10,
+        filename:     `invoice-${invoiceName}.pdf`,
+        image:        { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+      };
 
-        setTimeout(() => {
-          iframe.contentWindow?.focus();
-          iframe.contentWindow?.print();
-          setTimeout(() => {
-            if (document.body.contains(iframe)) {
-              document.body.removeChild(iframe);
-            }
-          }, 1000);
-        }, 500);
-      }
+      await html2pdf().set(opt).from(printContent).save();
+
+      printContent.style.display = "";
+      printContent.classList.add("hidden");
     }, 100);
   };
 
