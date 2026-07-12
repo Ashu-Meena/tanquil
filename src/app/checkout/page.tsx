@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Lock, Wallet, ChevronLeft, ChevronRight, Check, Loader2, Plus } from "lucide-react";
+import { Lock, Wallet, ChevronLeft, ChevronRight, Check, Loader2, Plus, Trash2, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
   const [isFreeShippingCouponApplied, setIsFreeShippingCouponApplied] = useState(false);
   const router = useRouter();
   
-  const { items: cartItems, clearCart } = useCartStore();
+  const { items: cartItems, clearCart, updateQuantity, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
@@ -771,17 +771,43 @@ export default function CheckoutPage() {
                   <p className="text-sm text-[#666666]">Your cart is empty.</p>
                 ) : (
                   cartItems.map(item => (
-                    <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4">
+                    <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4 border-b border-[#EFEFEF] pb-6 last:border-0 last:pb-0">
                       <div className="relative w-20 h-28 bg-[#FAF8F5] flex-shrink-0">
                         <Image src={item.image} alt={item.name} fill className="object-cover" />
                         <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#666666] text-white text-[10px] flex items-center justify-center rounded-full">
                           {item.quantity}
                         </span>
                       </div>
-                      <div className="flex flex-col justify-center">
-                        <h3 className="text-sm font-medium mb-1 line-clamp-1">{item.name}</h3>
-                        <p className="text-xs text-[#666666] mb-2">{item.color} / {item.size}</p>
-                        <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">₹{item.price.toLocaleString('en-IN')}</p>
+                      <div className="flex flex-col flex-1 justify-center">
+                        <div className="flex justify-between items-start mb-1">
+                          <h3 className="text-sm font-medium line-clamp-1 pr-2">{item.name}</h3>
+                          <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">₹{item.price.toLocaleString('en-IN')}</p>
+                        </div>
+                        <p className="text-xs text-[#666666] mb-3">{item.color} / {item.size}</p>
+                        
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="flex items-center border border-[#EFEFEF] bg-white rounded-sm h-7">
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.color, item.size, Math.max(1, item.quantity - 1))} 
+                              className="w-7 h-full flex items-center justify-center text-[#666666] hover:text-[#111111] hover:bg-[#F5F5F5] transition-colors"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-6 text-center text-xs text-[#111111] font-medium">{item.quantity}</span>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} 
+                              className="w-7 h-full flex items-center justify-center text-[#666666] hover:text-[#111111] hover:bg-[#F5F5F5] transition-colors"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                          <button
+                            onClick={() => removeItem(item.id, item.color, item.size)}
+                            className="text-[#999999] hover:text-[#E63946] transition-colors text-[10px] uppercase tracking-widest border-b border-transparent hover:border-[#E63946] pb-0.5"
+                          >
+                            Remove
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))
