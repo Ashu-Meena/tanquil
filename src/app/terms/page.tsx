@@ -30,7 +30,7 @@ export default function TermsPage() {
             },
             {
               title: "No Returns or Cancellations",
-              body: "All sales are final. We do not offer returns, refunds, or order cancellations under any circumstances. Exchanges for a different size of the same product may be requested within 48 hours of delivery via WhatsApp, subject to availability and condition of the item.",
+              body: "All sales are final. We do not offer returns, refunds, or order cancellations under any circumstances. Exchanges for a different size of the same product may be requested within 72 hours of delivery via WhatsApp, subject to availability and condition of the item.",
             },
             {
               title: "Exchanges",

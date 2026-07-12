@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Exchange Policy | Tranquil",
-  description: "Tranquil exchange policy — no returns, exchange only within 48 hours of delivery.",
+  description: "Tranquil exchange policy — no returns, exchange only within 72 hours of delivery.",
 };
 
 export default function ReturnsPage() {
@@ -35,7 +35,7 @@ export default function ReturnsPage() {
             },
             {
               title: "Exchange Available",
-              body: "Exchanges are available for a different size of the same product, subject to stock availability. To request an exchange, contact us via WhatsApp at +91 92261 20292 within 48 hours of receiving your order.",
+              body: "Exchanges are available for a different size of the same product, subject to stock availability. To request an exchange, contact us via WhatsApp at +91 92261 20292 within 72 hours of receiving your order.",
             },
             {
               title: "Exchange Conditions",

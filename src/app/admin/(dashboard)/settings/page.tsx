@@ -32,7 +32,7 @@ export default function SettingsPage() {
     gstin: "",
     email: "thetranquilstor@gmail.com",
     phone: "+91 92261 20292",
-    terms: "All sales are final. No returns or cancellations.\nExchanges available within 48 hours of delivery (same product, different size only).\nThis is a computer generated invoice.",
+    terms: "All sales are final. No returns or cancellations.\nExchanges available within 72 hours of delivery (same product, different size only).\nThis is a computer generated invoice.",
     signatory: "Authorized Signatory"
   });
 

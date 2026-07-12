@@ -607,12 +607,12 @@ function AccountContent() {
                             {/* Items */}
                             <div className="p-4 md:p-6 space-y-6">
                               {order.items?.map((item: any, idx: number) => {
-                                // Calculate Return Eligibility
+                                // Calculate Exchange Eligibility
                                 const deliveryDate = new Date(order.created_at);
                                 deliveryDate.setDate(deliveryDate.getDate() + 5); // Rough delivery estimate
-                                const returnDeadline = new Date(deliveryDate);
-                                returnDeadline.setDate(returnDeadline.getDate() + 7); // 7-day return policy
-                                const isReturnEligible = order.status === 'delivered' ? new Date() <= returnDeadline : true;
+                                const exchangeDeadline = new Date(deliveryDate);
+                                exchangeDeadline.setDate(exchangeDeadline.getDate() + 3); // 72-hour exchange policy (3 days)
+                                const isExchangeEligible = order.status === 'delivered' ? new Date() <= exchangeDeadline : true;
                                 
                                 return (
                                 <div key={idx} className="flex flex-col sm:flex-row gap-4 md:gap-6 border-b border-[#EFEFEF] pb-6 last:border-0 last:pb-0">
@@ -636,9 +636,9 @@ function AccountContent() {
                                   </div>
                                   <div className="sm:text-right flex flex-col justify-center gap-2 mt-2 sm:mt-0">
                                     {order.status === 'delivered' && (
-                                      <div className={`text-[10px] flex items-center gap-1 sm:justify-end mb-1 ${isReturnEligible ? 'text-green-600' : 'text-[#999999]'}`}>
+                                      <div className={`text-[10px] flex items-center gap-1 sm:justify-end mb-1 ${isExchangeEligible ? 'text-green-600' : 'text-[#999999]'}`}>
                                         <Info className="w-3 h-3" />
-                                        {isReturnEligible ? `Return valid till ${returnDeadline.toLocaleDateString('en-US', {day:'numeric', month:'short'})}` : 'Return window closed'}
+                                        {isExchangeEligible ? `Exchange valid till ${exchangeDeadline.toLocaleDateString('en-US', {day:'numeric', month:'short'})}` : 'Exchange window closed'}
                                       </div>
                                     )}
                                     <button onClick={() => router.push(`/products/${item.product_id}`)} className="bg-[#111111] text-white hover:bg-[#C7A17A] px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-medium transition-colors w-full sm:w-auto text-center">Buy it again</button>

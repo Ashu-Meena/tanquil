@@ -28,7 +28,7 @@ const faqs = [
   },
   {
     q: "Do you offer exchanges?",
-    a: "Yes, we offer size exchanges for the same product, subject to availability. You must contact us via WhatsApp at +91 92261 20292 within 48 hours of receiving your order. Items must be unworn, unwashed, and in original packaging with all tags attached.",
+    a: "Yes, we offer size exchanges for the same product, subject to availability. You must contact us via WhatsApp at +91 92261 20292 within 72 hours of receiving your order. Items must be unworn, unwashed, and in original packaging with all tags attached.",
   },
   {
     q: "How do I track my order?",

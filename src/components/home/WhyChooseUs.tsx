@@ -17,7 +17,7 @@ const features = [
   {
     icon: ArrowLeftRight,
     title: "Exchange Available",
-    description: "Need a different size? We offer size exchanges within 48 hours of delivery."
+    description: "Need a different size? We offer size exchanges within 72 hours of delivery."
   },
   {
     icon: Lock,
