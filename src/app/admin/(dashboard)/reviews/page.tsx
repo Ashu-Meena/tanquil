@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { Search, Filter, Check, X, Trash2, Star } from "lucide-react";
+import { Search, Filter, Check, X, Trash2, Star, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export default function ReviewsPage() {
