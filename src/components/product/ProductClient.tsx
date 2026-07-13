@@ -59,8 +59,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   
   const availableSizesForColor = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
-      const fallback = product.sizes && product.sizes.length > 0 ? [...product.sizes] : ["XS", "S", "M", "L", "XL", "XXL", "3XL", "Custom"];
-      if (!fallback.includes("Custom")) fallback.push("Custom");
+      const fallback = product.sizes && product.sizes.length > 0 ? [...product.sizes] : ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
       return fallback;
     }
     
@@ -68,17 +67,15 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       .filter(v => v.color_name === selectedColor.name)
       .map(v => v.size);
       
-    if (!sizes.includes("Custom")) sizes.push("Custom");
-    
     // Sort sizes logically if possible, or just return as is
     return sizes;
   }, [product.variants, product.sizes, selectedColor.name]);
 
-  const [selectedSize, setSelectedSize] = useState(availableSizesForColor[0] || "Custom");
+  const [selectedSize, setSelectedSize] = useState(availableSizesForColor[0] || "");
 
   useEffect(() => {
-    if (!availableSizesForColor.includes(selectedSize)) {
-      setSelectedSize(availableSizesForColor[0] || "Custom");
+    if (availableSizesForColor.length > 0 && !availableSizesForColor.includes(selectedSize)) {
+      setSelectedSize(availableSizesForColor[0]);
     }
   }, [selectedColor.name, availableSizesForColor, selectedSize]);
 
