@@ -137,6 +137,12 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
     return currentVariant ? currentVariant.stock_quantity <= 0 : false;
   })();
 
+  const isCustomValid = selectedSize !== "Custom" || 
+    (customMeasurements.bust.trim() !== "" && 
+     customMeasurements.waist.trim() !== "" && 
+     customMeasurements.hips.trim() !== "" && 
+     customMeasurements.length.trim() !== "");
+
   const maxQuantity = (() => {
     if (selectedSize === "Custom") return 99; // Arbitrary high number for custom
     if (!product.variants || product.variants.length === 0) return 99;
@@ -424,21 +430,23 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               <div className="flex flex-col gap-3 mb-6 sticky bottom-[64px] z-[45] bg-white py-3 md:py-4 md:static md:p-0 border-t border-border-light md:border-none" ref={addToCartRef}>
                 <button 
                   onClick={handleAddToCart}
-                  disabled={isOutOfStock}
+                  disabled={isOutOfStock || !isCustomValid}
                   className={`w-full py-3 md:py-4 uppercase tracking-widest text-[11px] md:text-sm font-medium transition-colors ${
                     isOutOfStock 
                       ? 'bg-border-light text-neutral-400 cursor-not-allowed' 
-                      : 'bg-rich-black hover:bg-gold text-white'
+                      : !isCustomValid
+                        ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                        : 'bg-rich-black hover:bg-gold text-white'
                   }`}
                 >
-                  {isOutOfStock ? 'Out of Stock' : 'Add To Cart'}
+                  {isOutOfStock ? 'Out of Stock' : !isCustomValid ? 'Enter Measurements' : 'Add To Cart'}
                 </button>
                 <div className="flex gap-3">
                   <button
                     onClick={handleBuyNow}
-                    disabled={isOutOfStock}
+                    disabled={isOutOfStock || !isCustomValid}
                     className={`flex-1 border py-3 md:py-4 uppercase tracking-widest text-[11px] md:text-sm font-medium transition-colors ${
-                      isOutOfStock 
+                      isOutOfStock || !isCustomValid
                         ? 'border-border-light text-neutral-400 cursor-not-allowed' 
                         : 'border-rich-black text-rich-black hover:bg-rich-black hover:text-white'
                     }`}
@@ -537,13 +545,15 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       <div className={`md:hidden fixed bottom-[64px] left-0 w-full bg-white border-t border-border-light p-4 z-40 flex gap-3 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] pb-4 transition-transform duration-500 ${showStickyBar ? 'translate-y-0' : 'translate-y-[150%]'}`}>
         <button 
           onClick={handleAddToCart}
-          className="flex-1 bg-rich-black text-white py-3 uppercase tracking-widest text-[10px] font-medium transition-colors"
+          disabled={isOutOfStock || !isCustomValid}
+          className={`flex-1 py-3 uppercase tracking-widest text-[10px] font-medium transition-colors ${isOutOfStock || !isCustomValid ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed' : 'bg-rich-black text-white hover:bg-gold'}`}
         >
-          Add To Cart
+          {isOutOfStock ? 'Out of Stock' : !isCustomValid ? 'Enter Measurements' : 'Add To Cart'}
         </button>
         <button 
           onClick={handleBuyNow}
-          className="flex-1 border border-rich-black text-rich-black py-3 uppercase tracking-widest text-[10px] font-medium transition-colors"
+          disabled={isOutOfStock || !isCustomValid}
+          className={`flex-1 border py-3 uppercase tracking-widest text-[10px] font-medium transition-colors ${isOutOfStock || !isCustomValid ? 'border-border-light text-neutral-400 cursor-not-allowed' : 'border-rich-black text-rich-black'}`}
         >
           Buy It Now
         </button>
@@ -566,9 +576,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           </div>
           <button 
             onClick={handleAddToCart}
-            className="bg-rich-black text-white px-8 py-3 uppercase tracking-widest text-xs font-medium hover:bg-gold transition-colors"
+            disabled={isOutOfStock || !isCustomValid}
+            className={`px-8 py-3 uppercase tracking-widest text-xs font-medium transition-colors ${isOutOfStock || !isCustomValid ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed' : 'bg-rich-black text-white hover:bg-gold'}`}
           >
-            Add To Cart
+            {isOutOfStock ? 'Out of Stock' : !isCustomValid ? 'Enter Measurements' : 'Add To Cart'}
           </button>
         </div>
       </div>

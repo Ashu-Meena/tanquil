@@ -17,7 +17,7 @@ export interface ColorGroup {
   sizes: SizeRow[];
 }
 
-const PRESET_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "OS"];
+const PRESET_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "OS", "Custom"];
 
 interface VariantsEditorProps {
   groups: ColorGroup[];
@@ -180,13 +180,13 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
                     {/* Size selector + optional custom input */}
                     <div className="flex items-center gap-2">
                       <select
-                        value={PRESET_SIZES.includes(sizeRow.size) ? sizeRow.size : "Custom"}
+                        value={PRESET_SIZES.includes(sizeRow.size) ? sizeRow.size : "Other"}
                         onChange={(e) =>
                           updateSize(
                             group.id,
                             sizeRow.id,
                             "size",
-                            e.target.value === "Custom" ? "" : e.target.value
+                            e.target.value === "Other" ? "" : e.target.value
                           )
                         }
                         className="border border-border-light px-2 py-1.5 text-sm focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-sm w-28"
@@ -194,7 +194,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
                         {PRESET_SIZES.map((s) => (
                           <option key={s} value={s}>{s}</option>
                         ))}
-                        <option value="Custom">Custom…</option>
+                        <option value="Other">Other…</option>
                       </select>
 
                       {!PRESET_SIZES.includes(sizeRow.size) && (
