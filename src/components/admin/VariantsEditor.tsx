@@ -209,15 +209,21 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
                     </div>
 
                     {/* Stock */}
-                    <input
-                      type="number"
-                      min={0}
-                      value={sizeRow.stock_quantity}
-                      onChange={(e) =>
-                        updateSize(group.id, sizeRow.id, "stock_quantity", parseInt(e.target.value) || 0)
-                      }
-                      className="border border-border-light px-2 py-1.5 text-sm text-center font-mono focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-sm w-full"
-                    />
+                    {sizeRow.size === "Custom" ? (
+                      <div className="border border-border-light px-2 py-1.5 text-xs text-center text-neutral-500 font-medium bg-transparent w-full flex items-center justify-center rounded-sm h-8">
+                        On Demand
+                      </div>
+                    ) : (
+                      <input
+                        type="number"
+                        min={0}
+                        value={sizeRow.stock_quantity}
+                        onChange={(e) =>
+                          updateSize(group.id, sizeRow.id, "stock_quantity", parseInt(e.target.value) || 0)
+                        }
+                        className="border border-border-light px-2 py-1.5 text-sm text-center font-mono focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-sm w-full"
+                      />
+                    )}
 
                     {/* Remove size */}
                     <button
