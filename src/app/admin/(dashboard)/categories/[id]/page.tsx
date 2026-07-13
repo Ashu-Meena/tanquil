@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { ArrowLeft, Save, Image as ImageIcon, Trash2 } from "lucide-react";
@@ -8,7 +8,8 @@ import Link from "next/link";
 import ImageUploader from "@/components/admin/ImageUploader";
 import { toast } from "@/store/useToastStore";
 
-export default function EditCategoryPage({ params }: { params: { id: string } }) {
+export default function EditCategoryPage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
+  const params = use(paramsPromise);
   const supabase = createClient();
   const router = useRouter();
   const [saving, setSaving] = useState(false);

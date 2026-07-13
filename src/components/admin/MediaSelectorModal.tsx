@@ -149,6 +149,9 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
           </div>
         </div>
 
+        {/* Paste URL Section */}
+        <PasteUrlSection onSelect={onSelect} onClose={onClose} />
+
         {/* Grid Content */}
         <div className="flex-1 overflow-y-auto p-6 bg-[#FAF8F5]">
           {loading ? (
@@ -199,6 +202,50 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
         </div>
 
       </div>
+    </div>
+  );
+}
+
+function PasteUrlSection({ onSelect, onClose }: { onSelect: (url: string) => void; onClose: () => void }) {
+  const [url, setUrl] = useState("");
+  const [expanded, setExpanded] = useState(false);
+
+  const handleUse = () => {
+    const trimmed = url.trim();
+    if (!trimmed) return;
+    onSelect(trimmed);
+    onClose();
+  };
+
+  return (
+    <div className="bg-white border-b border-[#EFEFEF] px-4 shrink-0">
+      <button
+        onClick={() => setExpanded(v => !v)}
+        className="w-full flex items-center justify-between py-3 text-sm text-[#666666] hover:text-[#111111] transition-colors"
+      >
+        <span className="font-medium">Or paste an image URL</span>
+        <span className="text-xs text-[#999999]">{expanded ? "▲ Hide" : "▼ Show"}</span>
+      </button>
+      {expanded && (
+        <div className="pb-4 flex gap-2">
+          <input
+            type="url"
+            value={url}
+            onChange={e => setUrl(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleUse()}
+            placeholder="https://images.unsplash.com/..."
+            className="flex-1 border border-[#EFEFEF] px-3 py-2 text-sm focus:outline-none focus:border-[#C7A17A] rounded-sm transition-colors"
+            autoFocus
+          />
+          <button
+            onClick={handleUse}
+            disabled={!url.trim()}
+            className="bg-[#C7A17A] text-white px-4 py-2 text-sm font-medium rounded-sm hover:bg-[#b8926b] transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+          >
+            Use URL
+          </button>
+        </div>
+      )}
     </div>
   );
 }
