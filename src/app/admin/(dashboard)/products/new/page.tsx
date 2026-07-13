@@ -3,20 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, Plus, Trash2, Tag, LayoutGrid, Image as ImageIcon, FileText, Settings, AlignLeft, Bold, Italic, List } from "lucide-react";
+import { ArrowLeft, Save, Tag, LayoutGrid, FileText, Settings, AlignLeft, Bold, Italic, List } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
-import ImageUploader from "@/components/admin/ImageUploader";
 import { toast } from "@/store/useToastStore";
+import VariantsEditor, { ColorGroup, groupsToVariantPayloads, groupsToImagePayloads } from "@/components/admin/VariantsEditor";
 
-interface Variant {
-  id: string;
-  color_name: string;
-  color_hex: string;
-  size: string;
-  stock_quantity: number;
-  sku: string;
-  image_urls: string[];
-}
+
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -42,8 +34,14 @@ export default function AddProductPage() {
     seo_description: ""
   });
 
-  const [variants, setVariants] = useState<Variant[]>([
-    { id: crypto.randomUUID(), color_name: "Default", color_hex: "#000000", size: "OS", stock_quantity: 0, sku: "", image_urls: [] }
+  const [colorGroups, setColorGroups] = useState<ColorGroup[]>([
+    {
+      id: crypto.randomUUID(),
+      color_name: "Default",
+      color_hex: "#000000",
+      image_urls: [],
+      sizes: [{ id: crypto.randomUUID(), size: "S", stock_quantity: 0 }],
+    },
   ]);
 
   useEffect(() => {
@@ -63,40 +61,6 @@ export default function AddProductPage() {
     } else {
       setFormData({ ...formData, [name]: value });
     }
-  };
-
-  // Variant Management
-  const addVariant = () => {
-    setVariants([...variants, { id: crypto.randomUUID(), color_name: "", color_hex: "#000000", size: "", stock_quantity: 0, sku: "", image_urls: [] }]);
-  };
-  const updateVariant = (id: string, field: keyof Variant, value: any) => {
-    setVariants(prev => {
-      const targetVariant = prev.find(v => v.id === id);
-      if (!targetVariant) return prev;
-      
-      const newVariants = prev.map(v => v.id === id ? { ...v, [field]: value } : v);
-      
-      // Auto-sync image_urls across variants with the same color_name
-      if (field === 'image_urls' && targetVariant.color_name) {
-        return newVariants.map(v => 
-          v.color_name === targetVariant.color_name ? { ...v, image_urls: value } : v
-        );
-      }
-      
-      // If color changes, auto-populate images from existing variants with the new color
-      if (field === 'color_name' && value) {
-        const existingColorVariant = newVariants.find(v => v.id !== id && v.color_name === value && v.image_urls && v.image_urls.length > 0);
-        if (existingColorVariant) {
-          return newVariants.map(v => v.id === id ? { ...v, image_urls: existingColorVariant.image_urls } : v);
-        }
-      }
-      
-      return newVariants;
-    });
-  };
-  const removeVariant = (id: string) => {
-    if (variants.length === 1) return toast.error("You must have at least one variant.");
-    setVariants(variants.filter(v => v.id !== id));
   };
 
   // Simple Rich Text Toolbar
@@ -164,48 +128,16 @@ export default function AddProductPage() {
       return;
     }
 
-    // Extract and Insert Images Grouped by Color
-    const uniqueColors = new Set<string>();
-    const imagePayloads: any[] = [];
-    
-    variants.forEach(v => {
-      const colorKey = v.color_name.trim() || "Default";
-      if (!uniqueColors.has(colorKey) && v.image_urls && v.image_urls.length > 0) {
-        uniqueColors.add(colorKey);
-        const validUrls = v.image_urls.filter(url => url.trim() !== "");
-        validUrls.forEach((url, index) => {
-          imagePayloads.push({
-            product_id: product.id,
-            url,
-            color_name: colorKey,
-            display_order: index + 1
-          });
-        });
-      }
-    });
-
+    // Insert Images
+    const imagePayloads = groupsToImagePayloads(colorGroups, product.id);
     if (imagePayloads.length > 0) {
       await supabase.from("product_images").insert(imagePayloads);
     }
 
-    // Insert Variants
-    const variantPayloads = variants.map(v => {
-      const colorCode = v.color_name.trim().substring(0, 3).toUpperCase() || "DEF";
-      const sizeCode = v.size.trim().toUpperCase() || "OS";
-      const vSku = `${finalBaseSku}-${colorCode}-${sizeCode}-${randomHex}`;
-      
-      return {
-        product_id: product.id,
-        color_name: v.color_name,
-        color_hex: v.color_hex,
-        size: v.size,
-        stock_quantity: v.stock_quantity,
-        sku: vSku
-      };
-    });
-    
+    // Insert Variants (1 row per color × size)
+    const variantPayloads = groupsToVariantPayloads(colorGroups, product.id, finalBaseSku);
     const { error: varError } = await supabase.from("product_variants").insert(variantPayloads);
-    
+
     if (varError) {
       console.error("Product variants creation error:", varError);
       toast.error("Product saved, but some variants failed to create. Please check the logs.");
@@ -276,115 +208,12 @@ export default function AddProductPage() {
 
             {/* Variants & Inventory */}
             <div className="bg-white border border-[#EFEFEF] shadow-sm">
-              <div className="p-4 border-b border-[#EFEFEF] flex items-center justify-between bg-[#F9F9F9]">
-                <div className="flex items-center gap-2">
-                  <LayoutGrid className="w-4 h-4 text-[#666666]" />
-                  <h2 className="font-serif text-lg text-[#111111]">Variants & Inventory</h2>
-                </div>
-                <button type="button" onClick={addVariant} className="text-xs text-[#111111] font-medium uppercase tracking-widest hover:text-[#C7A17A] flex items-center gap-1">
-                  <Plus className="w-3 h-3" /> Add Variant
-                </button>
+              <div className="p-4 border-b border-[#EFEFEF] flex items-center gap-2 bg-[#F9F9F9]">
+                <LayoutGrid className="w-4 h-4 text-[#666666]" />
+                <h2 className="font-serif text-lg text-[#111111]">Variants & Inventory</h2>
               </div>
               <div className="p-4 bg-[#FDFDFC]">
-                <div className="space-y-4">
-                  {variants.map((variant, index) => (
-                    <div key={variant.id} className="border border-[#EFEFEF] rounded-sm p-5 bg-white shadow-sm relative group hover:border-[#C7A17A] transition-colors">
-                      <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#EFEFEF]">
-                        <h3 className="text-sm font-medium text-[#111111]">Variant {index + 1}</h3>
-                        <button type="button" onClick={() => removeVariant(variant.id)} className="text-xs flex items-center gap-1 text-[#999999] hover:text-[#E63946] transition-colors">
-                          <Trash2 className="w-3.5 h-3.5" /> Remove
-                        </button>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                        {/* Color */}
-                        <div className="col-span-1 md:col-span-4">
-                          <label className="block text-xs font-medium text-[#666666] uppercase tracking-wider mb-1.5">Color Details</label>
-                          <div className="flex items-center gap-2">
-                            <input type="color" value={variant.color_hex} onChange={e => updateVariant(variant.id, 'color_hex', e.target.value)} className="w-10 h-10 border border-[#EFEFEF] p-0.5 cursor-pointer rounded-sm flex-shrink-0 bg-white" title="Choose color hex" />
-                            <input type="text" value={variant.color_name} onChange={e => updateVariant(variant.id, 'color_name', e.target.value)} className="w-full border border-[#EFEFEF] p-2 text-sm focus:outline-none focus:border-[#C7A17A] bg-[#FAF8F5] focus:bg-white transition-colors" placeholder="e.g. Midnight Blue" />
-                          </div>
-                        </div>
-                        
-                        {/* Size */}
-                        <div className="col-span-1 md:col-span-3">
-                           <label className="block text-xs font-medium text-[#666666] uppercase tracking-wider mb-1.5">Size</label>
-                           <div className="flex flex-col gap-2">
-                            <select 
-                              value={['XS', 'S', 'M', 'L', 'XL', 'XXL', 'OS'].includes(variant.size) ? variant.size : 'Custom'}
-                              onChange={e => updateVariant(variant.id, 'size', e.target.value === 'Custom' ? '' : e.target.value)}
-                              className="w-full border border-[#EFEFEF] p-2 text-sm focus:outline-none focus:border-[#C7A17A] bg-[#FAF8F5] focus:bg-white transition-colors"
-                            >
-                              <option value="XS">XS</option>
-                              <option value="S">S</option>
-                              <option value="M">M</option>
-                              <option value="L">L</option>
-                              <option value="XL">XL</option>
-                              <option value="XXL">XXL</option>
-                              <option value="OS">OS (One Size)</option>
-                              <option value="Custom">Custom...</option>
-                            </select>
-                            {(!['XS', 'S', 'M', 'L', 'XL', 'XXL', 'OS'].includes(variant.size)) && (
-                              <input 
-                                type="text" 
-                                value={variant.size} 
-                                onChange={e => updateVariant(variant.id, 'size', e.target.value)} 
-                                className="w-full border border-[#EFEFEF] p-2 text-sm focus:outline-none focus:border-[#C7A17A] bg-[#FAF8F5] focus:bg-white transition-colors" 
-                                placeholder="Enter custom size" 
-                              />
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* Stock */}
-                        <div className="col-span-1 md:col-span-2">
-                           <label className="block text-xs font-medium text-[#666666] uppercase tracking-wider mb-1.5">Stock</label>
-                           <input type="number" value={variant.stock_quantity} onChange={e => updateVariant(variant.id, 'stock_quantity', parseInt(e.target.value) || 0)} className="w-full border border-[#EFEFEF] p-2 text-sm focus:outline-none focus:border-[#C7A17A] bg-[#FAF8F5] focus:bg-white transition-colors font-mono" />
-                        </div>
-                        
-                        {/* SKU is auto-generated */}
-
-                        {/* Variant Gallery */}
-                        <div className="col-span-1 md:col-span-12 mt-4 pt-4 border-t border-[#EFEFEF]">
-                           <label className="block text-xs font-medium text-[#666666] uppercase tracking-wider mb-3">Color Media Gallery</label>
-                           <p className="text-xs text-[#999999] mb-4 -mt-2">Images uploaded here will automatically sync to all variants sharing the exact same color name.</p>
-                           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                              {variant.image_urls.map((img, imgIndex) => (
-                                <div key={imgIndex} className="relative group">
-                                  <ImageUploader 
-                                    value={img} 
-                                    onChange={(url) => {
-                                      const newUrls = [...variant.image_urls];
-                                      newUrls[imgIndex] = url;
-                                      updateVariant(variant.id, 'image_urls', newUrls);
-                                    }} 
-                                    label=""
-                                  />
-                                  <button 
-                                    type="button" 
-                                    onClick={() => {
-                                      const newUrls = variant.image_urls.filter((_, i) => i !== imgIndex);
-                                      updateVariant(variant.id, 'image_urls', newUrls);
-                                    }}
-                                    className="absolute top-1 right-1 p-1 bg-white border border-[#EFEFEF] shadow-sm text-[#E63946] hover:bg-[#E63946] hover:text-white rounded-full opacity-0 group-hover:opacity-100 transition-all z-10"
-                                  >
-                                    <Trash2 className="w-3 h-3" />
-                                  </button>
-                                </div>
-                              ))}
-                              <div 
-                                onClick={() => updateVariant(variant.id, 'image_urls', [...variant.image_urls, ""])}
-                                className="border border-dashed border-[#EFEFEF] hover:border-[#C7A17A] rounded-sm flex flex-col items-center justify-center cursor-pointer transition-colors aspect-square w-full bg-[#FAF8F5]"
-                              >
-                                <Plus className="w-5 h-5 text-[#666666] mb-1" />
-                                <span className="text-[10px] font-medium text-[#666666] uppercase tracking-widest text-center px-2">Add Image</span>
-                              </div>
-                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <VariantsEditor groups={colorGroups} onChange={setColorGroups} />
               </div>
             </div>
 
