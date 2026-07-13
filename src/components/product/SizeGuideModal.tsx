@@ -14,6 +14,7 @@ const sizeData = [
   { size: "M",  bust: "36–37\"", waist: "28–29\"", hips: "38–39\"", uk: "10", in: "M" },
   { size: "L",  bust: "38–39\"", waist: "30–31\"", hips: "40–41\"", uk: "12", in: "L" },
   { size: "XL", bust: "40–41\"", waist: "32–33\"", hips: "42–43\"", uk: "14", in: "XL"},
+  { size: "FS", bust: "-", waist: "-", hips: "-", uk: "-", in: "FS" },
 ];
 
 export default function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {

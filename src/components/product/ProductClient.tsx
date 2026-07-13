@@ -59,7 +59,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   
   const availableSizesForColor = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
-      const fallback = product.sizes && product.sizes.length > 0 ? [...product.sizes] : ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
+      const fallback = product.sizes && product.sizes.length > 0 ? [...product.sizes] : ["XS", "S", "M", "L", "XL", "XXL", "3XL", "FS"];
       return fallback;
     }
     

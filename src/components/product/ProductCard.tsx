@@ -26,7 +26,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
   const { addItem, openCart } = useCartStore();
 
-  const sizes = ["XS", "S", "M", "L", "XL"];
+  const sizes = ["XS", "S", "M", "L", "XL", "FS"];
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();

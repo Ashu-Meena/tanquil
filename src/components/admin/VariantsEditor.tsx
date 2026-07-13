@@ -17,7 +17,7 @@ export interface ColorGroup {
   sizes: SizeRow[];
 }
 
-const PRESET_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "OS", "Custom"];
+const PRESET_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "FS", "OS", "Custom"];
 
 interface VariantsEditorProps {
   groups: ColorGroup[];
