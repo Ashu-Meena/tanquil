@@ -8,7 +8,7 @@ import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 const VIDEO_LIMIT = 6;
 const VIDEO_EXTENSIONS = ["mp4", "mov", "webm", "ogg", "m4v", "avi"];
-const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif"];
+const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "gif", "webp", "svg", "avif", "heic", "heif"];
 
 function isVideoFile(name: string) {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
@@ -76,7 +76,8 @@ export default function MediaLibraryPage() {
           failCount++;
           continue;
         }
-        if (!file.type.startsWith("image/")) {
+        const isHeic = file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif");
+        if (!file.type.startsWith("image/") && !isHeic) {
           failCount++;
           continue;
         }
@@ -269,7 +270,7 @@ export default function MediaLibraryPage() {
             multiple
             ref={imageInputRef}
             onChange={handleImageUpload}
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             className="hidden"
           />
           <input

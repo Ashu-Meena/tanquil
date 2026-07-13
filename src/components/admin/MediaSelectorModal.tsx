@@ -60,8 +60,11 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
       }
 
       // Validate file type
-      if (!file.type.startsWith('image/')) {
-        toast.error("Only image files are allowed");
+      const isHeic = file.name.toLowerCase().endsWith(".heic") || file.name.toLowerCase().endsWith(".heif");
+      const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|mov|webm|ogg|m4v)$/i);
+      
+      if (!file.type.startsWith('image/') && !isHeic && !isVideo) {
+        toast.error("Invalid file format");
         setUploading(false);
         return;
       }
@@ -126,7 +129,7 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
               type="file" 
               ref={fileInputRef} 
               onChange={handleUpload} 
-              accept="image/*,video/*" 
+              accept="image/*,video/*,.heic,.heif" 
               className="hidden" 
             />
             <button 
