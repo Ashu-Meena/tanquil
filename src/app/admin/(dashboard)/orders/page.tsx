@@ -82,7 +82,7 @@ export default function OrdersPage() {
     const supabase = createClient();
     const { data, error } = await supabase
       .from("orders")
-      .select("*, items:order_items(*)")
+      .select("*, items:order_items(*, product:products(product_images(url)))")
       .order("created_at", { ascending: false });
     
     if (!error && data) setOrders(data as any as Order[]);
@@ -425,8 +425,8 @@ export default function OrdersPage() {
                         {selectedOrder.items.map((item, i) => (
                           <div key={i} className="flex gap-4 items-center text-sm">
                             <div className="relative w-12 h-16 bg-[#FAF8F5] flex-shrink-0">
-                                  {item.image_url || item.image || item.product?.images?.[0] ? (
-                                    <Image src={item.image_url || item.image || item.product?.images?.[0]} alt={item.product_name || item.name} fill className="object-cover" />
+                                  {item.image_url || item.image || item.product?.product_images?.[0]?.url ? (
+                                    <Image src={item.image_url || item.image || item.product?.product_images?.[0]?.url} alt={item.product_name || item.name} fill className="object-cover" />
                                   ) : (
                                 <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px] uppercase tracking-widest text-center px-1">No Image</div>
                               )}
