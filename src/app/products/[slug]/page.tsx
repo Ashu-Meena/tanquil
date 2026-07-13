@@ -50,7 +50,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       id, name, price, compare_at_price, slug,
       product_categories!inner(category_id),
       product_images(url, color_name),
-      product_variants(color_name)
+      product_variants(color_name, size)
     `)
     .eq("product_categories.category_id", productData.product_categories?.[0]?.category_id || "")
     .neq("id", productData.id)
@@ -119,6 +119,13 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       });
     }
 
+    const sizesSet = new Set<string>();
+    if (rp.product_variants) {
+      rp.product_variants.forEach((v: any) => {
+        if (v.size) sizesSet.add(v.size);
+      });
+    }
+
     return {
       id: rp.id,
       name: rp.name,
@@ -128,7 +135,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       isSale: (rp.compare_at_price ?? 0) > rp.price,
       image: rp.product_images?.[0]?.url || "/placeholder.jpg",
       hoverImage: rp.product_images?.[1]?.url || rp.product_images?.[0]?.url,
-      colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image }))
+      colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
+      sizes: Array.from(sizesSet)
     };
   }) || [];
 

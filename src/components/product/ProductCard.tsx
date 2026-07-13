@@ -16,6 +16,7 @@ interface CardProduct {
   isNew?: boolean;
   isSale?: boolean;
   colors?: { name: string; image?: string }[];
+  sizes?: string[];
 }
 
 export default function ProductCard({ product }: { product: CardProduct }) {
@@ -26,7 +27,8 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
   const { addItem, openCart } = useCartStore();
 
-  const sizes = ["XS", "S", "M", "L", "XL", "FS"];
+  const defaultSizes = ["XS", "S", "M", "L", "XL", "FS"];
+  const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : defaultSizes;
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();

@@ -8,7 +8,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   // Fetch products and their categories
   let query = supabase
     .from("products")
-    .select("*, product_categories!inner(category_id, categories(name, slug)), product_images(url, color_name), product_variants(color_name)")
+    .select("*, product_categories!inner(category_id, categories(name, slug)), product_images(url, color_name), product_variants(color_name, size)")
     .eq("status", "active");
 
   // If not "all", "new" etc, filter by slug
@@ -35,6 +35,13 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       });
     }
 
+    const sizesSet = new Set<string>();
+    if (p.product_variants) {
+      p.product_variants.forEach((v: any) => {
+        if (v.size) sizesSet.add(v.size);
+      });
+    }
+
     return {
       id: p.id,
       slug: p.slug,
@@ -42,6 +49,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       price: p.price,
       images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
+      sizes: Array.from(sizesSet),
       isNew: p.is_featured,
       isSale: p.compare_at_price > p.price,
       category: (p.product_categories && p.product_categories.length > 0 && p.product_categories[0].categories) ? p.product_categories[0].categories.name : "Uncategorized"

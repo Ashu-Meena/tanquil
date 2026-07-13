@@ -105,7 +105,7 @@ export default async function Home() {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*, product_images(url, color_name), product_variants(color_name)")
+      .select("*, product_images(url, color_name), product_variants(color_name, size)")
       .eq("is_bestseller", true)
       .eq("status", "active")
       .limit(10);
@@ -130,6 +130,13 @@ export default async function Home() {
         }
       });
     }
+    const sizesSet = new Set<string>();
+    if (p.product_variants) {
+      p.product_variants.forEach((v: any) => {
+        if (v.size) sizesSet.add(v.size);
+      });
+    }
+
     return {
       id: p.id,
       slug: p.slug,
@@ -137,6 +144,7 @@ export default async function Home() {
       price: p.price,
       images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
+      sizes: Array.from(sizesSet),
       isNew: p.is_featured,
       isSale: (p.compare_at_price ?? 0) > p.price
     };
@@ -147,7 +155,7 @@ export default async function Home() {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select("*, product_images(url, color_name), product_variants(color_name)")
+      .select("*, product_images(url, color_name), product_variants(color_name, size)")
       .eq("is_featured", true)
       .eq("status", "active")
       .limit(10);
@@ -175,6 +183,13 @@ export default async function Home() {
       });
     }
 
+    const sizesSet = new Set<string>();
+    if (p.product_variants) {
+      p.product_variants.forEach((v: any) => {
+        if (v.size) sizesSet.add(v.size);
+      });
+    }
+
     return {
       id: p.id,
       slug: p.slug,
@@ -182,6 +197,7 @@ export default async function Home() {
       price: p.price,
       images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
+      sizes: Array.from(sizesSet),
       isNew: p.is_featured,
       isSale: (p.compare_at_price ?? 0) > p.price
     };
