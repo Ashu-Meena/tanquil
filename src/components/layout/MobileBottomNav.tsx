@@ -39,11 +39,13 @@ export default function MobileBottomNav() {
             <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[#C7A17A]' : 'text-[#666666]'} hover:text-[#111111] transition-colors`}>
               <div className="relative">
                 <Icon className={`w-5 h-5 ${isActive ? 'fill-current' : ''}`} />
-                {mounted && item.badge !== undefined && item.badge > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {item.badge}
-                  </span>
-                )}
+                <span 
+                  className={`absolute -top-1.5 -right-2 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center transition-opacity duration-300 ${
+                    mounted && item.badge !== undefined && item.badge > 0 ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  {item.badge || 0}
+                </span>
               </div>
               <span className="text-[10px] font-medium tracking-wide">{item.name}</span>
             </div>

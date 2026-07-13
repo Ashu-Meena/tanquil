@@ -14,11 +14,17 @@ export default async function Home() {
   const supabase = await createClient();
 
   // Fetch Homepage Sections
-  const { data: sections } = await supabase
-    .from("homepage_sections")
-    .select("*")
-    .eq("is_active", true)
-    .order("display_order", { ascending: true });
+  let sections: any[] = [];
+  try {
+    const { data, error } = await supabase
+      .from("homepage_sections")
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true });
+    if (data && !error) sections = data;
+  } catch (error) {
+    console.error("Error fetching homepage sections:", error);
+  }
 
   const heroSlides = sections?.filter(s => s.section_type === 'hero').map(s => ({
     id: s.id,
@@ -75,11 +81,17 @@ export default async function Home() {
   })) || [];
 
   // Fetch Categories
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("is_active", true)
-    .order("display_order", { ascending: true });
+  let categories: any[] = [];
+  try {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true });
+    if (data && !error) categories = data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
 
   const mappedCategories = categories?.map(c => ({
     id: c.id,
@@ -89,7 +101,7 @@ export default async function Home() {
   })) || [];
 
   // Fetch Best Sellers (trending products)
-  let products = [];
+  let products: any[] = [];
   try {
     const { data, error } = await supabase
       .from("products")
@@ -140,12 +152,18 @@ export default async function Home() {
   })) || [];
 
   // Fetch Reviews
-  const { data: dbReviews } = await supabase
-    .from("reviews")
-    .select("id, rating, title, comment, profiles(first_name, last_name, avatar_url), products(name)")
-    .eq("status", "approved")
-    .order("created_at", { ascending: false })
-    .limit(4);
+  let dbReviews: any[] = [];
+  try {
+    const { data, error } = await supabase
+      .from("reviews")
+      .select("id, rating, title, comment, profiles(first_name, last_name, avatar_url), products(name)")
+      .eq("status", "approved")
+      .order("created_at", { ascending: false })
+      .limit(4);
+    if (data && !error) dbReviews = data;
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+  }
 
   const realReviews = dbReviews?.map((r: any) => ({
     id: r.id,
