@@ -167,7 +167,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.images[0],
+      image: activeImages[0] || product.images[0],
       color: selectedColor.name,
       size: getFinalSizeString(),
       quantity,
@@ -180,7 +180,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.images[0],
+      image: activeImages[0] || product.images[0],
       color: selectedColor.name,
       size: getFinalSizeString(),
       quantity,
@@ -555,7 +555,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       <div className={`hidden md:flex fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-[#EFEFEF] p-4 z-50 items-center justify-between px-6 lg:px-12 transform transition-transform duration-500 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="flex items-center gap-6">
           <div className="w-12 h-16 relative bg-[#FAF8F5]">
-            <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
+            <Image src={activeImages[0] || product.images[0]} alt={product.name} fill className="object-cover" />
           </div>
           <div>
             <h3 className="font-serif text-lg text-[#111111]">{product.name}</h3>
