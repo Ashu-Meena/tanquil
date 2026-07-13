@@ -7,15 +7,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { toast } from "@/store/useToastStore";
 
 export default function CartDrawer() {
   const supabase = createClient();
   const router = useRouter();
+  const pathname = usePathname();
   const { isOpen, closeCart, items: cartItems, removeItem, updateQuantity } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [shippingThreshold, setShippingThreshold] = useState(10000); // Default to 10000
+
+  // Do not render on admin paths
+  if (pathname.startsWith('/admin')) return null;
 
   const fetchShippingSettings = async () => {
     const { data } = await supabase

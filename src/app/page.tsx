@@ -89,12 +89,23 @@ export default async function Home() {
   })) || [];
 
   // Fetch Best Sellers (trending products)
-  const { data: products } = await supabase
-    .from("products")
-    .select("*, product_images(url, color_name), product_variants(color_name)")
-    .eq("is_featured", true)
-    .eq("status", "active")
-    .limit(10);
+  let products = [];
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, product_images(url, color_name), product_variants(color_name)")
+      .eq("is_featured", true)
+      .eq("status", "active")
+      .limit(10);
+      
+    if (!error && data) {
+      products = data;
+    } else if (error) {
+      console.error("Error fetching featured products:", error);
+    }
+  } catch (error) {
+    console.error("Error fetching featured products:", error);
+  }
 
   const mappedProducts = products?.map(p => {
     const images = p.product_images?.map((img: any) => img.url) || [];

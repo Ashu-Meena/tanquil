@@ -54,7 +54,7 @@ export default function BestSellers({ products }: { products: Product[] }) {
               key={product.id}
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, amount: 0.1, margin: "100px" }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
               className="w-[65vw] sm:w-[40vw] md:w-[260px] lg:w-[280px] snap-center flex-shrink-0"
             >
