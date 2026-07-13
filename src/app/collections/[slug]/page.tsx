@@ -8,8 +8,8 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   // Fetch products and their categories
   let query = supabase
     .from("products")
-    .select("*, categories!inner(*), product_images(url, color_name), product_variants(color_name)")
-    .eq("status", "active");
+    .select("*, categories!inner(*), product_images(image_url, color_name), product_variants(color_name)")
+    .eq("is_active", true);
 
   // If not "all", "new" etc, filter by slug
   if (slug !== "all" && slug !== "new") {
@@ -23,14 +23,14 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   const { data: products } = await query;
 
   const mappedProducts = products?.map((p: any) => {
-    const images = p.product_images?.map((img: any) => img.url) || [];
+    const images = p.product_images?.map((img: any) => img.image_url) || [];
     
     const colorsMap = new Map<string, string>();
     if (p.product_variants) {
       p.product_variants.forEach((v: any) => {
         if (!colorsMap.has(v.color_name)) {
           const matchingImg = p.product_images?.find((img: any) => img.color_name === v.color_name);
-          colorsMap.set(v.color_name, matchingImg?.url || images[0]);
+          colorsMap.set(v.color_name, matchingImg?.image_url || images[0]);
         }
       });
     }
@@ -38,12 +38,12 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     return {
       id: p.id,
       slug: p.slug,
-      name: p.name,
+      name: p.title,
       price: p.price,
       images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
       isNew: p.is_featured,
-      isSale: p.compare_at_price > p.price,
+      isSale: (p.original_price ?? 0) > p.price,
       category: p.categories?.name || "Uncategorized"
     };
   }) || [];

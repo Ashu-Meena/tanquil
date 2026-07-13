@@ -113,7 +113,7 @@ function AccountContent() {
       }
 
       // Fetch orders
-      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*)').eq('customer_email', profile?.email || session.user.email).order('created_at', { ascending: false });
+      const { data: userOrders } = await supabase.from('orders').select('*, order_items(*)').eq('customer_email', session.user.email || '').order('created_at', { ascending: false });
       if (userOrders) {
         setOrders(userOrders);
       }
@@ -194,7 +194,7 @@ function AccountContent() {
       first_name: firstName,
       last_name: lastName,
       phone: phone,
-      email: userProfile?.email
+      email: userProfile?.email || session.user.email || ""
     });
 
     if (error) {
@@ -230,7 +230,14 @@ function AccountContent() {
 
     const { data, error } = await supabase.from('addresses').insert({
       user_id: session.user.id,
-      ...addressForm,
+      name: addressForm.name,
+      address_line1: addressForm.address_line1,
+      address_line2: addressForm.address_line2,
+      city: addressForm.city,
+      state: addressForm.state,
+      postal_code: addressForm.postal_code,
+      country: addressForm.country,
+      phone: addressForm.phone,
       is_default: addresses.length === 0
     }).select().single();
 

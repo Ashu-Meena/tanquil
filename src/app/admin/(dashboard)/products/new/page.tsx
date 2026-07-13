@@ -101,22 +101,14 @@ export default function AddProductPage() {
     const finalBaseSku = `${nameInitials}-${randomHex}`;
 
     const payload = {
-      name: formData.name,
+      title: formData.name,
       slug: slug,
       description: formData.description,
       price: parseFloat(formData.price) || 0,
-      compare_at_price: parseFloat(formData.compare_at_price) || null,
-      sku: finalBaseSku,
+      original_price: parseFloat(formData.compare_at_price) || null,
       category_id: formData.category_id || null,
-      status: formData.status,
-      is_trending: formData.is_trending,
+      is_active: formData.status === 'active',
       is_featured: formData.is_featured,
-      brand: formData.brand,
-      fabric: formData.fabric,
-      weight: parseFloat(formData.weight) || null,
-      tags: tagsArray,
-      seo_title: formData.seo_title || formData.name,
-      seo_description: formData.seo_description
     };
 
     const { data: product, error } = await supabase.from("products").insert([payload]).select().single();

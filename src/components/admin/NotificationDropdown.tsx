@@ -39,13 +39,13 @@ export function NotificationDropdown() {
   const fetchNotifications = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from('admin_notifications')
+      .from('admin_notifications' as any)
       .select('*')
       .order('created_at', { ascending: false })
       .limit(20);
 
     if (data && !error) {
-      setNotifications(data);
+      setNotifications(data as any);
     }
     setLoading(false);
   };
@@ -57,7 +57,7 @@ export function NotificationDropdown() {
     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
 
     await supabase
-      .from('admin_notifications')
+      .from('admin_notifications' as any)
       .update({ is_read: true })
       .eq('is_read', false);
   };
@@ -68,7 +68,7 @@ export function NotificationDropdown() {
     setNotifications([]);
     
     await supabase
-      .from('admin_notifications')
+      .from('admin_notifications' as any)
       .delete()
       .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
       

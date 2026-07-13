@@ -42,7 +42,7 @@ export default function AdminSearch() {
     // We will search across products, orders, and customers
     // This is a simplified parallel search
     const [productsRes, ordersRes] = await Promise.all([
-      supabase.from("products").select("id, name, sku").ilike("name", `%${searchTerm}%`).limit(3),
+      supabase.from("products").select("id, title, slug").ilike("title", `%${searchTerm}%`).limit(3),
       supabase.from("orders").select("id, customer_name").ilike("id", `%${searchTerm}%`).limit(3),
       // Add customers search if there is a customers table, but for now we rely on orders and products
     ]);
@@ -53,8 +53,8 @@ export default function AdminSearch() {
       combinedResults.push(...productsRes.data.map(p => ({
         type: 'product',
         id: p.id,
-        title: p.name,
-        subtitle: p.sku || 'No SKU'
+        title: p.title,
+        subtitle: p.slug || 'No SKU'
       })));
     }
 

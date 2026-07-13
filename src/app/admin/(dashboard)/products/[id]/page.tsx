@@ -60,22 +60,23 @@ export default function EditProductPage() {
       .single();
 
     if (product) {
+      const p = product as any;
       setFormData({
-        name: product.name || "",
-        description: product.description || "",
-        price: product.price?.toString() || "",
-        compare_at_price: product.compare_at_price?.toString() || "",
-        sku: product.sku || "",
-        category_id: product.category_id || "",
-        status: product.status || "active",
-        is_trending: product.is_trending || false,
-        is_featured: product.is_featured || false,
-        brand: product.brand || "",
-        fabric: product.fabric || "",
-        weight: product.weight?.toString() || "",
-        tags: Array.isArray(product.tags) ? product.tags.join(", ") : "",
-        seo_title: product.seo_title || "",
-        seo_description: product.seo_description || ""
+        name: p.title || p.name || "",
+        description: p.description || "",
+        price: p.price?.toString() || "",
+        compare_at_price: (p.compare_at_price || p.original_price)?.toString() || "",
+        sku: p.sku || "",
+        category_id: p.category_id || "",
+        status: p.status || "active",
+        is_trending: p.is_trending || false,
+        is_featured: p.is_featured || false,
+        brand: p.brand || "",
+        fabric: p.fabric || "",
+        weight: p.weight?.toString() || "",
+        tags: Array.isArray(p.tags) ? p.tags.join(", ") : "",
+        seo_title: p.seo_title || "",
+        seo_description: p.seo_description || ""
       });
 
       // Group flat variants + images into ColorGroups for the editor
@@ -141,22 +142,14 @@ export default function EditProductPage() {
     }
 
     const payload = {
-      name: formData.name,
+      title: formData.name,
       slug: slug,
       description: formData.description,
       price: parseFloat(formData.price) || 0,
-      compare_at_price: parseFloat(formData.compare_at_price) || null,
-      sku: finalBaseSku,
+      original_price: parseFloat(formData.compare_at_price) || null,
       category_id: formData.category_id || null,
-      status: formData.status,
-      is_trending: formData.is_trending,
+      is_active: formData.status === 'active',
       is_featured: formData.is_featured,
-      brand: formData.brand,
-      fabric: formData.fabric,
-      weight: parseFloat(formData.weight) || null,
-      tags: tagsArray,
-      seo_title: formData.seo_title || formData.name,
-      seo_description: formData.seo_description
     };
 
     const { error } = await supabase.from("products").update(payload).eq("id", productId);

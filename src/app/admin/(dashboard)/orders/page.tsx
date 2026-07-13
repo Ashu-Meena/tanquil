@@ -85,12 +85,12 @@ export default function OrdersPage() {
       .select("*, items:order_items(*)")
       .order("created_at", { ascending: false });
     
-    if (!error && data) setOrders(data);
+    if (!error && data) setOrders(data as any as Order[]);
 
     // Fetch Invoice Settings
     const { data: settingsData } = await supabase.from('store_settings').select('*').eq('key', 'invoice_settings').single();
     if (settingsData?.value) {
-      setInvoiceSettings(settingsData.value);
+      setInvoiceSettings(settingsData.value as any);
     }
 
     setLoading(false);

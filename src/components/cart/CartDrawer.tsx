@@ -23,8 +23,9 @@ export default function CartDrawer() {
       .select('value')
       .eq('key', 'shipping')
       .single();
-    if (data && data.value && data.value.free_shipping_threshold) {
-      setShippingThreshold(data.value.free_shipping_threshold);
+    const val = data?.value as any;
+    if (val && val.free_shipping_threshold) {
+      setShippingThreshold(val.free_shipping_threshold);
     }
   };
 

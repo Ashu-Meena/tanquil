@@ -35,7 +35,7 @@ export default function EditCategoryPage({ params: paramsPromise }: { params: Pr
           slug: data.slug || "",
           description: data.description || "",
           image_url: data.image_url || "",
-          is_active: data.is_active,
+          is_active: data.is_active ?? true,
           display_order: data.display_order || 0
         });
       } else {

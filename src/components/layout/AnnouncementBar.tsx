@@ -14,8 +14,9 @@ export default function AnnouncementBar() {
     async function fetchAnnouncements() {
       const supabase = createClient();
       const { data } = await supabase.from('store_settings').select('value').eq('key', 'announcement').single();
-      if (data?.value?.messages && data.value.messages.length > 0) {
-        setAnnouncements(data.value.messages);
+      const val = data?.value as any;
+      if (val?.messages && val.messages.length > 0) {
+        setAnnouncements(val.messages);
       }
     }
     fetchAnnouncements();

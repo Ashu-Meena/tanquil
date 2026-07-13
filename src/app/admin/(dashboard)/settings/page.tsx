@@ -48,18 +48,18 @@ export default function SettingsPage() {
     if (data) {
       const info = data.find(s => s.key === 'store_info');
       if (info?.value) {
-        setStoreInfo(info.value);
+        setStoreInfo(info.value as any);
       }
       
       const ann = data.find(s => s.key === 'announcement');
-      if (ann?.value?.messages && Array.isArray(ann.value.messages)) {
-        setAnnouncements(ann.value.messages);
+      if ((ann?.value as any)?.messages && Array.isArray((ann?.value as any).messages)) {
+        setAnnouncements((ann?.value as any).messages);
       }
 
       const inv = data.find(s => s.key === 'invoice_settings');
       if (inv?.value) {
         // Fix stale closure: use functional updater
-        setInvoiceInfo(prev => ({ ...prev, ...inv.value }));
+        setInvoiceInfo(prev => ({ ...prev, ...(inv.value as any) }));
       }
     }
     setLoading(false);

@@ -22,9 +22,9 @@ export default async function Home() {
 
   const heroSlides = sections?.filter(s => s.section_type === 'hero').map(s => ({
     id: s.id,
-    image_url: s.image_url,
+    image_url: s.image_url || "",
     title: s.title,
-    subtitle: s.subtitle
+    subtitle: s.subtitle || ""
   })) || [];
 
   const trendingEdits = sections?.filter(s => s.section_type === 'trending').map((s, index, arr) => {
@@ -53,7 +53,7 @@ export default async function Home() {
       id: s.id,
       title: s.title,
       slug: s.subtitle || 'all',
-      image: s.image_url,
+      image: s.image_url || "",
       className
     };
   }) || [];
@@ -61,8 +61,8 @@ export default async function Home() {
   const editorialStories = sections?.filter(s => s.section_type === 'editorial').map(s => ({
     id: s.id,
     title: s.title,
-    description: s.subtitle,
-    image: s.image_url,
+    description: s.subtitle || "",
+    image: s.image_url || "",
     align: s.button_text || 'left'
   })) || [];
 
@@ -84,20 +84,20 @@ export default async function Home() {
   const mappedCategories = categories?.map(c => ({
     id: c.id,
     title: c.name,
-    image: c.image_url,
+    image: c.image_url || "",
     link: `/collections/${c.slug}`
   })) || [];
 
   // Fetch Best Sellers (trending products)
   const { data: products } = await supabase
     .from("products")
-    .select("*, product_images(url, color_name), product_variants(color_name)")
-    .eq("is_trending", true)
-    .eq("status", "active")
+    .select("*, product_images(image_url, color_name), product_variants(color_name)")
+    .eq("is_featured", true)
+    .eq("is_active", true)
     .limit(10);
 
   const mappedProducts = products?.map(p => {
-    const images = p.product_images?.map((img: any) => img.url) || [];
+    const images = p.product_images?.map((img: any) => img.image_url) || [];
     
     // Extract unique colors with their first image
     const colorsMap = new Map<string, string>();
@@ -105,7 +105,7 @@ export default async function Home() {
       p.product_variants.forEach((v: any) => {
         if (!colorsMap.has(v.color_name)) {
           const matchingImg = p.product_images?.find((img: any) => img.color_name === v.color_name);
-          colorsMap.set(v.color_name, matchingImg?.url || images[0]);
+          colorsMap.set(v.color_name, matchingImg?.image_url || images[0]);
         }
       });
     }
@@ -113,17 +113,17 @@ export default async function Home() {
     return {
       id: p.id,
       slug: p.slug,
-      name: p.name,
+      name: p.title,
       price: p.price,
       images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
       isNew: p.is_featured,
-      isSale: p.compare_at_price > p.price
+      isSale: (p.original_price ?? 0) > p.price
     };
   }) || [];
   const instagramItems = sections?.filter(s => s.section_type === 'instagram').slice(0, 4).map((s, index) => ({
     id: s.id,
-    url: s.image_url,
+    url: s.image_url || "",
     link: s.button_link || 'https://instagram.com/tranquil.co.in',
     height: index % 2 === 0 ? 'h-[400px]' : 'h-[500px]'
   })) || [];

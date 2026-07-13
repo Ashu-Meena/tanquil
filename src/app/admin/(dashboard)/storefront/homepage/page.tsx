@@ -10,12 +10,12 @@ interface HomepageSection {
   id?: string;
   section_type: string;
   title: string;
-  subtitle: string;
-  button_text: string;
-  button_link: string;
-  image_url: string;
+  subtitle: string | null;
+  button_text: string | null;
+  button_link: string | null;
+  image_url: string | null;
   is_active: boolean;
-  display_order?: number;
+  display_order?: number | null;
 }
 
 export default function HomepageManager() {
@@ -145,7 +145,6 @@ export default function HomepageManager() {
     } else {
       const { data: newData, error } = await supabase.from('homepage_sections').insert([data]).select().single();
       if (newData) {
-        if (data.section_type === 'hero') setHeroData(newData);
         if (data.section_type === 'featured_collection') setFeaturedData(newData);
       }
     }
@@ -322,7 +321,7 @@ export default function HomepageManager() {
               <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
               <input 
                 type="text" 
-                value={featuredData.title}
+                value={featuredData.title || ""}
                 onChange={e => setFeaturedData({...featuredData, title: e.target.value})}
                 className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
               />
@@ -330,7 +329,7 @@ export default function HomepageManager() {
             <div>
               <label className="block text-sm font-medium text-[#111111] mb-2">Subtitle</label>
               <textarea 
-                value={featuredData.subtitle}
+                value={featuredData.subtitle || ""}
                 onChange={e => setFeaturedData({...featuredData, subtitle: e.target.value})}
                 className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
               />
@@ -339,7 +338,7 @@ export default function HomepageManager() {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-[#111111] mb-2">Banner Image</label>
             <ImageUploader 
-              value={featuredData.image_url} 
+              value={featuredData.image_url || ""} 
               onChange={(url) => setFeaturedData({...featuredData, image_url: url})} 
             />
             {featuredData.image_url && (
@@ -376,7 +375,7 @@ export default function HomepageManager() {
                     <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
                     <input 
                       type="text" 
-                      value={item.title}
+                      value={item.title || ""}
                       onChange={e => {
                         const newData = [...trendingData];
                         newData[index].title = e.target.value;
@@ -389,7 +388,7 @@ export default function HomepageManager() {
                     <label className="block text-sm font-medium text-[#111111] mb-2">Link Slug (e.g. 'clothing' or 'all')</label>
                     <input 
                       type="text" 
-                      value={item.subtitle}
+                      value={item.subtitle || ""}
                       onChange={e => {
                         const newData = [...trendingData];
                         newData[index].subtitle = e.target.value;
@@ -402,7 +401,7 @@ export default function HomepageManager() {
                 <div className="space-y-4">
                   <label className="block text-sm font-medium text-[#111111] mb-2">Tile Image</label>
                   <ImageUploader 
-                    value={item.image_url} 
+                    value={item.image_url || ""} 
                     onChange={(url) => {
                       const newData = [...trendingData];
                       newData[index].image_url = url;
@@ -446,7 +445,7 @@ export default function HomepageManager() {
                     <label className="block text-sm font-medium text-[#111111] mb-2">Headline</label>
                     <input 
                       type="text" 
-                      value={item.title}
+                      value={item.title || ""}
                       onChange={e => {
                         const newData = [...editorialData];
                         newData[index].title = e.target.value;
@@ -458,7 +457,7 @@ export default function HomepageManager() {
                   <div>
                     <label className="block text-sm font-medium text-[#111111] mb-2">Description</label>
                     <textarea 
-                      value={item.subtitle}
+                      value={item.subtitle || ""}
                       onChange={e => {
                         const newData = [...editorialData];
                         newData[index].subtitle = e.target.value;
@@ -470,7 +469,7 @@ export default function HomepageManager() {
                   <div>
                     <label className="block text-sm font-medium text-[#111111] mb-2">Image Alignment (left or right)</label>
                     <select
-                      value={item.button_text}
+                      value={item.button_text || ""}
                       onChange={e => {
                         const newData = [...editorialData];
                         newData[index].button_text = e.target.value;
@@ -486,7 +485,7 @@ export default function HomepageManager() {
                 <div className="space-y-4">
                   <label className="block text-sm font-medium text-[#111111] mb-2">Editorial Image</label>
                   <ImageUploader 
-                    value={item.image_url} 
+                    value={item.image_url || ""} 
                     onChange={(url) => {
                       const newData = [...editorialData];
                       newData[index].image_url = url;
@@ -530,7 +529,7 @@ export default function HomepageManager() {
                     <label className="block text-sm font-medium text-[#111111] mb-2">Customer Name</label>
                     <input 
                       type="text" 
-                      value={item.title}
+                      value={item.title || ""}
                       onChange={e => {
                         const newData = [...testimonialData];
                         newData[index].title = e.target.value;
@@ -542,7 +541,7 @@ export default function HomepageManager() {
                   <div>
                     <label className="block text-sm font-medium text-[#111111] mb-2">Review Text</label>
                     <textarea 
-                      value={item.subtitle}
+                      value={item.subtitle || ""}
                       onChange={e => {
                         const newData = [...testimonialData];
                         newData[index].subtitle = e.target.value;
@@ -555,7 +554,7 @@ export default function HomepageManager() {
                     <label className="block text-sm font-medium text-[#111111] mb-2">Product Name Bought</label>
                     <input 
                       type="text" 
-                      value={item.button_text}
+                      value={item.button_text || ""}
                       onChange={e => {
                         const newData = [...testimonialData];
                         newData[index].button_text = e.target.value;
@@ -568,7 +567,7 @@ export default function HomepageManager() {
                 <div className="space-y-4">
                   <label className="block text-sm font-medium text-[#111111] mb-2">Customer Image</label>
                   <ImageUploader 
-                    value={item.image_url} 
+                    value={item.image_url || ""} 
                     onChange={(url) => {
                       const newData = [...testimonialData];
                       newData[index].image_url = url;
@@ -609,7 +608,7 @@ export default function HomepageManager() {
                 </div>
                 
                 <ImageUploader 
-                  value={item.image_url} 
+                  value={item.image_url || ""} 
                   onChange={(url) => {
                     const newData = [...instagramData];
                     newData[index].image_url = url;
@@ -623,7 +622,7 @@ export default function HomepageManager() {
                   </label>
                   <input 
                     type="text" 
-                    value={item.button_link}
+                    value={item.button_link || ""}
                     onChange={(e) => {
                       const newData = [...instagramData];
                       newData[index].button_link = e.target.value;

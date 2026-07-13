@@ -39,7 +39,7 @@ export default function DiscountsPage() {
   const fetchCoupons = async () => {
     setLoading(true);
     const { data } = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
-    if (data) setCoupons(data);
+    if (data) setCoupons(data as Coupon[]);
     setLoading(false);
   };
 
@@ -47,8 +47,9 @@ export default function DiscountsPage() {
     if (!formData.code || formData.discount_value === undefined) return;
     
     setSaving(true);
+    const { is_free_shipping, ...rest } = formData;
     const payload = {
-      ...formData,
+      ...rest,
       code: formData.code.toUpperCase()
     };
 
@@ -57,7 +58,12 @@ export default function DiscountsPage() {
         const { error } = await supabase.from('coupons').update(payload).eq('id', formData.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('coupons').insert([payload]);
+        const insertPayload = {
+          ...payload,
+          discount_type: payload.discount_type || 'percentage',
+          discount_value: payload.discount_value || 0
+        };
+        const { error } = await supabase.from('coupons').insert([insertPayload]);
         if (error) throw error;
       }
 

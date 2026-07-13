@@ -94,13 +94,13 @@ export default function CheckoutPage() {
         setIsFreeShippingCouponApplied(false);
       } else {
         const currentSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-        if (currentSubtotal < data.min_order_value) {
+        if (data.min_order_value !== null && currentSubtotal < data.min_order_value) {
           setDiscountMsg(`Minimum order value for this coupon is ₹${data.min_order_value}`);
           setAppliedCoupon(null);
           setIsFreeShippingCouponApplied(false);
         } else {
           setAppliedCoupon(data);
-          setIsFreeShippingCouponApplied(!!data.is_free_shipping);
+          setIsFreeShippingCouponApplied(!!(data as any).is_free_shipping);
           setDiscountMsg(`${data.code} applied! ✓`);
         }
       }
@@ -164,7 +164,7 @@ export default function CheckoutPage() {
       
       const { data: settings } = await supabase.from('store_settings').select('value').eq('key', 'shipping').single();
       if (settings?.value) {
-        setShippingSettings(settings.value);
+        setShippingSettings(settings.value as any);
       }
       
       setIsLoadingAuth(false);
@@ -327,10 +327,7 @@ export default function CheckoutPage() {
           product_id: item.id,
           product_name: item.name,
           quantity: item.quantity,
-          price: item.price,
-          color_name: item.color,
-          size: item.size,
-          image_url: item.image
+          price: item.price
         }));
 
         const { error: itemsError } = await supabase.from('order_items').insert(orderItems);
@@ -447,8 +444,6 @@ export default function CheckoutPage() {
             postal_code: pinCode,
             country: 'India',
             phone: phone || userProfile?.phone,
-            landmark,
-            alternate_phone: alternatePhone,
             is_default: true
           }).select().single();
           

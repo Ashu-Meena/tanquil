@@ -36,7 +36,7 @@ export default function PaymentsPage() {
       .order("created_at", { ascending: false });
     
     if (data && !error) {
-      setTransactions(data);
+      setTransactions(data as any as Transaction[]);
     }
     setFetching(false);
   };

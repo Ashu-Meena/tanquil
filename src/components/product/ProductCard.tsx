@@ -43,7 +43,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const startQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (product.colors && product.colors.length > 1) {
+    if (product.colors && product.colors.length > 0) {
       setActiveStep('color');
     } else {
       setActiveStep('size');

@@ -7,7 +7,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const supabase = await createClient();
   const { data: product } = await supabase
     .from("products")
-    .select("name, description")
+    .select("title, description")
     .eq("slug", slug)
     .single();
 
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return {
-    title: `${product.name} | Tranquil`,
+    title: `${product.title} | Tranquil`,
     description: product.description,
   };
 }
@@ -33,7 +33,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .select(`
       *,
       category:categories(name),
-      product_images(url, color_name),
+      product_images(image_url, color_name),
       product_variants(color_name, color_hex, size, stock_quantity)
     `)
     .eq("slug", slug)
@@ -47,21 +47,22 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const { data: relatedData } = await supabase
     .from("products")
     .select(`
-      id, name, price, slug,
-      product_images(url, color_name),
+      id, title, price, original_price, slug,
+      product_images(image_url, color_name),
       product_variants(color_name)
     `)
-    .eq("category_id", productData.category_id)
+    .eq("category_id", productData.category_id || "")
     .neq("id", productData.id)
     .limit(4);
 
   // 3. Format product for Client Component
   const colorImages: Record<string, string[]> = {};
   const images = productData.product_images?.map((img: any) => {
-    const color = img.color_name || "Default";
-    if (!colorImages[color]) colorImages[color] = [];
-    colorImages[color].push(img.url);
-    return img.url;
+    if (img.color_name) {
+      if (!colorImages[img.color_name]) colorImages[img.color_name] = [];
+      colorImages[img.color_name].push(img.image_url);
+    }
+    return img.image_url;
   }) || [];
   
   if (images.length === 0) {
@@ -88,14 +89,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   const formattedProduct = {
     id: productData.id,
-    name: productData.name,
+    name: productData.title,
     price: productData.price,
-    compare_at_price: productData.compare_at_price || null,
+    compare_at_price: productData.original_price || undefined,
     category: productData.category?.name || "Clothing",
     description: productData.description || "",
-    brand: productData.brand || null,
-    tags: productData.tags || [],
-    fabric: productData.fabric || null,
     images,
     colorImages,
     colors,
@@ -105,24 +103,26 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   };
 
   const formattedRelated = relatedData?.map(rp => {
-    const images = rp.product_images?.map((img: any) => img.url) || [];
+    const images = rp.product_images?.map((img: any) => img.image_url) || [];
     
     const colorsMap = new Map<string, string>();
     if (rp.product_variants) {
       rp.product_variants.forEach((v: any) => {
         if (!colorsMap.has(v.color_name)) {
           const matchingImg = rp.product_images?.find((img: any) => img.color_name === v.color_name);
-          colorsMap.set(v.color_name, matchingImg?.url || images[0]);
+          colorsMap.set(v.color_name, matchingImg?.image_url || images[0]);
         }
       });
     }
 
     return {
       id: rp.id,
-      name: rp.name,
+      name: rp.title,
       price: rp.price,
       slug: rp.slug,
-      images,
+      compare_at_price: rp.original_price || undefined,
+      image: rp.product_images?.[0]?.image_url || "/placeholder.jpg",
+      hoverImage: rp.product_images?.[1]?.image_url || rp.product_images?.[0]?.image_url,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image }))
     };
   }) || [];

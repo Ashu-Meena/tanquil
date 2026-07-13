@@ -28,7 +28,7 @@ export default function ShippingPage() {
       .single();
     
     if (data && data.value) {
-      setShippingSettings(data.value);
+      setShippingSettings(data.value as any);
     }
     setFetching(false);
   };
