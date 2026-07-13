@@ -73,7 +73,7 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
 
       if (isHeic) {
         try {
-          toast.success(`Converting ${file.name} to JPG...`, { id: 'heic-convert' });
+          toast.success(`Converting ${file.name} to JPG...`);
           const heic2any = (await import("heic2any")).default;
           const convertedBlob = await heic2any({ blob: file, toType: "image/jpeg" });
           const blobToUse = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
