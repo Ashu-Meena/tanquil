@@ -23,9 +23,9 @@ export interface Database {
           status: string
           is_featured: boolean
           is_trending: boolean
+          is_bestseller: boolean
           seo_title: string | null
           seo_description: string | null
-          category_id: string | null
           tags: string[] | null
           created_at: string
           updated_at: string
@@ -44,9 +44,9 @@ export interface Database {
           status: string
           is_featured: boolean
           is_trending?: boolean
+          is_bestseller?: boolean
           seo_title?: string | null
           seo_description?: string | null
-          category_id: string | null
           tags?: string[] | null
           created_at?: string
           updated_at?: string
@@ -65,16 +65,37 @@ export interface Database {
           status?: string
           is_featured?: boolean
           is_trending?: boolean
+          is_bestseller?: boolean
           seo_title?: string | null
           seo_description?: string | null
-          category_id?: string | null
           tags?: string[] | null
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
+      }
+      product_categories: {
+        Row: {
+          product_id: string
+          category_id: string
+        }
+        Insert: {
+          product_id: string
+          category_id: string
+        }
+        Update: {
+          product_id?: string
+          category_id?: string
+        }
         Relationships: [
           {
-            foreignKeyName: "products_category_id_fkey"
+            foreignKeyName: "product_categories_product_id_fkey"
+            columns: ["product_id"]
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_categories_category_id_fkey"
             columns: ["category_id"]
             referencedRelation: "categories"
             referencedColumns: ["id"]

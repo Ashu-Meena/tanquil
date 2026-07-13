@@ -100,8 +100,50 @@ export default async function Home() {
     link: `/collections/${c.slug}`
   })) || [];
 
-  // Fetch Best Sellers (trending products)
-  let products: any[] = [];
+  // Fetch Best Sellers
+  let bestSellers: any[] = [];
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*, product_images(url, color_name), product_variants(color_name)")
+      .eq("is_bestseller", true)
+      .eq("status", "active")
+      .limit(10);
+      
+    if (!error && data) {
+      bestSellers = data;
+    } else if (error) {
+      console.error("Error fetching bestsellers:", error);
+    }
+  } catch (error) {
+    console.error("Error fetching bestsellers:", error);
+  }
+
+  const mappedBestSellers = bestSellers?.map(p => {
+    const images = p.product_images?.map((img: any) => img.url) || [];
+    const colorsMap = new Map<string, string>();
+    if (p.product_variants) {
+      p.product_variants.forEach((v: any) => {
+        if (!colorsMap.has(v.color_name)) {
+          const matchingImg = p.product_images?.find((img: any) => img.color_name === v.color_name);
+          colorsMap.set(v.color_name, matchingImg?.url || images[0]);
+        }
+      });
+    }
+    return {
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      price: p.price,
+      images,
+      colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
+      isNew: p.is_featured,
+      isSale: (p.compare_at_price ?? 0) > p.price
+    };
+  }) || [];
+
+  // Fetch Featured (New Collection)
+  let featuredProducts: any[] = [];
   try {
     const { data, error } = await supabase
       .from("products")
@@ -111,7 +153,7 @@ export default async function Home() {
       .limit(10);
       
     if (!error && data) {
-      products = data;
+      featuredProducts = data;
     } else if (error) {
       console.error("Error fetching featured products:", error);
     }
@@ -119,7 +161,7 @@ export default async function Home() {
     console.error("Error fetching featured products:", error);
   }
 
-  const mappedProducts = products?.map(p => {
+  const mappedFeaturedProducts = featuredProducts?.map(p => {
     const images = p.product_images?.map((img: any) => img.url) || [];
     
     // Extract unique colors with their first image
@@ -177,9 +219,9 @@ export default async function Home() {
     <>
       <HeroSection slides={heroSlides} />
       <TrendingMosaic collections={trendingEdits} />
-      <BestSellers products={mappedProducts} />
+      <BestSellers products={mappedBestSellers} />
       <ShopByCategory categories={mappedCategories} />
-      <NewCollection initialData={mappedProducts} />
+      <NewCollection initialData={mappedFeaturedProducts} />
       {editorialStories.length > 0 ? <FashionStories stories={editorialStories} /> : <FashionStories />}
       <Lookbook items={instagramItems} />
       {realReviews.length > 0 ? <Reviews reviews={realReviews} /> : <Reviews />}

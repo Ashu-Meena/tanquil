@@ -22,10 +22,11 @@ export default function AddProductPage() {
     price: "",
     compare_at_price: "",
     sku: "",
-    category_id: "",
+    category_ids: [] as string[],
     status: "active",
     is_trending: false,
     is_featured: false,
+    is_bestseller: false,
     brand: "Tranquil",
     fabric: "",
     weight: "",
@@ -61,6 +62,17 @@ export default function AddProductPage() {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+  };
+
+  const handleCategoryToggle = (categoryId: string) => {
+    setFormData(prev => {
+      const current = prev.category_ids;
+      if (current.includes(categoryId)) {
+        return { ...prev, category_ids: current.filter(id => id !== categoryId) };
+      } else {
+        return { ...prev, category_ids: [...current, categoryId] };
+      }
+    });
   };
 
   // Simple Rich Text Toolbar
@@ -106,9 +118,9 @@ export default function AddProductPage() {
       description: formData.description,
       price: parseFloat(formData.price) || 0,
       compare_at_price: parseFloat(formData.compare_at_price) || null,
-      category_id: formData.category_id || null,
       status: formData.status,
       is_featured: formData.is_featured,
+      is_bestseller: formData.is_bestseller,
     };
 
     const { data: product, error } = await supabase.from("products").insert([payload]).select().single();
@@ -118,6 +130,11 @@ export default function AddProductPage() {
       toast.error("Failed to save product. Please try again or check the logs.");
       setLoading(false);
       return;
+    }
+
+    if (formData.category_ids.length > 0) {
+      const pcPayloads = formData.category_ids.map(id => ({ product_id: product.id, category_id: id }));
+      await supabase.from("product_categories").insert(pcPayloads);
     }
 
     // Insert Images
@@ -273,6 +290,12 @@ export default function AddProductPage() {
                     <span className="text-sm font-medium text-rich-black">Mark as Trending</span>
                   </label>
                 </div>
+                <div>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" name="is_bestseller" checked={formData.is_bestseller} onChange={handleChange} className="w-4 h-4 text-rich-black border-border-light focus:ring-rich-black" />
+                    <span className="text-sm font-medium text-rich-black">Mark as Best Seller</span>
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -284,13 +307,21 @@ export default function AddProductPage() {
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-rich-black mb-2">Category</label>
-                  <select name="category_id" value={formData.category_id} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold bg-white">
-                    <option value="">Select Category</option>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Categories</label>
+                  <div className="space-y-2 border border-border-light p-3 max-h-48 overflow-y-auto">
                     {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      <label key={cat.id} className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={formData.category_ids.includes(cat.id)}
+                          onChange={() => handleCategoryToggle(cat.id)}
+                          className="w-4 h-4 text-rich-black focus:ring-rich-black border-border-light rounded-sm"
+                        />
+                        <span className="text-sm">{cat.name}</span>
+                      </label>
                     ))}
-                  </select>
+                    {categories.length === 0 && <span className="text-sm text-neutral-500">No categories found.</span>}
+                  </div>
                 </div>
                 
 

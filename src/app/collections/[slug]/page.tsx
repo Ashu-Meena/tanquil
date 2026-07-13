@@ -8,7 +8,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   // Fetch products and their categories
   let query = supabase
     .from("products")
-    .select("*, categories!inner(*), product_images(url, color_name), product_variants(color_name)")
+    .select("*, product_categories!inner(category_id, categories(name, slug)), product_images(url, color_name), product_variants(color_name)")
     .eq("status", "active");
 
   // If not "all", "new" etc, filter by slug
@@ -16,7 +16,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     // Check if the slug maps to a real category
     const { data: catData } = await supabase.from("categories").select("id").eq("slug", slug).single();
     if (catData) {
-      query = query.eq("category_id", catData.id);
+      query = query.eq("product_categories.category_id", catData.id);
     }
   }
 
@@ -44,7 +44,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
       isNew: p.is_featured,
       isSale: p.compare_at_price > p.price,
-      category: p.categories?.name || "Uncategorized"
+      category: (p.product_categories && p.product_categories.length > 0 && p.product_categories[0].categories) ? p.product_categories[0].categories.name : "Uncategorized"
     };
   }) || [];
 

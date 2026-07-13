@@ -26,7 +26,7 @@ export default function ProductsPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("products")
-      .select("*, categories(name), product_images(url), product_variants(stock_quantity)")
+      .select("*, product_categories(categories(name)), product_images(url), product_variants(stock_quantity)")
       .order("created_at", { ascending: false });
     
     if (data) {
@@ -37,10 +37,13 @@ export default function ProductsPage() {
         // Sum up total stock from all variants
         const totalStock = product.product_variants?.reduce((sum: number, variant: any) => sum + (variant.stock_quantity || 0), 0) || 0;
         
+        const categoryText = product.product_categories?.map((pc: any) => pc.categories?.name).filter(Boolean).join(", ") || "Uncategorized";
+        
         return {
           ...product,
           images,
-          stock_quantity: totalStock
+          stock_quantity: totalStock,
+          categoryText
         };
       });
       setProducts(formattedData);
@@ -50,7 +53,7 @@ export default function ProductsPage() {
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 
-    p.categories?.name?.toLowerCase().includes(search.toLowerCase())
+    p.categoryText?.toLowerCase().includes(search.toLowerCase())
   );
 
   const toggleSelectAll = () => {
@@ -201,7 +204,7 @@ export default function ProductsPage() {
                       {product.sku || 'N/A'}
                     </td>
                     <td className="px-6 py-4 text-neutral-500 capitalize hidden md:table-cell">
-                      {product.categories?.name || 'Uncategorized'}
+                      {product.categoryText}
                     </td>
                     <td className="px-6 py-4 hidden md:table-cell">
                       {product.stock_quantity > 10 ? (

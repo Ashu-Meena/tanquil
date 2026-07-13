@@ -32,7 +32,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .from("products")
     .select(`
       *,
-      category:categories(name),
+      product_categories(category_id, categories(name)),
       product_images(url, color_name),
       product_variants(color_name, color_hex, size, stock_quantity)
     `)
@@ -48,10 +48,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .from("products")
     .select(`
       id, name, price, compare_at_price, slug,
+      product_categories!inner(category_id),
       product_images(url, color_name),
       product_variants(color_name)
     `)
-    .eq("category_id", productData.category_id || "")
+    .eq("product_categories.category_id", productData.product_categories?.[0]?.category_id || "")
     .neq("id", productData.id)
     .limit(4);
 
@@ -92,7 +93,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     name: productData.name,
     price: productData.price,
     compare_at_price: productData.compare_at_price || undefined,
-    category: productData.category?.name || "Clothing",
+    category: (productData.product_categories && productData.product_categories.length > 0 && productData.product_categories[0].categories) ? productData.product_categories[0].categories.name : "Clothing",
     description: productData.description || "",
     images,
     colorImages,
