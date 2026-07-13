@@ -100,9 +100,9 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     colors,
     sizes,
     variants: productData.product_variants || [],
-    brand: productData.brand,
-    fabric: productData.fabric,
-    tags: productData.tags,
+    brand: productData.brand || undefined,
+    fabric: productData.fabric || undefined,
+    tags: productData.tags || undefined,
     details: ["Dry clean only", "Handle with care"],
   };
 
