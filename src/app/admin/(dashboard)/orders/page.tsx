@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Package, Search, Filter, Printer, ExternalLink, MoreVertical, Check, X } from "lucide-react";
 import { toast } from "@/store/useToastStore";
 import Image from "next/image";
+import { registerTrackingWithProvider, fetchTrackingStatusFromProvider, TrackingStatus } from "@/utils/shipping";
 
 interface Order {
   id: string;
@@ -23,6 +24,8 @@ interface Order {
   notes?: string;
   tracking_id?: string;
   courier_name?: string;
+  tracking_status?: TrackingStatus | string;
+  tracking_last_updated?: string;
   transaction_id?: string;
   screenshot_url?: string;
   payment_status: string;
@@ -122,23 +125,72 @@ export default function OrdersPage() {
     if (!selectedOrder) return;
     setUpdating(true);
     const supabase = createClient();
+    
+    // Auto-register tracking if new tracking details are provided
+    let newTrackingStatus = selectedOrder.tracking_status;
+    let newTrackingLastUpdated = selectedOrder.tracking_last_updated;
+    
+    if (trackingId && trackingId !== selectedOrder.tracking_id) {
+      try {
+        const result = await registerTrackingWithProvider(trackingId, courierName || 'Unknown');
+        if (result.success) {
+          newTrackingStatus = result.status;
+          newTrackingLastUpdated = new Date().toISOString();
+        }
+      } catch (err) {
+        console.error("Failed to register tracking with provider", err);
+        toast.error("Tracking details saved, but failed to sync with courier API.");
+      }
+    }
+
     await supabase.from("orders").update({ 
       notes: internalNotes,
       tracking_id: trackingId,
-      courier_name: courierName
+      courier_name: courierName,
+      tracking_status: newTrackingStatus,
+      tracking_last_updated: newTrackingLastUpdated
     }).eq("id", selectedOrder.id);
     
     setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { 
-      ...o, notes: internalNotes, tracking_id: trackingId, courier_name: courierName 
+      ...o, notes: internalNotes, tracking_id: trackingId, courier_name: courierName, tracking_status: newTrackingStatus, tracking_last_updated: newTrackingLastUpdated
     } : o));
     
     setSelectedOrder(prev => prev ? { 
-      ...prev, notes: internalNotes, tracking_id: trackingId, courier_name: courierName 
+      ...prev, notes: internalNotes, tracking_id: trackingId, courier_name: courierName, tracking_status: newTrackingStatus, tracking_last_updated: newTrackingLastUpdated
     } : null);
     
-    toast.success("Fulfillment details saved and updated on customer's account.");
+    toast.success("Fulfillment details saved successfully.");
     
     setUpdating(false);
+  };
+  
+  const refreshTrackingStatus = async () => {
+    if (!selectedOrder || !selectedOrder.tracking_id) return;
+    setUpdating(true);
+    try {
+      const newStatus = await fetchTrackingStatusFromProvider(selectedOrder.tracking_id, selectedOrder.courier_name || 'Unknown');
+      
+      const supabase = createClient();
+      await supabase.from("orders").update({ 
+        tracking_status: newStatus,
+        tracking_last_updated: new Date().toISOString()
+      }).eq("id", selectedOrder.id);
+      
+      setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { 
+        ...o, tracking_status: newStatus, tracking_last_updated: new Date().toISOString()
+      } : o));
+      
+      setSelectedOrder(prev => prev ? { 
+        ...prev, tracking_status: newStatus, tracking_last_updated: new Date().toISOString()
+      } : null);
+      
+      toast.success("Tracking status updated from courier.");
+    } catch (err) {
+      console.error("Failed to refresh tracking", err);
+      toast.error("Failed to reach courier API.");
+    } finally {
+      setUpdating(false);
+    }
   };
     
   const openModal = (order: Order) => {
@@ -506,6 +558,30 @@ export default function OrdersPage() {
               {/* Fulfillment & Tracking */}
               <div className="bg-white p-5 border border-[#EFEFEF] rounded-sm">
                 <h3 className="font-serif text-lg text-[#111111] mb-4 border-b border-[#EFEFEF] pb-2">Fulfillment Details</h3>
+                
+                {/* Tracking Status Display */}
+                {(selectedOrder.tracking_status && selectedOrder.tracking_status !== 'Pending') && (
+                  <div className="flex items-center justify-between mb-4 bg-[#F9F9F9] p-3 border border-[#EFEFEF] rounded-sm">
+                    <div>
+                      <span className="text-xs text-[#666666] block mb-0.5 uppercase tracking-wider">Live Tracking Status</span>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${selectedOrder.tracking_status === 'Delivered' ? 'bg-green-500' : selectedOrder.tracking_status === 'Exception' || selectedOrder.tracking_status === 'Failed Attempt' ? 'bg-red-500' : 'bg-blue-500 animate-pulse'}`}></div>
+                        <span className="text-sm font-medium text-[#111111]">{selectedOrder.tracking_status}</span>
+                      </div>
+                      {selectedOrder.tracking_last_updated && (
+                        <span className="text-[10px] text-[#999999] mt-1 block">Last updated: {new Date(selectedOrder.tracking_last_updated).toLocaleString()}</span>
+                      )}
+                    </div>
+                    <button 
+                      onClick={refreshTrackingStatus}
+                      disabled={updating}
+                      className="text-xs text-[#C7A17A] font-medium uppercase tracking-widest hover:text-[#A68A68] transition-colors disabled:opacity-50"
+                    >
+                      {updating ? 'Refreshing...' : 'Refresh Status'}
+                    </button>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
                     <label className="block text-[10px] text-[#999999] uppercase tracking-widest mb-1">Courier Partner</label>

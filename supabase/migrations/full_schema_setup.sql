@@ -129,6 +129,8 @@ CREATE TABLE IF NOT EXISTS orders (
     payment_status VARCHAR(50) DEFAULT 'pending', -- 'pending', 'paid', 'failed', 'refunded'
     payment_method VARCHAR(50), -- 'razorpay', 'stripe', 'cod', 'upi'
     transaction_id VARCHAR(255),
+    tracking_status VARCHAR(100) DEFAULT 'Pending',
+    tracking_last_updated TIMESTAMP WITH TIME ZONE,
     -- Shipping Address JSON snapshot
     shipping_address JSONB NOT NULL,
     notes TEXT,
