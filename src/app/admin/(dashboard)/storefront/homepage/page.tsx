@@ -24,15 +24,18 @@ export default function HomepageManager() {
   const [saving, setSaving] = useState(false);
   
   // States for Hero Banner
-  const [heroData, setHeroData] = useState<HomepageSection>({
-    section_type: 'hero',
-    title: '',
-    subtitle: '',
-    button_text: '',
-    button_link: '',
-    image_url: '',
-    is_active: true
-  });
+  const [heroData, setHeroData] = useState<HomepageSection[]>(
+    Array(3).fill(null).map((_, i) => ({
+      section_type: 'hero',
+      title: '',
+      subtitle: '',
+      button_text: '',
+      button_link: '',
+      image_url: '',
+      is_active: true,
+      display_order: i + 1
+    }))
+  );
 
   // States for Featured Collection
   const [featuredData, setFeaturedData] = useState<HomepageSection>({
@@ -109,8 +112,10 @@ export default function HomepageManager() {
     setLoading(true);
     const { data, error } = await supabase.from('homepage_sections').select('*');
     if (data) {
-      const hero = data.find(d => d.section_type === 'hero');
-      if (hero) setHeroData(hero);
+      const hero = data.filter(d => d.section_type === 'hero').sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+      if (hero.length > 0) {
+        setHeroData(prev => prev.map((p, i) => hero[i] || p));
+      }
       const featured = data.find(d => d.section_type === 'featured_collection');
       if (featured) setFeaturedData(featured);
       const trending = data.filter(d => d.section_type === 'trending').sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
@@ -146,6 +151,13 @@ export default function HomepageManager() {
     }
     setSaving(false);
     toast.success('Saved successfully!');
+  };
+
+  const saveHeroBanner = async () => {
+    setSaving(true);
+    await saveArray(heroData);
+    setSaving(false);
+    toast.success('Hero Banner saved successfully!');
   };
 
   const saveTrendingMosaic = async () => {
@@ -198,66 +210,96 @@ export default function HomepageManager() {
       {/* Hero Banner Section */}
       <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
         <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
-          <h2 className="font-serif text-xl text-[#111111]">Hero Banner</h2>
+          <div>
+            <h2 className="font-serif text-xl text-[#111111]">Hero Banner</h2>
+            <p className="text-sm text-[#666666]">Manage the 3-slide carousel on the storefront.</p>
+          </div>
           <button 
-            onClick={() => saveSection(heroData)}
+            onClick={saveHeroBanner}
             disabled={saving}
             className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
           >
-            <Save className="w-4 h-4" /> Save
+            <Save className="w-4 h-4" /> Save Banner
           </button>
         </div>
-        <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
-              <input 
-                type="text" 
-                value={heroData.title || ""}
-                onChange={e => setHeroData({...heroData, title: e.target.value})}
-                className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">Subtitle</label>
-              <textarea 
-                value={heroData.subtitle}
-                onChange={e => setHeroData({...heroData, subtitle: e.target.value})}
-                className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-[#111111] mb-2">Button Text</label>
-                <input 
-                  type="text" 
-                  value={heroData.button_text || ""}
-                  onChange={e => setHeroData({...heroData, button_text: e.target.value})}
-                  className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
-                />
+        <div className="p-6">
+          <div className="space-y-8">
+            {heroData.map((item, index) => (
+              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-[#EFEFEF] rounded-sm">
+                <div className="space-y-4">
+                  <h3 className="font-medium text-[#111111]">Slide {index + 1}</h3>
+                  <div>
+                    <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
+                    <input 
+                      type="text" 
+                      value={item.title || ""}
+                      onChange={e => {
+                        const newData = [...heroData];
+                        newData[index].title = e.target.value;
+                        setHeroData(newData);
+                      }}
+                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#111111] mb-2">Subtitle</label>
+                    <textarea 
+                      value={item.subtitle || ""}
+                      onChange={e => {
+                        const newData = [...heroData];
+                        newData[index].subtitle = e.target.value;
+                        setHeroData(newData);
+                      }}
+                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-[#111111] mb-2">Button Text</label>
+                      <input 
+                        type="text" 
+                        value={item.button_text || ""}
+                        onChange={e => {
+                          const newData = [...heroData];
+                          newData[index].button_text = e.target.value;
+                          setHeroData(newData);
+                        }}
+                        className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-[#111111] mb-2">Button Link</label>
+                      <input 
+                        type="text" 
+                        value={item.button_link || ""}
+                        onChange={e => {
+                          const newData = [...heroData];
+                          newData[index].button_link = e.target.value;
+                          setHeroData(newData);
+                        }}
+                        className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <label className="block text-sm font-medium text-[#111111] mb-2">Slide Image</label>
+                  <ImageUploader 
+                    value={item.image_url || ""} 
+                    onChange={(url) => {
+                      const newData = [...heroData];
+                      newData[index].image_url = url;
+                      setHeroData(newData);
+                    }} 
+                  />
+                  {item.image_url && (
+                    <div className="mt-4 aspect-video bg-gray-100 rounded-sm overflow-hidden">
+                      <img src={item.image_url} alt="Slide Preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-[#111111] mb-2">Button Link</label>
-                <input 
-                  type="text" 
-                  value={heroData.button_link || ""}
-                  onChange={e => setHeroData({...heroData, button_link: e.target.value})}
-                  className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <label className="block text-sm font-medium text-[#111111] mb-2">Hero Image</label>
-            <ImageUploader 
-              value={heroData.image_url} 
-              onChange={(url) => setHeroData({...heroData, image_url: url})} 
-            />
-            {heroData.image_url && (
-              <div className="mt-4 aspect-video bg-gray-100 rounded-sm overflow-hidden">
-                <img src={heroData.image_url} alt="Hero Preview" className="w-full h-full object-cover" />
-              </div>
-            )}
+            ))}
           </div>
         </div>
       </div>
