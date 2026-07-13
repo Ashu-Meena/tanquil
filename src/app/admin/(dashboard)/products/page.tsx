@@ -40,7 +40,11 @@ export default function ProductsPage() {
         
         let displaySku = product.sku;
         if (!displaySku && product.product_variants && product.product_variants.length > 0) {
-          displaySku = product.product_variants[0].sku;
+          const firstSku = product.product_variants[0].sku;
+          if (firstSku) {
+            const parts = firstSku.split('-');
+            displaySku = parts.length >= 2 ? `${parts[0]}-${parts[1]}` : firstSku;
+          }
         }
 
         const categoryText = product.product_categories?.map((pc: any) => pc.categories?.name).filter(Boolean).join(", ") || "Uncategorized";
