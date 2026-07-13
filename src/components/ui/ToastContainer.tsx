@@ -18,14 +18,14 @@ export default function ToastContainer() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             className={`pointer-events-auto flex items-center gap-3 px-4 py-3 min-w-[300px] max-w-[400px] rounded-sm shadow-xl bg-white border-l-4 ${
-              t.type === 'success' ? 'border-green-500' : t.type === 'error' ? 'border-red-500' : 'border-[#C7A17A]'
+              t.type === 'success' ? 'border-green-500' : t.type === 'error' ? 'border-red-500' : 'border-gold'
             }`}
           >
             {t.type === 'success' && <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />}
             {t.type === 'error' && <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />}
-            {t.type === 'info' && <Info className="w-5 h-5 text-[#C7A17A] flex-shrink-0" />}
-            <span className="text-sm font-medium text-[#111111]">{t.message}</span>
-            <button onClick={() => removeToast(t.id)} className="ml-auto flex-shrink-0 text-[#999999] hover:text-[#111111] transition-colors">
+            {t.type === 'info' && <Info className="w-5 h-5 text-gold flex-shrink-0" />}
+            <span className="text-sm font-medium text-rich-black">{t.message}</span>
+            <button onClick={() => removeToast(t.id)} className="ml-auto flex-shrink-0 text-neutral-400 hover:text-rich-black transition-colors">
               <X className="w-4 h-4" />
             </button>
           </motion.div>

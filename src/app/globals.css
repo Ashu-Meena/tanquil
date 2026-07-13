@@ -12,6 +12,10 @@
   --color-border-light: #EFEFEF;
   --color-success: #2F855A;
   --color-sale: #E63946;
+  --color-neutral-400: #999999;
+  --color-neutral-500: #666666;
+  --color-neutral-800: #333333;
+  --color-neutral-900: #222222;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-serif: var(--font-playfair), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;

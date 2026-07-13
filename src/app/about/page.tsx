@@ -11,11 +11,11 @@ export default function AboutPage() {
     <div className="bg-white min-h-screen">
 
       {/* Hero — full-width dark banner */}
-      <div className="bg-[#111111] pt-40 pb-20 text-center px-6">
-        <p className="text-xs text-[#666666] uppercase tracking-widest mb-8">
-          <Link href="/" className="hover:text-[#C7A17A] transition-colors">Home</Link>
+      <div className="bg-rich-black pt-40 pb-20 text-center px-6">
+        <p className="text-xs text-neutral-500 uppercase tracking-widest mb-8">
+          <Link href="/" className="hover:text-gold transition-colors">Home</Link>
           <span className="mx-2">/</span>
-          <span className="text-[#999999]">About</span>
+          <span className="text-neutral-400">About</span>
         </p>
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -31,38 +31,38 @@ export default function AboutPage() {
           </div>
         </div>
         <h1 className="font-serif text-5xl lg:text-6xl text-white mb-4">Our Story</h1>
-        <p className="text-[#999999] text-sm uppercase tracking-[0.3em]">The outfit plug you didn&apos;t know you needed</p>
+        <p className="text-neutral-400 text-sm uppercase tracking-[0.3em]">The outfit plug you didn&apos;t know you needed</p>
       </div>
 
       {/* Story body */}
       <div className="container mx-auto px-6 lg:px-12 max-w-3xl py-20">
 
         {/* Opening hook */}
-        <p className="font-serif text-3xl lg:text-4xl text-[#111111] leading-snug mb-12 text-center">
+        <p className="font-serif text-3xl lg:text-4xl text-rich-black leading-snug mb-12 text-center">
           Hey girl, welcome to your<br />
-          <span className="text-[#C7A17A]">dream wardrobe.</span>
+          <span className="text-gold">dream wardrobe.</span>
         </p>
 
         <div className="space-y-7 text-[#555555] leading-relaxed text-lg">
           <p>
-            Tranquil was founded by a <strong className="text-[#111111]">Gen Z girl</strong> who was tired of seeing the same old boring prints and outdated designs everywhere. We realized that finding clothes that actually match the Pinterest boards in our heads shouldn&apos;t be so hard. So, we decided to make them ourselves.
+            Tranquil was founded by a <strong className="text-rich-black">Gen Z girl</strong> who was tired of seeing the same old boring prints and outdated designs everywhere. We realized that finding clothes that actually match the Pinterest boards in our heads shouldn&apos;t be so hard. So, we decided to make them ourselves.
           </p>
           <p>
-            At Tranquil, we design <strong className="text-[#111111]">modern clothes for Gen Z girls and modern women</strong> who want to stand out, not blend in. We create the exact pieces you&apos;ve been searching for — from the ultimate aesthetic beachwear and dream birthday dresses to the perfect outfits for dinner dates, brunch runs, and girl&apos;s day outings — and yes, even your mom&apos;s chic kitty parties!
+            At Tranquil, we design <strong className="text-rich-black">modern clothes for Gen Z girls and modern women</strong> who want to stand out, not blend in. We create the exact pieces you&apos;ve been searching for — from the ultimate aesthetic beachwear and dream birthday dresses to the perfect outfits for dinner dates, brunch runs, and girl&apos;s day outings — and yes, even your mom&apos;s chic kitty parties!
           </p>
           <p>
-            <strong className="text-[#111111]">No boring prints. No recycled designs.</strong> Just unique, freshly designed pieces that actually belong in a modern wardrobe.
+            <strong className="text-rich-black">No boring prints. No recycled designs.</strong> Just unique, freshly designed pieces that actually belong in a modern wardrobe.
           </p>
           <p>
-            We know what you want to wear before you even know it. Consider us your official <span className="italic text-[#C7A17A] font-medium">outfit plug</span>.
+            We know what you want to wear before you even know it. Consider us your official <span className="italic text-gold font-medium">outfit plug</span>.
           </p>
         </div>
 
         {/* Divider */}
         <div className="flex items-center gap-4 my-16">
-          <div className="flex-1 h-px bg-[#EFEFEF]" />
-          <span className="text-[#C7A17A] text-xl font-serif">✦</span>
-          <div className="flex-1 h-px bg-[#EFEFEF]" />
+          <div className="flex-1 h-px bg-border-light" />
+          <span className="text-gold text-xl font-serif">✦</span>
+          <div className="flex-1 h-px bg-border-light" />
         </div>
 
         {/* Values */}
@@ -72,21 +72,21 @@ export default function AboutPage() {
             { icon: "✦", title: "Made for You", body: "From beachwear to birthday looks to brunch fits — we've got every occasion covered." },
             { icon: "✦", title: "Gen Z Energy", body: "Founded by a Gen Z girl, designed for the girls who set the trends, not follow them." },
           ].map((v) => (
-            <div key={v.title} className="p-6 border border-[#EFEFEF] rounded-sm hover:border-[#C7A17A] transition-colors group">
-              <span className="text-[#C7A17A] text-2xl block mb-3">{v.icon}</span>
-              <h3 className="font-serif text-lg text-[#111111] mb-2">{v.title}</h3>
+            <div key={v.title} className="p-6 border border-border-light rounded-sm hover:border-gold transition-colors group">
+              <span className="text-gold text-2xl block mb-3">{v.icon}</span>
+              <h3 className="font-serif text-lg text-rich-black mb-2">{v.title}</h3>
               <p className="text-[#888888] text-sm leading-relaxed">{v.body}</p>
             </div>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="text-center bg-[#FAF8F5] border border-[#EFEFEF] p-10">
-          <p className="font-serif text-2xl text-[#111111] mb-2">Ready to upgrade your wardrobe?</p>
+        <div className="text-center bg-ivory border border-border-light p-10">
+          <p className="font-serif text-2xl text-rich-black mb-2">Ready to upgrade your wardrobe?</p>
           <p className="text-[#888888] text-sm mb-6">Shop the latest drops — new styles added regularly.</p>
           <Link
             href="/collections/all"
-            className="inline-block bg-[#111111] hover:bg-[#C7A17A] text-white px-10 py-4 uppercase tracking-widest text-xs font-medium transition-colors"
+            className="inline-block bg-rich-black hover:bg-gold text-white px-10 py-4 uppercase tracking-widest text-xs font-medium transition-colors"
           >
             Shop Now
           </Link>
@@ -94,7 +94,7 @@ export default function AboutPage() {
 
         {/* Attribution */}
         <div className="mt-12 text-center text-sm text-[#888888]">
-          This website was designed and developed by <a href="https://samvix-technologies.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#C7A17A] hover:text-[#111111] transition-colors">Samvix Technologies</a>.
+          This website was designed and developed by <a href="https://samvix-technologies.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-gold hover:text-rich-black transition-colors">Samvix Technologies</a>.
         </div>
       </div>
     </div>

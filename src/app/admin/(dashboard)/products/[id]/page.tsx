@@ -185,29 +185,29 @@ export default function EditProductPage() {
   };
 
   if (fetching) {
-    return <div className="p-10 text-center text-[#666666]">Loading product...</div>;
+    return <div className="p-10 text-center text-neutral-500">Loading product...</div>;
   }
 
   return (
     <div className="max-w-5xl mx-auto pb-20">
       <form onSubmit={handleSubmit}>
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sticky top-0 z-40 bg-[#FAF8F5]/90 backdrop-blur-md pb-4 pt-6 md:pt-8 -mt-6 md:-mt-8 -mx-4 px-4 md:-mx-6 md:px-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sticky top-0 z-40 bg-ivory/90 backdrop-blur-md pb-4 pt-6 md:pt-8 -mt-6 md:-mt-8 -mx-4 px-4 md:-mx-6 md:px-6">
           <div className="flex items-center gap-4">
-            <Link href="/admin/products" className="p-2 bg-white border border-[#EFEFEF] rounded-sm hover:bg-[#F9F9F9] transition-colors">
-              <ArrowLeft className="w-5 h-5 text-[#111111]" />
+            <Link href="/admin/products" className="p-2 bg-white border border-border-light rounded-sm hover:bg-[#F9F9F9] transition-colors">
+              <ArrowLeft className="w-5 h-5 text-rich-black" />
             </Link>
             <div>
-              <h1 className="font-serif text-2xl text-[#111111]">Edit Product</h1>
+              <h1 className="font-serif text-2xl text-rich-black">Edit Product</h1>
             </div>
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <Link href="/admin/products" className="px-4 py-2 border border-[#EFEFEF] text-sm text-[#111111] font-medium uppercase tracking-widest hover:bg-white transition-colors text-center w-full sm:w-auto bg-white">
+            <Link href="/admin/products" className="px-4 py-2 border border-border-light text-sm text-rich-black font-medium uppercase tracking-widest hover:bg-white transition-colors text-center w-full sm:w-auto bg-white">
               Discard
             </Link>
             <button 
               type="submit" 
               disabled={loading}
-              className="px-4 py-2 bg-[#111111] text-white text-sm font-medium uppercase tracking-widest hover:bg-[#C7A17A] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto"
+              className="px-4 py-2 bg-rich-black text-white text-sm font-medium uppercase tracking-widest hover:bg-gold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto"
             >
               {loading ? "Saving..." : <><Save className="w-4 h-4" /> Save</>}
             </button>
@@ -219,37 +219,37 @@ export default function EditProductPage() {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Basic Info */}
-            <div className="bg-white border border-[#EFEFEF] shadow-sm">
-              <div className="p-4 border-b border-[#EFEFEF] flex items-center gap-2 bg-[#F9F9F9]">
-                <FileText className="w-4 h-4 text-[#666666]" />
-                <h2 className="font-serif text-lg text-[#111111]">Basic Information</h2>
+            <div className="bg-white border border-border-light shadow-sm">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+                <FileText className="w-4 h-4 text-neutral-500" />
+                <h2 className="font-serif text-lg text-rich-black">Basic Information</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
-                  <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="e.g. Midnight Silk Dress" />
+                  <label className="block text-sm font-medium text-rich-black mb-2">Title</label>
+                  <input type="text" name="name" required value={formData.name} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="e.g. Midnight Silk Dress" />
                 </div>
                 
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="block text-sm font-medium text-[#111111]">Description</label>
+                    <label className="block text-sm font-medium text-rich-black">Description</label>
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => insertFormatting('b')} className="p-1.5 border border-[#EFEFEF] bg-[#F9F9F9] hover:bg-[#EFEFEF] text-[#111111] rounded-sm"><Bold className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('i')} className="p-1.5 border border-[#EFEFEF] bg-[#F9F9F9] hover:bg-[#EFEFEF] text-[#111111] rounded-sm"><Italic className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('ul')} className="p-1.5 border border-[#EFEFEF] bg-[#F9F9F9] hover:bg-[#EFEFEF] text-[#111111] rounded-sm"><List className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('b')} className="p-1.5 border border-border-light bg-[#F9F9F9] hover:bg-border-light text-rich-black rounded-sm"><Bold className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('i')} className="p-1.5 border border-border-light bg-[#F9F9F9] hover:bg-border-light text-rich-black rounded-sm"><Italic className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('ul')} className="p-1.5 border border-border-light bg-[#F9F9F9] hover:bg-border-light text-rich-black rounded-sm"><List className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
-                  <textarea id="description_field" name="description" rows={8} value={formData.description} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] font-mono" placeholder="Use HTML tags like <b>, <i>, <ul> for styling..."></textarea>
+                  <textarea id="description_field" name="description" rows={8} value={formData.description} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold font-mono" placeholder="Use HTML tags like <b>, <i>, <ul> for styling..."></textarea>
                 </div>
               </div>
             </div>
 
 
             {/* Variants & Inventory */}
-            <div className="bg-white border border-[#EFEFEF] shadow-sm">
-              <div className="p-4 border-b border-[#EFEFEF] flex items-center gap-2 bg-[#F9F9F9]">
-                <LayoutGrid className="w-4 h-4 text-[#666666]" />
-                <h2 className="font-serif text-lg text-[#111111]">Variants & Inventory</h2>
+            <div className="bg-white border border-border-light shadow-sm">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+                <LayoutGrid className="w-4 h-4 text-neutral-500" />
+                <h2 className="font-serif text-lg text-rich-black">Variants & Inventory</h2>
               </div>
               <div className="p-4 bg-[#FDFDFC]">
                 <VariantsEditor groups={colorGroups} onChange={setColorGroups} />
@@ -257,21 +257,21 @@ export default function EditProductPage() {
             </div>
 
             {/* SEO section */}
-            <div className="bg-white border border-[#EFEFEF] shadow-sm">
-              <div className="p-4 border-b border-[#EFEFEF] flex items-center gap-2 bg-[#F9F9F9]">
-                <AlignLeft className="w-4 h-4 text-[#666666]" />
-                <h2 className="font-serif text-lg text-[#111111]">Search Engine Optimization</h2>
+            <div className="bg-white border border-border-light shadow-sm">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+                <AlignLeft className="w-4 h-4 text-neutral-500" />
+                <h2 className="font-serif text-lg text-rich-black">Search Engine Optimization</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Page Title</label>
-                  <input type="text" name="seo_title" value={formData.seo_title} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder={formData.name || "Title used for Google search..."} />
-                  <p className="text-xs text-[#999999] mt-1">{formData.seo_title.length} of 70 characters used</p>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Page Title</label>
+                  <input type="text" name="seo_title" value={formData.seo_title} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder={formData.name || "Title used for Google search..."} />
+                  <p className="text-xs text-neutral-400 mt-1">{formData.seo_title.length} of 70 characters used</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Meta Description</label>
-                  <textarea name="seo_description" rows={3} value={formData.seo_description} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="A brief description of the product for search results..."></textarea>
-                  <p className="text-xs text-[#999999] mt-1">{formData.seo_description.length} of 160 characters used</p>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Meta Description</label>
+                  <textarea name="seo_description" rows={3} value={formData.seo_description} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="A brief description of the product for search results..."></textarea>
+                  <p className="text-xs text-neutral-400 mt-1">{formData.seo_description.length} of 160 characters used</p>
                 </div>
               </div>
             </div>
@@ -282,15 +282,15 @@ export default function EditProductPage() {
           <div className="space-y-6">
             
             {/* Status & Pricing */}
-            <div className="bg-white border border-[#EFEFEF] shadow-sm">
-              <div className="p-4 border-b border-[#EFEFEF] flex items-center gap-2 bg-[#F9F9F9]">
-                <Settings className="w-4 h-4 text-[#666666]" />
-                <h2 className="font-serif text-lg text-[#111111]">Pricing & Status</h2>
+            <div className="bg-white border border-border-light shadow-sm">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+                <Settings className="w-4 h-4 text-neutral-500" />
+                <h2 className="font-serif text-lg text-rich-black">Pricing & Status</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Status</label>
-                  <select name="status" value={formData.status} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] bg-white">
+                  <label className="block text-sm font-medium text-rich-black mb-2">Status</label>
+                  <select name="status" value={formData.status} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold bg-white">
                     <option value="active">Active</option>
                     <option value="draft">Draft</option>
                     <option value="archived">Archived</option>
@@ -299,40 +299,40 @@ export default function EditProductPage() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Price (₹)</label>
-                    <input type="number" step="0.01" name="price" required value={formData.price} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="0.00" />
+                    <label className="block text-sm font-medium text-rich-black mb-2">Price (₹)</label>
+                    <input type="number" step="0.01" name="price" required value={formData.price} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="0.00" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Compare-at (₹)</label>
-                    <input type="number" step="0.01" name="compare_at_price" value={formData.compare_at_price} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="0.00" />
+                    <label className="block text-sm font-medium text-rich-black mb-2">Compare-at (₹)</label>
+                    <input type="number" step="0.01" name="compare_at_price" value={formData.compare_at_price} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="0.00" />
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-[#EFEFEF]">
+                <div className="pt-4 border-t border-border-light">
                   <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" name="is_featured" checked={formData.is_featured} onChange={handleChange} className="w-4 h-4 text-[#111111] border-[#EFEFEF] focus:ring-[#111111]" />
-                    <span className="text-sm font-medium text-[#111111]">Feature on Homepage</span>
+                    <input type="checkbox" name="is_featured" checked={formData.is_featured} onChange={handleChange} className="w-4 h-4 text-rich-black border-border-light focus:ring-rich-black" />
+                    <span className="text-sm font-medium text-rich-black">Feature on Homepage</span>
                   </label>
                 </div>
                 <div>
                   <label className="flex items-center gap-3 cursor-pointer">
-                    <input type="checkbox" name="is_trending" checked={formData.is_trending} onChange={handleChange} className="w-4 h-4 text-[#111111] border-[#EFEFEF] focus:ring-[#111111]" />
-                    <span className="text-sm font-medium text-[#111111]">Mark as Trending</span>
+                    <input type="checkbox" name="is_trending" checked={formData.is_trending} onChange={handleChange} className="w-4 h-4 text-rich-black border-border-light focus:ring-rich-black" />
+                    <span className="text-sm font-medium text-rich-black">Mark as Trending</span>
                   </label>
                 </div>
               </div>
             </div>
 
             {/* Organization */}
-            <div className="bg-white border border-[#EFEFEF] shadow-sm">
-              <div className="p-4 border-b border-[#EFEFEF] flex items-center gap-2 bg-[#F9F9F9]">
-                <Tag className="w-4 h-4 text-[#666666]" />
-                <h2 className="font-serif text-lg text-[#111111]">Organization</h2>
+            <div className="bg-white border border-border-light shadow-sm">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+                <Tag className="w-4 h-4 text-neutral-500" />
+                <h2 className="font-serif text-lg text-rich-black">Organization</h2>
               </div>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Category</label>
-                  <select name="category_id" value={formData.category_id} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] bg-white">
+                  <label className="block text-sm font-medium text-rich-black mb-2">Category</label>
+                  <select name="category_id" value={formData.category_id} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold bg-white">
                     <option value="">Select Category</option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>{cat.name}</option>
@@ -343,24 +343,24 @@ export default function EditProductPage() {
 
 
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Brand</label>
-                  <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="Tranquil" />
+                  <label className="block text-sm font-medium text-rich-black mb-2">Brand</label>
+                  <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="Tranquil" />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Fabric / Material</label>
-                  <input type="text" name="fabric" value={formData.fabric} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="e.g. 100% Silk" />
+                  <label className="block text-sm font-medium text-rich-black mb-2">Fabric / Material</label>
+                  <input type="text" name="fabric" value={formData.fabric} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="e.g. 100% Silk" />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Weight (grams)</label>
-                  <input type="number" name="weight" value={formData.weight} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="e.g. 250" />
+                  <label className="block text-sm font-medium text-rich-black mb-2">Weight (grams)</label>
+                  <input type="number" name="weight" value={formData.weight} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="e.g. 250" />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Tags</label>
-                  <input type="text" name="tags" value={formData.tags} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="e.g. summer, dress, elegant" />
-                  <p className="text-xs text-[#999999] mt-1">Comma-separated</p>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Tags</label>
+                  <input type="text" name="tags" value={formData.tags} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="e.g. summer, dress, elegant" />
+                  <p className="text-xs text-neutral-400 mt-1">Comma-separated</p>
                 </div>
               </div>
             </div>

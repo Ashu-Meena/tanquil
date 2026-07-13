@@ -8,7 +8,7 @@ export default function Loading() {
 
       <div className="container mx-auto px-6 lg:px-12 py-12">
         {/* Toolbar Skeleton */}
-        <div className="flex justify-between mb-8 border-b border-[#EFEFEF] pb-6">
+        <div className="flex justify-between mb-8 border-b border-border-light pb-6">
           <Skeleton className="w-24 h-6" />
           <Skeleton className="w-48 h-6 hidden md:block" />
         </div>

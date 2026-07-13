@@ -64,28 +64,28 @@ export default function ReviewsPage() {
       <div className="space-y-6 max-w-full">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="font-serif text-3xl text-[#111111] mb-1">Reviews</h1>
-            <p className="text-[#666666] text-sm">Moderate customer reviews and ratings</p>
+            <h1 className="font-serif text-3xl text-rich-black mb-1">Reviews</h1>
+            <p className="text-neutral-500 text-sm">Moderate customer reviews and ratings</p>
           </div>
         </div>
 
-        <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+        <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
           {/* Toolbar */}
-          <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center">
-            <div className="flex items-center w-full sm:w-auto bg-[#FAF8F5] px-3 py-2 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors">
-              <Search className="w-4 h-4 text-[#999999] mr-2" />
+          <div className="p-4 border-b border-border-light flex justify-between items-center">
+            <div className="flex items-center w-full sm:w-auto bg-ivory px-3 py-2 rounded-sm border border-border-light focus-within:border-gold transition-colors">
+              <Search className="w-4 h-4 text-neutral-400 mr-2" />
               <input 
                 type="text" 
                 placeholder="Search by product, email or title..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-[#111111] placeholder:text-[#999999]"
+                className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
               />
             </div>
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
-              className="text-sm border border-[#EFEFEF] bg-white text-[#666666] rounded-sm px-3 py-2 focus:outline-none focus:border-[#C7A17A]"
+              className="text-sm border border-border-light bg-white text-neutral-500 rounded-sm px-3 py-2 focus:outline-none focus:border-gold"
             >
               <option value="all">All Status</option>
               <option value="pending">Pending</option>
@@ -97,7 +97,7 @@ export default function ReviewsPage() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-              <thead className="bg-[#FAF8F5] text-[#111111] uppercase tracking-widest text-[11px] border-b border-[#EFEFEF]">
+              <thead className="bg-ivory text-rich-black uppercase tracking-widest text-[11px] border-b border-border-light">
                 <tr>
                   <th className="px-6 py-4 font-medium">Customer</th>
                   <th className="px-6 py-4 font-medium">Product</th>
@@ -110,44 +110,44 @@ export default function ReviewsPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-[#999999]">
-                      <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#C7A17A]" />
+                    <td colSpan={6} className="px-6 py-12 text-center text-neutral-400">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-gold" />
                       Loading reviews...
                     </td>
                   </tr>
                 ) : filteredReviews.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-[#999999]">
+                    <td colSpan={6} className="px-6 py-12 text-center text-neutral-400">
                       No reviews found matching your criteria.
                     </td>
                   </tr>
                 ) : (
                   filteredReviews.map(review => (
-                    <tr key={review.id} className="border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors">
+                    <tr key={review.id} className="border-b border-border-light hover:bg-ivory transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-medium text-[#111111]">{review.profiles?.first_name} {review.profiles?.last_name}</p>
-                        <p className="text-xs text-[#666666]">{review.profiles?.email}</p>
+                        <p className="font-medium text-rich-black">{review.profiles?.first_name} {review.profiles?.last_name}</p>
+                        <p className="text-xs text-neutral-500">{review.profiles?.email}</p>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3 max-w-[200px]">
                           {review.products?.images?.[0] && (
-                            <div className="relative w-10 h-10 bg-[#FAF8F5] rounded-sm overflow-hidden flex-shrink-0">
+                            <div className="relative w-10 h-10 bg-ivory rounded-sm overflow-hidden flex-shrink-0">
                               <Image src={review.products.images[0]} alt="" fill className="object-cover" />
                             </div>
                           )}
-                          <p className="font-medium text-[#111111] truncate">{review.products?.name}</p>
+                          <p className="font-medium text-rich-black truncate">{review.products?.name}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex gap-1 text-[#C7A17A]">
+                        <div className="flex gap-1 text-gold">
                           {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "fill-current" : "text-[#EFEFEF]"}`} />
+                            <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "fill-current" : "text-border-light"}`} />
                           ))}
                         </div>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="font-medium text-[#111111] mb-1 truncate">{review.title}</p>
-                        <p className="text-[#666666] line-clamp-2 text-xs leading-relaxed">{review.content}</p>
+                        <p className="font-medium text-rich-black mb-1 truncate">{review.title}</p>
+                        <p className="text-neutral-500 line-clamp-2 text-xs leading-relaxed">{review.content}</p>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${

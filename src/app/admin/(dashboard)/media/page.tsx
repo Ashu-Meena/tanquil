@@ -249,18 +249,18 @@ export default function MediaLibraryPage() {
             <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-5">
               <AlertTriangle className="w-8 h-8 text-amber-500" />
             </div>
-            <h2 className="font-serif text-2xl text-[#111111] mb-2">Video Limit Reached</h2>
-            <p className="text-[#666666] text-sm mb-1">
-              You can only store <span className="font-semibold text-[#111111]">{VIDEO_LIMIT} videos</span> at a time.
+            <h2 className="font-serif text-2xl text-rich-black mb-2">Video Limit Reached</h2>
+            <p className="text-neutral-500 text-sm mb-1">
+              You can only store <span className="font-semibold text-rich-black">{VIDEO_LIMIT} videos</span> at a time.
             </p>
-            <p className="text-[#666666] text-sm mb-6">
+            <p className="text-neutral-500 text-sm mb-6">
               You currently have <span className="font-semibold text-amber-600">{videoFiles.length}/{VIDEO_LIMIT}</span> videos uploaded.
               Please delete an existing video before uploading a new one.
             </p>
             <div className="flex gap-3 justify-center">
               <button
                 onClick={() => setShowVideoLimitModal(false)}
-                className="px-5 py-2.5 text-sm font-medium border border-[#EFEFEF] rounded-sm hover:bg-[#FAF8F5] transition-colors"
+                className="px-5 py-2.5 text-sm font-medium border border-border-light rounded-sm hover:bg-ivory transition-colors"
               >
                 Cancel
               </button>
@@ -269,7 +269,7 @@ export default function MediaLibraryPage() {
                   setShowVideoLimitModal(false);
                   setActiveTab("videos");
                 }}
-                className="px-5 py-2.5 text-sm font-medium bg-[#111111] text-white rounded-sm hover:bg-[#C7A17A] transition-colors"
+                className="px-5 py-2.5 text-sm font-medium bg-rich-black text-white rounded-sm hover:bg-gold transition-colors"
               >
                 Go to Videos
               </button>
@@ -281,8 +281,8 @@ export default function MediaLibraryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Media Library</h1>
-          <p className="text-[#666666] text-sm">Manage all uploaded images and videos across your store</p>
+          <h1 className="font-serif text-3xl text-rich-black mb-1">Media Library</h1>
+          <p className="text-neutral-500 text-sm">Manage all uploaded images and videos across your store</p>
         </div>
         <div className="flex items-center gap-3">
           {/* Hidden inputs */}
@@ -307,7 +307,7 @@ export default function MediaLibraryPage() {
           <button
             onClick={() => imageInputRef.current?.click()}
             disabled={uploading}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2.5 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm disabled:opacity-50"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2.5 text-sm font-medium hover:bg-gold transition-colors rounded-sm disabled:opacity-50"
           >
             <UploadCloud className="w-4 h-4" />
             {uploading && activeTab === "images" ? "Uploading..." : "Upload Image"}
@@ -317,7 +317,7 @@ export default function MediaLibraryPage() {
           <button
             onClick={handleVideoUploadClick}
             disabled={uploading}
-            className="flex items-center gap-2 bg-[#C7A17A] text-white px-4 py-2.5 text-sm font-medium hover:bg-[#b8926b] transition-colors rounded-sm disabled:opacity-50 relative"
+            className="flex items-center gap-2 bg-gold text-white px-4 py-2.5 text-sm font-medium hover:bg-[#b8926b] transition-colors rounded-sm disabled:opacity-50 relative"
           >
             <Film className="w-4 h-4" />
             {uploading && activeTab === "videos" ? "Uploading..." : "Upload Video"}
@@ -337,23 +337,23 @@ export default function MediaLibraryPage() {
 
       {/* Video limit progress bar */}
       {videoFiles.length > 0 && (
-        <div className="bg-white border border-[#EFEFEF] rounded-sm px-4 py-3 flex items-center gap-4">
-          <Video className="w-4 h-4 text-[#C7A17A] shrink-0" />
+        <div className="bg-white border border-border-light rounded-sm px-4 py-3 flex items-center gap-4">
+          <Video className="w-4 h-4 text-gold shrink-0" />
           <div className="flex-1">
-            <div className="flex justify-between text-xs text-[#666666] mb-1.5">
+            <div className="flex justify-between text-xs text-neutral-500 mb-1.5">
               <span>Video storage</span>
               <span className={videoFiles.length >= VIDEO_LIMIT ? "text-red-500 font-semibold" : "font-medium"}>
                 {videoFiles.length} / {VIDEO_LIMIT} videos used
               </span>
             </div>
-            <div className="w-full h-1.5 bg-[#EFEFEF] rounded-full overflow-hidden">
+            <div className="w-full h-1.5 bg-border-light rounded-full overflow-hidden">
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
                   videoFiles.length >= VIDEO_LIMIT
                     ? "bg-red-500"
                     : videoFiles.length >= VIDEO_LIMIT - 1
                     ? "bg-amber-400"
-                    : "bg-[#C7A17A]"
+                    : "bg-gold"
                 }`}
                 style={{ width: `${Math.min((videoFiles.length / VIDEO_LIMIT) * 100, 100)}%` }}
               />
@@ -365,22 +365,22 @@ export default function MediaLibraryPage() {
         </div>
       )}
 
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
         {/* Tabs + Search toolbar */}
-        <div className="p-4 border-b border-[#EFEFEF] flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
+        <div className="p-4 border-b border-border-light flex flex-col sm:flex-row gap-3 justify-between items-start sm:items-center">
           {/* Tabs */}
-          <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-sm border border-[#EFEFEF]">
+          <div className="flex items-center gap-1 bg-ivory p-1 rounded-sm border border-border-light">
             <button
               onClick={() => setActiveTab("images")}
               className={`flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-sm transition-colors ${
                 activeTab === "images"
-                  ? "bg-white text-[#111111] shadow-sm"
-                  : "text-[#666666] hover:text-[#111111]"
+                  ? "bg-white text-rich-black shadow-sm"
+                  : "text-neutral-500 hover:text-rich-black"
               }`}
             >
               <ImageIcon className="w-3.5 h-3.5" />
               Images
-              <span className="text-[10px] bg-[#EFEFEF] text-[#666666] px-1.5 py-0.5 rounded-full font-bold">
+              <span className="text-[10px] bg-border-light text-neutral-500 px-1.5 py-0.5 rounded-full font-bold">
                 {imageFiles.length}
               </span>
             </button>
@@ -388,8 +388,8 @@ export default function MediaLibraryPage() {
               onClick={() => setActiveTab("videos")}
               className={`flex items-center gap-2 px-4 py-1.5 text-sm font-medium rounded-sm transition-colors ${
                 activeTab === "videos"
-                  ? "bg-white text-[#111111] shadow-sm"
-                  : "text-[#666666] hover:text-[#111111]"
+                  ? "bg-white text-rich-black shadow-sm"
+                  : "text-neutral-500 hover:text-rich-black"
               }`}
             >
               <Video className="w-3.5 h-3.5" />
@@ -397,7 +397,7 @@ export default function MediaLibraryPage() {
               <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                 videoFiles.length >= VIDEO_LIMIT
                   ? "bg-red-100 text-red-600"
-                  : "bg-[#EFEFEF] text-[#666666]"
+                  : "bg-border-light text-neutral-500"
               }`}>
                 {videoFiles.length}/{VIDEO_LIMIT}
               </span>
@@ -405,14 +405,14 @@ export default function MediaLibraryPage() {
           </div>
 
           {/* Search */}
-          <div className="flex items-center w-full sm:w-auto bg-[#FAF8F5] px-3 py-2 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors">
-            <Search className="w-4 h-4 text-[#999999] mr-2" />
+          <div className="flex items-center w-full sm:w-auto bg-ivory px-3 py-2 rounded-sm border border-border-light focus-within:border-gold transition-colors">
+            <Search className="w-4 h-4 text-neutral-400 mr-2" />
             <input
               type="text"
               placeholder={`Search ${activeTab}...`}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full sm:w-52 text-[#111111] placeholder:text-[#999999]"
+              className="bg-transparent border-none outline-none text-sm w-full sm:w-52 text-rich-black placeholder:text-neutral-400"
             />
           </div>
         </div>
@@ -420,19 +420,19 @@ export default function MediaLibraryPage() {
         {/* Media Grid */}
         <div className="p-6">
           {loading ? (
-            <div className="text-center py-16 text-[#666666]">
-              <div className="w-8 h-8 border-2 border-[#C7A17A] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <div className="text-center py-16 text-neutral-500">
+              <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-3" />
               Loading media...
             </div>
           ) : displayFiles.length === 0 ? (
-            <div className="text-center py-16 text-[#666666]">
+            <div className="text-center py-16 text-neutral-500">
               {activeTab === "images" ? (
-                <ImageIcon className="w-12 h-12 mx-auto mb-3 text-[#EFEFEF]" />
+                <ImageIcon className="w-12 h-12 mx-auto mb-3 text-border-light" />
               ) : (
-                <Video className="w-12 h-12 mx-auto mb-3 text-[#EFEFEF]" />
+                <Video className="w-12 h-12 mx-auto mb-3 text-border-light" />
               )}
               <p className="font-medium mb-1">No {activeTab} found</p>
-              <p className="text-xs text-[#999999]">
+              <p className="text-xs text-neutral-400">
                 {search ? `No results for "${search}"` : `Upload your first ${activeTab === "images" ? "image" : "video"} to get started`}
               </p>
             </div>
@@ -444,7 +444,7 @@ export default function MediaLibraryPage() {
                 return (
                   <div
                     key={file.id}
-                    className="group relative border border-[#EFEFEF] rounded-sm overflow-hidden bg-[#FAF8F5] aspect-square"
+                    className="group relative border border-border-light rounded-sm overflow-hidden bg-ivory aspect-square"
                   >
                     {isVideo ? (
                       <>
@@ -480,7 +480,7 @@ export default function MediaLibraryPage() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => copyToClipboard(url, file.id)}
-                          className="bg-white p-1.5 rounded-sm text-[#111111] hover:text-[#C7A17A] transition-colors"
+                          className="bg-white p-1.5 rounded-sm text-rich-black hover:text-gold transition-colors"
                           title="Copy URL"
                         >
                           {copiedId === file.id ? (

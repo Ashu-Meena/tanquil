@@ -27,14 +27,14 @@ export default function NewCollection({ initialData = [] }: { initialData?: Prod
   };
 
   return (
-    <section className="py-12 md:py-24 bg-[#FAF8F5]">
+    <section className="py-12 md:py-24 bg-ivory">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4"
           >
             New Arrivals
           </motion.h2>
@@ -43,7 +43,7 @@ export default function NewCollection({ initialData = [] }: { initialData?: Prod
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-serif italic text-xl text-[#666666]"
+            className="font-serif italic text-xl text-neutral-500"
           >
             Fresh off the editorial floor
           </motion.p>
@@ -67,7 +67,7 @@ export default function NewCollection({ initialData = [] }: { initialData?: Prod
           <button 
             onClick={loadMore}
             disabled={loading}
-            className="border border-[#111111] bg-transparent text-[#111111] hover:bg-[#111111] hover:text-white px-12 py-4 uppercase tracking-widest text-sm font-medium transition-colors duration-300 disabled:opacity-50"
+            className="border border-rich-black bg-transparent text-rich-black hover:bg-rich-black hover:text-white px-12 py-4 uppercase tracking-widest text-sm font-medium transition-colors duration-300 disabled:opacity-50"
           >
             {loading ? "Loading..." : "Load More"}
           </button>

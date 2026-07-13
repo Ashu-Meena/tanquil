@@ -45,28 +45,28 @@ export default function CategoriesPage() {
     <div className="space-y-6 max-w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Categories</h1>
-          <p className="text-[#666666] text-sm">Manage your product collections and navigation</p>
+          <h1 className="font-serif text-3xl text-rich-black mb-1">Categories</h1>
+          <p className="text-neutral-500 text-sm">Manage your product collections and navigation</p>
         </div>
         <Link 
           href="/admin/categories/new" 
-          className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2.5 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm"
+          className="flex items-center gap-2 bg-rich-black text-white px-4 py-2.5 text-sm font-medium hover:bg-gold transition-colors rounded-sm"
         >
           <Plus className="w-4 h-4" /> Add Category
         </Link>
       </div>
 
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
         {/* Toolbar */}
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center">
-          <div className="flex items-center w-full sm:w-auto bg-[#FAF8F5] px-3 py-2 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors">
-            <Search className="w-4 h-4 text-[#999999] mr-2" />
+        <div className="p-4 border-b border-border-light flex justify-between items-center">
+          <div className="flex items-center w-full sm:w-auto bg-ivory px-3 py-2 rounded-sm border border-border-light focus-within:border-gold transition-colors">
+            <Search className="w-4 h-4 text-neutral-400 mr-2" />
             <input 
               type="text" 
               placeholder="Search categories..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-[#111111] placeholder:text-[#999999]"
+              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
             />
           </div>
         </div>
@@ -75,13 +75,13 @@ export default function CategoriesPage() {
         <div className="p-6 bg-[#F9F9F9] min-h-[400px]">
           {loading ? (
             <div className="flex justify-center items-center h-full min-h-[200px]">
-              <p className="text-[#666666] animate-pulse">Loading categories...</p>
+              <p className="text-neutral-500 animate-pulse">Loading categories...</p>
             </div>
           ) : filteredCategories.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center border-2 border-dashed border-[#EFEFEF] rounded-lg">
-              <Tag className="w-12 h-12 text-[#EFEFEF] mb-4" />
-              <p className="text-[#666666] mb-4">No categories found.</p>
-              <Link href="/admin/categories/new" className="bg-[#111111] text-white px-6 py-2 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm">
+            <div className="flex flex-col items-center justify-center h-full min-h-[300px] text-center border-2 border-dashed border-border-light rounded-lg">
+              <Tag className="w-12 h-12 text-border-light mb-4" />
+              <p className="text-neutral-500 mb-4">No categories found.</p>
+              <Link href="/admin/categories/new" className="bg-rich-black text-white px-6 py-2 text-sm font-medium hover:bg-gold transition-colors rounded-sm">
                 Create Category
               </Link>
             </div>
@@ -99,10 +99,10 @@ export default function CategoriesPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.3, type: "spring", bounce: 0.3 }}
                     key={category.id} 
-                    className="group bg-white border border-[#EFEFEF] rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:border-[#C7A17A] transition-all duration-300 flex flex-col"
+                    className="group bg-white border border-border-light rounded-xl overflow-hidden shadow-sm hover:shadow-xl hover:border-gold transition-all duration-300 flex flex-col"
                   >
                     {/* Image Header */}
-                    <div className="relative w-full aspect-video bg-[#FAF8F5] overflow-hidden">
+                    <div className="relative w-full aspect-video bg-ivory overflow-hidden">
                       {category.image_url ? (
                         <Image 
                           src={category.image_url} 
@@ -111,7 +111,7 @@ export default function CategoriesPage() {
                           className="object-cover group-hover:scale-105 transition-transform duration-500" 
                         />
                       ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-[#999999]">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-neutral-400">
                           <ImageIcon className="w-8 h-8 mb-2 opacity-50" />
                           <span className="text-[10px] uppercase tracking-widest">No Image</span>
                         </div>
@@ -132,21 +132,21 @@ export default function CategoriesPage() {
                     {/* Content */}
                     <div className="p-5 flex-1 flex flex-col justify-between">
                       <div>
-                        <h3 className="font-serif text-xl text-[#111111] mb-1 group-hover:text-[#C7A17A] transition-colors line-clamp-1">{category.name}</h3>
-                        <p className="text-xs text-[#666666] font-mono bg-[#F5F5F5] px-2 py-1 rounded inline-block">/{category.slug}</p>
+                        <h3 className="font-serif text-xl text-rich-black mb-1 group-hover:text-gold transition-colors line-clamp-1">{category.name}</h3>
+                        <p className="text-xs text-neutral-500 font-mono bg-[#F5F5F5] px-2 py-1 rounded inline-block">/{category.slug}</p>
                       </div>
                       
                       {/* Actions */}
-                      <div className="flex items-center justify-between mt-6 pt-4 border-t border-[#EFEFEF]">
+                      <div className="flex items-center justify-between mt-6 pt-4 border-t border-border-light">
                         <Link 
                           href={`/admin/categories/${category.id}`} 
-                          className="flex items-center gap-2 text-sm font-medium text-[#666666] hover:text-[#111111] transition-colors"
+                          className="flex items-center gap-2 text-sm font-medium text-neutral-500 hover:text-rich-black transition-colors"
                         >
                           <Edit className="w-4 h-4" /> Edit
                         </Link>
                         <button 
                           onClick={() => deleteCategory(category.id)} 
-                          className="flex items-center gap-2 text-sm font-medium text-[#999999] hover:text-red-500 transition-colors"
+                          className="flex items-center gap-2 text-sm font-medium text-neutral-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" /> Delete
                         </button>

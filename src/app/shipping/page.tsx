@@ -9,10 +9,10 @@ export default function ShippingPage() {
   return (
     <div className="bg-white min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
-        <p className="text-xs text-[#666666] uppercase tracking-widest mb-4">
-          <Link href="/" className="hover:text-[#C7A17A]">Home</Link> / Shipping
+        <p className="text-xs text-neutral-500 uppercase tracking-widest mb-4">
+          <Link href="/" className="hover:text-gold">Home</Link> / Shipping
         </p>
-        <h1 className="font-serif text-5xl text-[#111111] mb-12">Shipping Policy</h1>
+        <h1 className="font-serif text-5xl text-rich-black mb-12">Shipping Policy</h1>
         <div className="space-y-10 text-[#555555] leading-relaxed">
           {[
             {
@@ -37,7 +37,7 @@ export default function ShippingPage() {
             },
           ].map((section) => (
             <div key={section.title}>
-              <h2 className="font-serif text-2xl text-[#111111] mb-3">{section.title}</h2>
+              <h2 className="font-serif text-2xl text-rich-black mb-3">{section.title}</h2>
               <p>{section.body}</p>
             </div>
           ))}

@@ -50,14 +50,14 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
   }, [displayReviews.length]);
 
   return (
-    <section className="py-12 md:py-32 bg-[#FAF8F5] overflow-hidden">
+    <section className="py-12 md:py-32 bg-ivory overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12 flex flex-col items-center">
         <div className="text-center mb-16 md:mb-24">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4"
           >
             Tranquil Muses
           </motion.h2>
@@ -66,7 +66,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-[#666666] font-serif italic text-lg md:text-xl"
+            className="text-neutral-500 font-serif italic text-lg md:text-xl"
           >
             Real reviews from our community
           </motion.p>
@@ -82,7 +82,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
               transition={{ duration: 0.8, ease: "easeInOut" }}
               className="absolute inset-0 flex flex-col justify-center items-center text-center px-4"
             >
-              <div className="flex justify-center items-center gap-1.5 mb-8 text-[#C7A17A]">
+              <div className="flex justify-center items-center gap-1.5 mb-8 text-gold">
                 <Star className="w-4 h-4 md:w-5 md:h-5 fill-current" />
                 <Star className="w-4 h-4 md:w-5 md:h-5 fill-current" />
                 <Star className="w-4 h-4 md:w-5 md:h-5 fill-current" />
@@ -90,7 +90,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
                 <Star className="w-4 h-4 md:w-5 md:h-5 fill-current" />
               </div>
               
-              <p className="text-[#111111] font-serif text-2xl md:text-4xl lg:text-5xl leading-relaxed md:leading-snug mb-12 italic tracking-wide max-w-3xl font-light">
+              <p className="text-rich-black font-serif text-2xl md:text-4xl lg:text-5xl leading-relaxed md:leading-snug mb-12 italic tracking-wide max-w-3xl font-light">
                 "{displayReviews[currentReview].text}"
               </p>
               
@@ -99,11 +99,11 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
                   <Image src={displayReviews[currentReview].image} alt={displayReviews[currentReview].name} fill className="object-cover" />
                 </div>
                 <div className="flex flex-col items-center text-center">
-                  <div className="flex items-center gap-1 text-[#111111] font-medium tracking-widest text-xs md:text-sm uppercase mb-1">
+                  <div className="flex items-center gap-1 text-rich-black font-medium tracking-widest text-xs md:text-sm uppercase mb-1">
                     {displayReviews[currentReview].name}
-                    <BadgeCheck className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#C7A17A]" />
+                    <BadgeCheck className="w-3.5 h-3.5 md:w-4 md:h-4 text-gold" />
                   </div>
-                  <span className="text-[#666666] text-[10px] md:text-xs uppercase tracking-widest">{displayReviews[currentReview].product}</span>
+                  <span className="text-neutral-500 text-[10px] md:text-xs uppercase tracking-widest">{displayReviews[currentReview].product}</span>
                 </div>
               </div>
             </motion.div>
@@ -118,8 +118,8 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
               aria-label={`Go to review ${i + 1}`}
               className={`transition-all duration-500 ease-out rounded-full ${
                 i === currentReview 
-                  ? 'w-10 h-1.5 bg-[#C7A17A]' 
-                  : 'w-1.5 h-1.5 bg-[#111111]/20 hover:bg-[#111111]/40'
+                  ? 'w-10 h-1.5 bg-gold' 
+                  : 'w-1.5 h-1.5 bg-rich-black/20 hover:bg-rich-black/40'
               }`}
             />
           ))}

@@ -95,25 +95,25 @@ export default function DiscountsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Discounts</h1>
-          <p className="text-[#666666] text-sm">Manage promo codes and automatic discounts.</p>
+          <h1 className="font-serif text-3xl text-rich-black mb-1">Discounts</h1>
+          <p className="text-neutral-500 text-sm">Manage promo codes and automatic discounts.</p>
         </div>
         <button 
           onClick={() => {
             setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
             setShowDrawer(true);
           }}
-          className="flex items-center gap-2 bg-[#111111] text-white px-5 py-2.5 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm"
+          className="flex items-center gap-2 bg-rich-black text-white px-5 py-2.5 text-sm font-medium hover:bg-gold transition-colors rounded-sm"
         >
           <Plus className="w-4 h-4" /> Create Discount
         </button>
       </div>
 
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white border-b border-[#EFEFEF] text-xs uppercase tracking-wider text-[#999999]">
+              <tr className="bg-white border-b border-border-light text-xs uppercase tracking-wider text-neutral-400">
                 <th className="p-4 font-medium">Code</th>
                 <th className="p-4 font-medium">Status</th>
                 <th className="p-4 font-medium">Value</th>
@@ -122,25 +122,25 @@ export default function DiscountsPage() {
                 <th className="p-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="text-sm text-[#111111]">
+            <tbody className="text-sm text-rich-black">
               {loading ? (
                 <tr>
                   <td colSpan={6} className="p-8 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-[#C7A17A] mx-auto mb-2" />
+                    <Loader2 className="w-6 h-6 animate-spin text-gold mx-auto mb-2" />
                   </td>
                 </tr>
               ) : coupons.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="p-8 text-center text-[#999999]">
+                  <td colSpan={6} className="p-8 text-center text-neutral-400">
                     No discounts created yet.
                   </td>
                 </tr>
               ) : (
                 coupons.map((coupon) => (
-                  <tr key={coupon.id} className="border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors">
+                  <tr key={coupon.id} className="border-b border-border-light hover:bg-ivory transition-colors">
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <Tag className="w-4 h-4 text-[#C7A17A]" />
+                        <Tag className="w-4 h-4 text-gold" />
                         <span className="font-medium tracking-wide">{coupon.code}</span>
                       </div>
                     </td>
@@ -150,7 +150,7 @@ export default function DiscountsPage() {
                         className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm transition-colors ${
                           coupon.is_active 
                             ? "bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-700" 
-                            : "bg-[#EFEFEF] text-[#666666] hover:bg-green-100 hover:text-green-700"
+                            : "bg-border-light text-neutral-500 hover:bg-green-100 hover:text-green-700"
                         }`}
                       >
                         {coupon.is_active ? "Active" : "Inactive"}
@@ -162,22 +162,22 @@ export default function DiscountsPage() {
                         : `₹${coupon.discount_value} OFF`}
                       {coupon.is_free_shipping && <span className="block text-[10px] text-[#2F855A] mt-1">+ Free Shipping</span>}
                     </td>
-                    <td className="p-4 text-[#666666] hidden md:table-cell">
+                    <td className="p-4 text-neutral-500 hidden md:table-cell">
                       {coupon.min_order_value > 0 ? `Min purchase ₹${coupon.min_order_value}` : 'No minimum'}
                     </td>
-                    <td className="p-4 text-[#666666] hidden sm:table-cell">
+                    <td className="p-4 text-neutral-500 hidden sm:table-cell">
                       {coupon.used_count} times
                     </td>
                     <td className="p-4 text-right space-x-2">
                       <button 
                         onClick={() => { setFormData(coupon); setShowDrawer(true); }}
-                        className="text-[#666666] hover:text-[#C7A17A] transition-colors"
+                        className="text-neutral-500 hover:text-gold transition-colors"
                       >
                         Edit
                       </button>
                       <button 
                         onClick={() => deleteCoupon(coupon.id)}
-                        className="text-[#666666] hover:text-red-500 transition-colors"
+                        className="text-neutral-500 hover:text-red-500 transition-colors"
                       >
                         <Trash2 className="w-4 h-4 inline" />
                       </button>
@@ -194,57 +194,57 @@ export default function DiscountsPage() {
       {showDrawer && (
         <div className="fixed inset-0 bg-black/30 z-50 flex justify-end">
           <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
-            <div className="p-6 border-b border-[#EFEFEF] flex justify-between items-center">
+            <div className="p-6 border-b border-border-light flex justify-between items-center">
               <h2 className="font-serif text-xl">{formData.id ? 'Edit Discount' : 'Create Discount'}</h2>
-              <button onClick={() => setShowDrawer(false)} className="text-[#999999] hover:text-[#111111]">
+              <button onClick={() => setShowDrawer(false)} className="text-neutral-400 hover:text-rich-black">
                 ✕
               </button>
             </div>
             
             <div className="p-6 flex-1 overflow-y-auto space-y-6">
               <div className="space-y-1">
-                <label className="text-sm font-medium text-[#111111]">Discount Code</label>
+                <label className="text-sm font-medium text-rich-black">Discount Code</label>
                 <input 
                   type="text" 
                   value={formData.code}
                   onChange={e => setFormData({...formData, code: e.target.value})}
                   placeholder="e.g. SUMMER20"
-                  className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm uppercase focus:outline-none focus:border-[#C7A17A]"
+                  className="w-full border border-border-light p-2.5 text-sm rounded-sm uppercase focus:outline-none focus:border-gold"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-[#111111]">Type</label>
+                  <label className="text-sm font-medium text-rich-black">Type</label>
                   <select 
                     value={formData.discount_type}
                     onChange={e => setFormData({...formData, discount_type: e.target.value as 'percentage'|'fixed'})}
-                    className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+                    className="w-full border border-border-light p-2.5 text-sm rounded-sm focus:outline-none focus:border-gold"
                   >
                     <option value="percentage">Percentage (%)</option>
                     <option value="fixed">Fixed Amount (₹)</option>
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-[#111111]">Value</label>
+                  <label className="text-sm font-medium text-rich-black">Value</label>
                   <input 
                     type="number" 
                     value={formData.discount_value}
                     onChange={e => setFormData({...formData, discount_value: Number(e.target.value)})}
-                    className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+                    className="w-full border border-border-light p-2.5 text-sm rounded-sm focus:outline-none focus:border-gold"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium text-[#111111]">Minimum Purchase Amount (₹)</label>
+                <label className="text-sm font-medium text-rich-black">Minimum Purchase Amount (₹)</label>
                 <input 
                   type="number" 
                   value={formData.min_order_value}
                   onChange={e => setFormData({...formData, min_order_value: Number(e.target.value)})}
-                  className="w-full border border-[#EFEFEF] p-2.5 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A]"
+                  className="w-full border border-border-light p-2.5 text-sm rounded-sm focus:outline-none focus:border-gold"
                 />
-                <p className="text-xs text-[#999999]">Leave 0 for no minimum purchase requirement.</p>
+                <p className="text-xs text-neutral-400">Leave 0 for no minimum purchase requirement.</p>
               </div>
 
               <div className="flex items-center gap-2 pt-4">
@@ -254,7 +254,7 @@ export default function DiscountsPage() {
                   checked={formData.is_active}
                   onChange={e => setFormData({...formData, is_active: e.target.checked})}
                 />
-                <label htmlFor="active-toggle" className="text-sm font-medium text-[#111111]">Active and available for use</label>
+                <label htmlFor="active-toggle" className="text-sm font-medium text-rich-black">Active and available for use</label>
               </div>
 
               <div className="flex items-center gap-2">
@@ -264,15 +264,15 @@ export default function DiscountsPage() {
                   checked={formData.is_free_shipping || false}
                   onChange={e => setFormData({...formData, is_free_shipping: e.target.checked})}
                 />
-                <label htmlFor="shipping-toggle" className="text-sm font-medium text-[#111111]">Grants Free Shipping</label>
+                <label htmlFor="shipping-toggle" className="text-sm font-medium text-rich-black">Grants Free Shipping</label>
               </div>
             </div>
 
-            <div className="p-6 border-t border-[#EFEFEF] bg-[#FAF8F5]">
+            <div className="p-6 border-t border-border-light bg-ivory">
               <button 
                 onClick={handleSave}
                 disabled={saving || !formData.code}
-                className="w-full flex items-center justify-center gap-2 bg-[#111111] text-white px-5 py-3 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 bg-rich-black text-white px-5 py-3 text-sm font-medium hover:bg-gold transition-colors rounded-sm disabled:opacity-50"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {saving ? "Saving..." : "Save Discount Code"}

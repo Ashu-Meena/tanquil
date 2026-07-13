@@ -29,18 +29,18 @@ export default function MobileBottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-[#EFEFEF] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 lg:hidden pb-safe">
+    <div className="fixed bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-border-light shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 lg:hidden pb-safe">
       <div className="flex justify-around items-center h-16 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.href && pathname === item.href;
 
           const content = (
-            <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-[#C7A17A]' : 'text-[#666666]'} hover:text-[#111111] transition-colors`}>
+            <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-gold' : 'text-neutral-500'} hover:text-rich-black transition-colors`}>
               <div className="relative">
                 <Icon className={`w-5 h-5 ${isActive ? 'fill-current' : ''}`} />
                 <span 
-                  className={`absolute -top-1.5 -right-2 bg-[#C7A17A] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center transition-opacity duration-300 ${
+                  className={`absolute -top-1.5 -right-2 bg-gold text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center transition-opacity duration-300 ${
                     mounted && item.badge !== undefined && item.badge > 0 ? 'opacity-100' : 'opacity-0'
                   }`}
                 >

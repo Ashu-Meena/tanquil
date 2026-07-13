@@ -31,7 +31,7 @@ export default function AnnouncementBar() {
   }, [announcements.length]);
 
   return (
-    <div className="bg-[#111111] text-white text-[11px] uppercase tracking-[0.2em] py-2 overflow-hidden relative h-8 z-50">
+    <div className="bg-rich-black text-white text-[11px] uppercase tracking-[0.2em] py-2 overflow-hidden relative h-8 z-50">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}

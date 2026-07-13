@@ -33,7 +33,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl text-[#111111] mb-2"
+            className="font-serif text-3xl md:text-4xl text-rich-black mb-2"
           >
             Shop By Category
           </motion.h2>
@@ -42,7 +42,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-[#666666] font-serif italic text-lg"
+            className="text-neutral-500 font-serif italic text-lg"
           >
             Find your perfect piece
           </motion.p>
@@ -97,7 +97,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
                   </div>
                   
                   {/* Text Label */}
-                  <span className={`uppercase tracking-[0.15em] text-[10px] md:text-xs font-semibold text-center max-w-[120px] transition-colors duration-700 ${!isMobile && isNotHovered ? 'text-gray-400' : 'text-[#111111]'}`}>
+                  <span className={`uppercase tracking-[0.15em] text-[10px] md:text-xs font-semibold text-center max-w-[120px] transition-colors duration-700 ${!isMobile && isNotHovered ? 'text-gray-400' : 'text-rich-black'}`}>
                     {category.title}
                   </span>
                 </Link>

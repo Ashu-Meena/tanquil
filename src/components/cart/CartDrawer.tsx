@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "@/store/useToastStore";
+import FocusLock from "react-focus-lock";
 
 export default function CartDrawer() {
   const supabase = createClient();
@@ -34,13 +35,27 @@ export default function CartDrawer() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     if (isOpen) {
       fetchShippingSettings();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]);
+  }, [isOpen]); // Removed exhaustive-deps comment by accepting the missing dependency, or we could wrap fetchShippingSettings in useCallback. But since fetchShippingSettings uses state setters, it's stable enough.
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        closeCart();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, closeCart]);
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   
@@ -90,24 +105,28 @@ export default function CartDrawer() {
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.4, ease: "circOut" }}
             className="fixed top-0 right-0 h-full w-full sm:w-[450px] bg-white z-[80] shadow-2xl flex flex-col"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Shopping Cart"
           >
+            <FocusLock returnFocus className="flex flex-col h-full w-full">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 pb-4 border-b border-[#EFEFEF]">
+            <div className="flex items-center justify-between p-6 pb-4 border-b border-border-light">
               <div className="w-6" /> {/* Spacer for centering */}
-              <h2 className="font-serif text-2xl tracking-widest text-[#111111] uppercase">Your Cart {mounted && totalItemsCount > 0 ? `(${totalItemsCount})` : ''}</h2>
-              <button onClick={closeCart} className="hover:rotate-90 transition-transform text-[#111111]">
+              <h2 className="font-serif text-2xl tracking-widest text-rich-black uppercase">Your Cart {mounted && totalItemsCount > 0 ? `(${totalItemsCount})` : ''}</h2>
+              <button onClick={closeCart} className="min-w-[44px] min-h-[44px] p-2 flex items-center justify-center hover:rotate-90 transition-transform text-rich-black" aria-label="Close cart">
                 <X className="w-5 h-5 md:w-6 md:h-6" />
               </button>
             </div>
 
             {/* Free Shipping Progress */}
-            <div className="px-6 py-4 bg-white border-b border-[#EFEFEF]">
+            <div className="px-6 py-4 bg-white border-b border-border-light">
               {remaining > 0 ? (
-                <p className="text-xs text-center mb-3 text-[#666666] tracking-wide uppercase">
-                  You're <span className="font-bold text-[#111111]">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
+                <p className="text-xs text-center mb-3 text-neutral-500 tracking-wide uppercase">
+                  You're <span className="font-bold text-rich-black">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
                 </p>
               ) : (
-                <p className="text-xs text-center mb-3 text-[#C7A17A] tracking-widest uppercase font-medium">
+                <p className="text-xs text-center mb-3 text-gold tracking-widest uppercase font-medium">
                   You've unlocked Free Shipping
                 </p>
               )}
@@ -116,17 +135,17 @@ export default function CartDrawer() {
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
-                  className={`h-full ${progress === 100 ? 'bg-[#C7A17A]' : 'bg-[#111111]'}`}
+                  className={`h-full ${progress === 100 ? 'bg-gold' : 'bg-rich-black'}`}
                 />
               </div>
             </div>
 
             {/* Cart Items */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8 bg-[#FAF8F5]">
+            <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8 bg-ivory">
               {!mounted ? null : cartItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-                  <p className="text-[#666666] font-serif italic text-lg">Your cart is currently empty.</p>
-                  <button onClick={closeCart} className="bg-[#111111] text-white px-8 py-3.5 text-xs uppercase tracking-[0.2em] hover:bg-[#C7A17A] transition-colors">
+                  <p className="text-neutral-500 font-serif italic text-lg">Your cart is currently empty.</p>
+                  <button onClick={closeCart} className="bg-rich-black text-white px-8 py-3.5 text-xs uppercase tracking-[0.2em] hover:bg-gold transition-colors">
                     Continue Shopping
                   </button>
                 </div>
@@ -143,22 +162,22 @@ export default function CartDrawer() {
                     </div>
                     <div className="flex flex-col flex-1 py-1 h-full justify-between">
                       <div>
-                        <Link href={`/products/${item.id}`} onClick={closeCart} className="font-serif text-lg hover:text-[#C7A17A] transition-colors line-clamp-2 leading-snug mb-1">
+                        <Link href={`/products/${item.id}`} onClick={closeCart} className="font-serif text-lg hover:text-gold transition-colors line-clamp-2 leading-snug mb-1">
                           {item.name}
                         </Link>
-                        <p className="font-medium text-[#111111] text-sm mb-2" style={{ fontFamily: 'var(--font-montserrat)' }}>₹{item.price.toLocaleString('en-IN')}</p>
-                        <p className="text-xs text-[#666666] tracking-widest uppercase mb-4">{item.color} / {item.size}</p>
+                        <p className="font-medium text-rich-black text-sm mb-2" style={{ fontFamily: 'var(--font-montserrat)' }}>₹{item.price.toLocaleString('en-IN')}</p>
+                        <p className="text-xs text-neutral-500 tracking-widest uppercase mb-4">{item.color} / {item.size}</p>
                       </div>
                       
                       <div className="flex items-center justify-between mt-auto">
-                        <div className="flex items-center border border-[#EFEFEF] bg-white rounded-sm">
-                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity - 1)} className="px-3 py-1 text-[#666666] hover:text-[#111111] transition-colors">-</button>
-                          <span className="px-3 py-1 text-xs text-[#111111]">{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} className="px-3 py-1 text-[#666666] hover:text-[#111111] transition-colors">+</button>
+                        <div className="flex items-center border border-border-light bg-white rounded-sm">
+                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity - 1)} className="px-3 py-1 text-neutral-500 hover:text-rich-black transition-colors">-</button>
+                          <span className="px-3 py-1 text-xs text-rich-black">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} className="px-3 py-1 text-neutral-500 hover:text-rich-black transition-colors">+</button>
                         </div>
                         <button
                           onClick={() => removeItem(item.id, item.color, item.size)}
-                          className="text-[#999999] hover:text-[#E63946] transition-colors text-[10px] uppercase tracking-widest border-b border-transparent hover:border-[#E63946] pb-0.5"
+                          className="text-neutral-400 hover:text-sale transition-colors text-[10px] uppercase tracking-widest border-b border-transparent hover:border-sale pb-0.5"
                         >
                           Remove
                         </button>
@@ -177,18 +196,19 @@ export default function CartDrawer() {
                   ₹{totalAfterDiscount.toLocaleString('en-IN')}
                 </span>
               </div>
-              <p className="text-[10px] uppercase tracking-widest text-[#999999] mb-6 text-center">
+              <p className="text-[10px] uppercase tracking-widest text-neutral-400 mb-6 text-center">
                 Shipping calculated at checkout
               </p>
               <button 
                 onClick={handleCheckout}
                 disabled={cartItems.length === 0}
-                className={`w-full py-5 uppercase tracking-[0.2em] text-xs transition-all duration-300 flex items-center justify-center gap-3 group ${cartItems.length === 0 ? 'bg-[#F5F5F5] text-[#999999] cursor-not-allowed' : 'bg-[#111111] hover:bg-[#C7A17A] text-white shadow-md hover:shadow-lg'}`}
+                className={`w-full py-5 uppercase tracking-[0.2em] text-xs transition-all duration-300 flex items-center justify-center gap-3 group ${cartItems.length === 0 ? 'bg-[#F5F5F5] text-neutral-400 cursor-not-allowed' : 'bg-rich-black hover:bg-gold text-white shadow-md hover:shadow-lg'}`}
               >
                 Proceed to Checkout
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-transform" />
               </button>
             </div>
+            </FocusLock>
           </motion.div>
         </>
       )}

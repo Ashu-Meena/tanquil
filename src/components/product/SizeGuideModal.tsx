@@ -38,41 +38,41 @@ export default function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps)
             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[91] bg-white w-full max-w-xl mx-4 p-8 shadow-2xl"
           >
             <div className="flex justify-between items-center mb-8">
-              <h2 className="font-serif text-2xl text-[#111111]">Size Guide</h2>
+              <h2 className="font-serif text-2xl text-rich-black">Size Guide</h2>
               <button onClick={onClose} className="hover:rotate-90 transition-transform p-1">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-[#666666] uppercase tracking-widest mb-6">All measurements are in inches</p>
+            <p className="text-xs text-neutral-500 uppercase tracking-widest mb-6">All measurements are in inches</p>
 
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[#EFEFEF]">
-                    <th className="py-3 pr-4 font-medium text-[#111111] uppercase tracking-widest text-[11px]">Size</th>
-                    <th className="py-3 pr-4 font-medium text-[#111111] uppercase tracking-widest text-[11px]">Bust</th>
-                    <th className="py-3 pr-4 font-medium text-[#111111] uppercase tracking-widest text-[11px]">Waist</th>
-                    <th className="py-3 pr-4 font-medium text-[#111111] uppercase tracking-widest text-[11px]">Hips</th>
-                    <th className="py-3 pr-4 font-medium text-[#111111] uppercase tracking-widest text-[11px]">UK</th>
+                  <tr className="border-b border-border-light">
+                    <th className="py-3 pr-4 font-medium text-rich-black uppercase tracking-widest text-[11px]">Size</th>
+                    <th className="py-3 pr-4 font-medium text-rich-black uppercase tracking-widest text-[11px]">Bust</th>
+                    <th className="py-3 pr-4 font-medium text-rich-black uppercase tracking-widest text-[11px]">Waist</th>
+                    <th className="py-3 pr-4 font-medium text-rich-black uppercase tracking-widest text-[11px]">Hips</th>
+                    <th className="py-3 pr-4 font-medium text-rich-black uppercase tracking-widest text-[11px]">UK</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sizeData.map((row) => (
-                    <tr key={row.size} className="border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors">
-                      <td className="py-3 pr-4 font-medium text-[#111111]">{row.size}</td>
-                      <td className="py-3 pr-4 text-[#666666]">{row.bust}</td>
-                      <td className="py-3 pr-4 text-[#666666]">{row.waist}</td>
-                      <td className="py-3 pr-4 text-[#666666]">{row.hips}</td>
-                      <td className="py-3 pr-4 text-[#666666]">{row.uk}</td>
+                    <tr key={row.size} className="border-b border-border-light hover:bg-ivory transition-colors">
+                      <td className="py-3 pr-4 font-medium text-rich-black">{row.size}</td>
+                      <td className="py-3 pr-4 text-neutral-500">{row.bust}</td>
+                      <td className="py-3 pr-4 text-neutral-500">{row.waist}</td>
+                      <td className="py-3 pr-4 text-neutral-500">{row.hips}</td>
+                      <td className="py-3 pr-4 text-neutral-500">{row.uk}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
 
-            <div className="mt-8 p-4 bg-[#FAF8F5] text-xs text-[#666666] leading-relaxed">
-              <strong className="text-[#111111]">How to Measure:</strong> Measure around the fullest part of your bust, the narrowest part of your natural waist, and the fullest part of your hips. If between sizes, size up for comfort.
+            <div className="mt-8 p-4 bg-ivory text-xs text-neutral-500 leading-relaxed">
+              <strong className="text-rich-black">How to Measure:</strong> Measure around the fullest part of your bust, the narrowest part of your natural waist, and the fullest part of your hips. If between sizes, size up for comfort.
             </div>
           </motion.div>
         </>

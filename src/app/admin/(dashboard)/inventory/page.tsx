@@ -56,22 +56,22 @@ export default function InventoryPage() {
     <div className="space-y-6 max-w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Inventory</h1>
-          <p className="text-[#666666] text-sm">Monitor and update product stock levels</p>
+          <h1 className="font-serif text-3xl text-rich-black mb-1">Inventory</h1>
+          <p className="text-neutral-500 text-sm">Monitor and update product stock levels</p>
         </div>
       </div>
 
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
         {/* Toolbar */}
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center">
-          <div className="flex items-center w-full sm:w-auto bg-[#FAF8F5] px-3 py-2 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors">
-            <Search className="w-4 h-4 text-[#999999] mr-2" />
+        <div className="p-4 border-b border-border-light flex justify-between items-center">
+          <div className="flex items-center w-full sm:w-auto bg-ivory px-3 py-2 rounded-sm border border-border-light focus-within:border-gold transition-colors">
+            <Search className="w-4 h-4 text-neutral-400 mr-2" />
             <input 
               type="text" 
               placeholder="Search by product or SKU..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-[#111111] placeholder:text-[#999999]"
+              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
             />
           </div>
         </div>
@@ -79,7 +79,7 @@ export default function InventoryPage() {
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[#FAF8F5] text-[#111111] uppercase tracking-widest text-[11px] border-b border-[#EFEFEF]">
+            <thead className="bg-ivory text-rich-black uppercase tracking-widest text-[11px] border-b border-border-light">
               <tr>
                 <th className="px-6 py-4 font-medium">Product</th>
                 <th className="px-6 py-4 font-medium">SKU</th>
@@ -91,11 +91,11 @@ export default function InventoryPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-[#666666]">Loading inventory...</td>
+                  <td colSpan={5} className="px-6 py-12 text-center text-neutral-500">Loading inventory...</td>
                 </tr>
               ) : filteredVariants.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-[#666666]">
+                  <td colSpan={5} className="px-6 py-12 text-center text-neutral-500">
                     No inventory records found.
                   </td>
                 </tr>
@@ -104,27 +104,27 @@ export default function InventoryPage() {
                   const isLowStock = variant.stock_quantity < 10;
                   
                   return (
-                    <tr key={variant.id} className="border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors">
+                    <tr key={variant.id} className="border-b border-border-light hover:bg-ivory transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-16 bg-[#EFEFEF] relative rounded-sm overflow-hidden flex-shrink-0">
+                          <div className="w-12 h-16 bg-border-light relative rounded-sm overflow-hidden flex-shrink-0">
                             {(() => {
                               const img = variant.products?.product_images?.find((i: any) => i.color_name === variant.color_name) 
                                 || variant.products?.product_images?.[0];
                               return img ? (
                                 <Image src={img.url} alt={variant.products?.name || 'Product'} fill className="object-cover" />
                               ) : (
-                                <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px]">No Img</div>
+                                <div className="w-full h-full flex items-center justify-center text-neutral-400 text-[10px]">No Img</div>
                               );
                             })()}
                           </div>
                           <div>
-                            <p className="font-medium text-[#111111]">{variant.products?.name}</p>
+                            <p className="font-medium text-rich-black">{variant.products?.name}</p>
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-[#666666]">{variant.sku || '-'}</td>
-                      <td className="px-6 py-4 text-[#666666]">
+                      <td className="px-6 py-4 text-neutral-500">{variant.sku || '-'}</td>
+                      <td className="px-6 py-4 text-neutral-500">
                         {variant.color_name} {variant.size ? `/ ${variant.size}` : ''}
                       </td>
                       <td className="px-6 py-4">
@@ -146,8 +146,8 @@ export default function InventoryPage() {
                             value={variant.stock_quantity}
                             onChange={(e) => handleStockChange(variant.id, e.target.value)}
                             onBlur={(e) => updateStock(variant.id, parseInt(e.target.value) || 0)}
-                            className={`w-20 border p-2 text-sm text-right focus:outline-none focus:border-[#C7A17A] rounded-sm transition-colors ${
-                              isLowStock ? 'border-orange-300 bg-orange-50 text-orange-700' : 'border-[#EFEFEF]'
+                            className={`w-20 border p-2 text-sm text-right focus:outline-none focus:border-gold rounded-sm transition-colors ${
+                              isLowStock ? 'border-orange-300 bg-orange-50 text-orange-700' : 'border-border-light'
                             }`}
                           />
                           <div className="w-5 flex items-center justify-center">

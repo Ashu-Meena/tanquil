@@ -61,16 +61,16 @@ export function AdminSidebar() {
       )}
 
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#EFEFEF] flex-col transition-transform duration-300 ease-in-out md:flex md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-border-light flex-col transition-transform duration-300 ease-in-out md:flex md:translate-x-0 ${
           isMobileSidebarOpen ? "translate-x-0 flex" : "-translate-x-full hidden"
         }`}
       >
-        <div className="p-6 border-b border-[#EFEFEF] flex justify-between items-center">
-          <Link href="/admin" className="font-serif text-2xl text-[#111111] tracking-widest uppercase" onClick={closeMobileSidebar}>
-            Tranquil<span className="text-[#C7A17A] text-xs align-top font-sans normal-case tracking-normal ml-1">Admin</span>
+        <div className="p-6 border-b border-border-light flex justify-between items-center">
+          <Link href="/admin" className="font-serif text-2xl text-rich-black tracking-widest uppercase" onClick={closeMobileSidebar}>
+            Tranquil<span className="text-gold text-xs align-top font-sans normal-case tracking-normal ml-1">Admin</span>
           </Link>
           <button 
-            className="md:hidden text-[#666666] hover:text-[#111111]"
+            className="md:hidden text-neutral-500 hover:text-rich-black"
             onClick={closeMobileSidebar}
           >
             <X className="w-6 h-6" />
@@ -89,8 +89,8 @@ export function AdminSidebar() {
               onClick={closeMobileSidebar}
               className={`flex items-center gap-3 px-4 py-2.5 rounded-sm text-sm transition-colors ${
                 isActive 
-                  ? "bg-[#FAF8F5] text-[#C7A17A] font-medium" 
-                  : "text-[#666666] hover:bg-[#FAF8F5] hover:text-[#111111]"
+                  ? "bg-ivory text-gold font-medium" 
+                  : "text-neutral-500 hover:bg-ivory hover:text-rich-black"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -100,7 +100,7 @@ export function AdminSidebar() {
         })}
       </nav>
       
-      <div className="p-4 pb-6 border-t border-[#EFEFEF] pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="p-4 pb-6 border-t border-border-light pb-[max(1rem,env(safe-area-inset-bottom))]">
         <button 
           onClick={handleLogout}
           className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors rounded-sm"

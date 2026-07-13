@@ -24,14 +24,14 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-white pt-24 pb-32">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="font-serif text-3xl md:text-4xl text-[#111111] mb-8">Your Cart ({totalItems})</h1>
+        <h1 className="font-serif text-3xl md:text-4xl text-rich-black mb-8">Your Cart ({totalItems})</h1>
         
         {cartItems.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-[#FAF8F5] border border-[#EFEFEF]">
-            <p className="text-[#666666] mb-6">Your cart is currently empty.</p>
+          <div className="flex flex-col items-center justify-center py-20 bg-ivory border border-border-light">
+            <p className="text-neutral-500 mb-6">Your cart is currently empty.</p>
             <Link 
               href="/collections/all" 
-              className="bg-[#111111] text-white px-8 py-3 text-xs uppercase tracking-widest hover:bg-[#C7A17A] transition-colors"
+              className="bg-rich-black text-white px-8 py-3 text-xs uppercase tracking-widest hover:bg-gold transition-colors"
             >
               Continue Shopping
             </Link>
@@ -40,8 +40,8 @@ export default function CartPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             <div className="md:col-span-2 space-y-6">
               {cartItems.map((item) => (
-                <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-4 p-4 border border-[#EFEFEF]">
-                  <div className="w-24 h-32 relative bg-[#FAF8F5] flex-shrink-0">
+                <div key={`${item.id}-${item.size}-${item.color}`} className="flex gap-4 p-4 border border-border-light">
+                  <div className="w-24 h-32 relative bg-ivory flex-shrink-0">
                     <Image 
                       src={item.image} 
                       alt={item.name} 
@@ -52,33 +52,33 @@ export default function CartPage() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex justify-between items-start">
-                        <span className="font-medium text-[#111111]">
+                        <span className="font-medium text-rich-black">
                           {item.name}
                         </span>
                         <button 
                           onClick={() => removeItem(item.id, item.size, item.color)}
-                          className="text-[#999999] hover:text-red-500 transition-colors p-1"
+                          className="text-neutral-400 hover:text-red-500 transition-colors p-1"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
-                      <p className="text-xs text-[#666666] mt-1">{item.color} / {item.size}</p>
-                      <p className="text-sm font-medium text-[#111111] mt-2">₹{item.price.toLocaleString('en-IN')}</p>
+                      <p className="text-xs text-neutral-500 mt-1">{item.color} / {item.size}</p>
+                      <p className="text-sm font-medium text-rich-black mt-2">₹{item.price.toLocaleString('en-IN')}</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center border border-[#EFEFEF]">
+                      <div className="flex items-center border border-border-light">
                         <button 
                           onClick={() => updateQuantity(item.id, item.size, item.color, Math.max(1, item.quantity - 1))}
-                          className="w-8 h-8 flex items-center justify-center text-[#666666] hover:bg-[#FAF8F5] transition-colors"
+                          className="w-8 h-8 flex items-center justify-center text-neutral-500 hover:bg-ivory transition-colors"
                         >
                           -
                         </button>
-                        <span className="w-8 h-8 flex items-center justify-center text-sm font-medium text-[#111111]">
+                        <span className="w-8 h-8 flex items-center justify-center text-sm font-medium text-rich-black">
                           {item.quantity}
                         </span>
                         <button 
                           onClick={() => updateQuantity(item.id, item.size, item.color, item.quantity + 1)}
-                          className="w-8 h-8 flex items-center justify-center text-[#666666] hover:bg-[#FAF8F5] transition-colors"
+                          className="w-8 h-8 flex items-center justify-center text-neutral-500 hover:bg-ivory transition-colors"
                         >
                           +
                         </button>
@@ -90,27 +90,27 @@ export default function CartPage() {
             </div>
             
             <div className="md:col-span-1">
-              <div className="bg-[#FAF8F5] p-6 border border-[#EFEFEF] sticky top-28">
-                <h2 className="font-serif text-xl text-[#111111] mb-6">Order Summary</h2>
+              <div className="bg-ivory p-6 border border-border-light sticky top-28">
+                <h2 className="font-serif text-xl text-rich-black mb-6">Order Summary</h2>
                 <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-sm text-[#666666]">
+                  <div className="flex justify-between text-sm text-neutral-500">
                     <span>Subtotal</span>
                     <span>₹{totalAmount.toLocaleString('en-IN')}</span>
                   </div>
-                  <div className="flex justify-between text-sm text-[#666666]">
+                  <div className="flex justify-between text-sm text-neutral-500">
                     <span>Shipping</span>
                     <span>Calculated at checkout</span>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-[#EFEFEF] mb-8">
-                  <div className="flex justify-between font-medium text-[#111111]">
+                <div className="pt-4 border-t border-border-light mb-8">
+                  <div className="flex justify-between font-medium text-rich-black">
                     <span>Total</span>
                     <span>₹{totalAmount.toLocaleString('en-IN')}</span>
                   </div>
                 </div>
                 <button 
                   onClick={() => router.push('/checkout')}
-                  className="w-full bg-[#111111] text-white py-4 text-xs uppercase tracking-widest font-medium hover:bg-[#C7A17A] transition-colors flex items-center justify-center gap-2"
+                  className="w-full bg-rich-black text-white py-4 text-xs uppercase tracking-widest font-medium hover:bg-gold transition-colors flex items-center justify-center gap-2"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </button>

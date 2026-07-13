@@ -9,7 +9,8 @@ import SearchModal from "@/components/search/SearchModal";
 import Preloader from "@/components/layout/Preloader";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import ToastContainer from "@/components/ui/ToastContainer";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import AnalyticsWrapper from "@/components/analytics/AnalyticsWrapper";
+import CookieConsent from "@/components/ui/CookieConsent";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -49,7 +50,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
-        <div dangerouslySetInnerHTML={{ __html: '<!-- Website designed and developed by Samvix Technologies -->' }} style={{ display: 'none' }} />
+        {/* Website designed and developed by Samvix Technologies */}
         <Preloader />
         <Header />
         <main className="flex-1">{children}</main>
@@ -58,8 +59,9 @@ export default function RootLayout({
         <CartDrawer />
         <SearchModal />
         <ToastContainer />
+        <CookieConsent />
       </body>
-      <GoogleAnalytics gaId="G-XYZ1234567" />
+      <AnalyticsWrapper gaId="G-XYZ1234567" />
     </html>
   );
 }

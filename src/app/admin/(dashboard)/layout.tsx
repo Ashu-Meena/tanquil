@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex">
+    <div className="min-h-screen bg-ivory flex">
       <AntiInspect />
       <AdminSidebar />
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden md:pl-64 w-full">

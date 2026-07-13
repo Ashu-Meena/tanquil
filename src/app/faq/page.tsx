@@ -48,26 +48,26 @@ export default function FAQPage() {
   return (
     <div className="bg-white min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
-        <p className="text-xs text-[#666666] uppercase tracking-widest mb-4">
-          <Link href="/" className="hover:text-[#C7A17A]">Home</Link> / FAQ
+        <p className="text-xs text-neutral-500 uppercase tracking-widest mb-4">
+          <Link href="/" className="hover:text-gold">Home</Link> / FAQ
         </p>
-        <h1 className="font-serif text-5xl text-[#111111] mb-12">Frequently Asked Questions</h1>
-        <div className="space-y-0 divide-y divide-[#EFEFEF]">
+        <h1 className="font-serif text-5xl text-rich-black mb-12">Frequently Asked Questions</h1>
+        <div className="space-y-0 divide-y divide-border-light">
           {faqs.map((faq, i) => (
             <details key={i} className="group py-6 cursor-pointer">
-              <summary className="flex justify-between items-center font-medium text-[#111111] list-none select-none hover:text-[#C7A17A] transition-colors">
+              <summary className="flex justify-between items-center font-medium text-rich-black list-none select-none hover:text-gold transition-colors">
                 {faq.q}
-                <span className="text-[#C7A17A] text-xl group-open:rotate-45 transition-transform duration-200">+</span>
+                <span className="text-gold text-xl group-open:rotate-45 transition-transform duration-200">+</span>
               </summary>
-              <p className="mt-4 text-[#666666] leading-relaxed text-sm">{faq.a}</p>
+              <p className="mt-4 text-neutral-500 leading-relaxed text-sm">{faq.a}</p>
             </details>
           ))}
         </div>
-        <div className="mt-16 bg-[#FAF8F5] border border-[#EFEFEF] p-8 text-center">
-          <p className="text-[#111111] mb-4">Still have questions? We&apos;re here to help.</p>
+        <div className="mt-16 bg-ivory border border-border-light p-8 text-center">
+          <p className="text-rich-black mb-4">Still have questions? We&apos;re here to help.</p>
           <Link
             href="/contact"
-            className="inline-block bg-[#111111] hover:bg-[#C7A17A] text-white px-8 py-3 uppercase tracking-widest text-xs font-medium transition-colors"
+            className="inline-block bg-rich-black hover:bg-gold text-white px-8 py-3 uppercase tracking-widest text-xs font-medium transition-colors"
           >
             Contact Us
           </Link>

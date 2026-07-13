@@ -110,31 +110,31 @@ export default function ProductsPage() {
     <div className="space-y-6 max-w-full">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Products</h1>
-          <p className="text-[#666666] text-sm">Manage your inventory, pricing, and catalog</p>
+          <h1 className="font-serif text-3xl text-rich-black mb-1">Products</h1>
+          <p className="text-neutral-500 text-sm">Manage your inventory, pricing, and catalog</p>
         </div>
         <Link 
           href="/admin/products/new" 
-          className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2.5 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm"
+          className="flex items-center gap-2 bg-rich-black text-white px-4 py-2.5 text-sm font-medium hover:bg-gold transition-colors rounded-sm"
         >
           <Plus className="w-4 h-4" /> Add Product
         </Link>
       </div>
 
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
         {/* Toolbar */}
-        <div className="p-4 border-b border-[#EFEFEF] flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center w-full sm:w-auto bg-[#FAF8F5] px-3 py-2 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors">
-            <Search className="w-4 h-4 text-[#999999] mr-2" />
+        <div className="p-4 border-b border-border-light flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center w-full sm:w-auto bg-ivory px-3 py-2 rounded-sm border border-border-light focus-within:border-gold transition-colors">
+            <Search className="w-4 h-4 text-neutral-400 mr-2" />
             <input 
               type="text" 
               placeholder="Search products..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-[#111111] placeholder:text-[#999999]"
+              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
             />
           </div>
-          <button className="flex items-center gap-2 text-sm text-[#666666] hover:text-[#111111] transition-colors px-3 py-2 border border-[#EFEFEF] rounded-sm">
+          <button className="flex items-center gap-2 text-sm text-neutral-500 hover:text-rich-black transition-colors px-3 py-2 border border-border-light rounded-sm">
             <Filter className="w-4 h-4" /> Filter
           </button>
         </div>
@@ -142,14 +142,14 @@ export default function ProductsPage() {
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[#FAF8F5] text-[#111111] uppercase tracking-widest text-[11px] border-b border-[#EFEFEF]">
+            <thead className="bg-ivory text-rich-black uppercase tracking-widest text-[11px] border-b border-border-light">
               <tr>
                 <th className="px-6 py-4 font-medium w-12">
                   <input 
                     type="checkbox" 
                     checked={filteredProducts.length > 0 && selectedProducts.length === filteredProducts.length}
                     onChange={toggleSelectAll}
-                    className="w-4 h-4 rounded border-gray-300 text-[#C7A17A] focus:ring-[#C7A17A]"
+                    className="w-4 h-4 rounded border-gray-300 text-gold focus:ring-gold"
                   />
                 </th>
                 <th className="px-6 py-4 font-medium">Product</th>
@@ -163,44 +163,44 @@ export default function ProductsPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#666666]">Loading products...</td>
+                  <td colSpan={6} className="px-6 py-12 text-center text-neutral-500">Loading products...</td>
                 </tr>
               ) : filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#666666]">
-                    No products found. <Link href="/admin/products/new" className="text-[#C7A17A] hover:underline">Create one</Link>.
+                  <td colSpan={6} className="px-6 py-12 text-center text-neutral-500">
+                    No products found. <Link href="/admin/products/new" className="text-gold hover:underline">Create one</Link>.
                   </td>
                 </tr>
               ) : (
                 filteredProducts.map((product) => (
-                  <tr key={product.id} className={`border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors ${selectedProducts.includes(product.id) ? 'bg-[#FAF8F5]' : ''}`}>
+                  <tr key={product.id} className={`border-b border-border-light hover:bg-ivory transition-colors ${selectedProducts.includes(product.id) ? 'bg-ivory' : ''}`}>
                     <td className="px-6 py-4">
                       <input 
                         type="checkbox" 
                         checked={selectedProducts.includes(product.id)}
                         onChange={() => toggleSelectProduct(product.id)}
-                        className="w-4 h-4 rounded border-gray-300 text-[#C7A17A] focus:ring-[#C7A17A]"
+                        className="w-4 h-4 rounded border-gray-300 text-gold focus:ring-gold"
                       />
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-16 bg-[#EFEFEF] relative rounded-sm overflow-hidden flex-shrink-0">
+                        <div className="w-12 h-16 bg-border-light relative rounded-sm overflow-hidden flex-shrink-0">
                           {product.images && product.images[0] ? (
                             <Image src={product.images[0]} alt={product.name} fill className="object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px]">No Img</div>
+                            <div className="w-full h-full flex items-center justify-center text-neutral-400 text-[10px]">No Img</div>
                           )}
                         </div>
                         <div>
-                          <p className="font-medium text-[#111111]">{product.name}</p>
-                          <p className="text-xs text-[#666666]">₹{product.price?.toLocaleString('en-IN')}</p>
+                          <p className="font-medium text-rich-black">{product.name}</p>
+                          <p className="text-xs text-neutral-500">₹{product.price?.toLocaleString('en-IN')}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-[#666666] hidden md:table-cell">
+                    <td className="px-6 py-4 text-neutral-500 hidden md:table-cell">
                       {product.sku || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 text-[#666666] capitalize hidden md:table-cell">
+                    <td className="px-6 py-4 text-neutral-500 capitalize hidden md:table-cell">
                       {product.categories?.name || 'Uncategorized'}
                     </td>
                     <td className="px-6 py-4 hidden md:table-cell">
@@ -221,12 +221,12 @@ export default function ProductsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <Link href={`/admin/products/${product.id}`} className="p-2 text-[#666666] hover:text-[#C7A17A] transition-colors rounded-sm hover:bg-[#FAF8F5]">
+                        <Link href={`/admin/products/${product.id}`} className="p-2 text-neutral-500 hover:text-gold transition-colors rounded-sm hover:bg-ivory">
                           <Edit className="w-4 h-4" />
                         </Link>
                         <button 
                           onClick={() => handleDelete(product.id, product.name)}
-                          className="p-2 text-[#666666] hover:text-[#E63946] transition-colors rounded-sm hover:bg-red-50"
+                          className="p-2 text-neutral-500 hover:text-sale transition-colors rounded-sm hover:bg-red-50"
                           title="Delete Product"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -243,9 +243,9 @@ export default function ProductsPage() {
 
       {/* Bulk Actions Bar */}
       {selectedProducts.length > 0 && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#111111] text-white px-6 py-4 rounded-sm shadow-xl flex items-center gap-6 z-50 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-rich-black text-white px-6 py-4 rounded-sm shadow-xl flex items-center gap-6 z-50 animate-in slide-in-from-bottom-5">
           <div className="text-sm font-medium">
-            <span className="text-[#C7A17A]">{selectedProducts.length}</span> products selected
+            <span className="text-gold">{selectedProducts.length}</span> products selected
           </div>
           <div className="h-6 w-px bg-white/20"></div>
           <div className="flex items-center gap-3">
@@ -253,7 +253,7 @@ export default function ProductsPage() {
             <select 
               value={bulkStatus} 
               onChange={(e) => setBulkStatus(e.target.value)}
-              className="bg-white/10 border border-white/20 text-sm py-1.5 px-3 rounded-sm focus:outline-none focus:border-[#C7A17A]"
+              className="bg-white/10 border border-white/20 text-sm py-1.5 px-3 rounded-sm focus:outline-none focus:border-gold"
             >
               <option value="" className="text-black">Select Status</option>
               <option value="active" className="text-black">Active</option>
@@ -262,7 +262,7 @@ export default function ProductsPage() {
             <button 
               onClick={applyBulkAction}
               disabled={!bulkStatus || updating}
-              className="bg-[#C7A17A] text-white px-4 py-1.5 text-sm font-medium rounded-sm hover:bg-[#B38D66] transition-colors disabled:opacity-50"
+              className="bg-gold text-white px-4 py-1.5 text-sm font-medium rounded-sm hover:bg-[#B38D66] transition-colors disabled:opacity-50"
             >
               Apply
             </button>

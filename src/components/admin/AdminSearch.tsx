@@ -83,38 +83,38 @@ export default function AdminSearch() {
 
   return (
     <div className="relative flex items-center w-full md:w-auto ml-2 md:ml-0" ref={ref}>
-      <div className="flex items-center bg-[#FAF8F5] px-3 py-1.5 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors relative z-20 w-full">
-        <Search className="w-4 h-4 text-[#999999] mr-2 shrink-0" />
+      <div className="flex items-center bg-ivory px-3 py-1.5 rounded-sm border border-border-light focus-within:border-gold transition-colors relative z-20 w-full">
+        <Search className="w-4 h-4 text-neutral-400 mr-2 shrink-0" />
         <input 
           type="text" 
           placeholder="Search..." 
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => { if (query.length > 1) setIsOpen(true); }}
-          className="bg-transparent border-none outline-none text-sm w-32 md:w-64 text-[#111111] placeholder:text-[#999999]"
+          className="bg-transparent border-none outline-none text-sm w-32 md:w-64 text-rich-black placeholder:text-neutral-400"
         />
-        {loading && <Loader2 className="w-4 h-4 text-[#C7A17A] animate-spin absolute right-3" />}
+        {loading && <Loader2 className="w-4 h-4 text-gold animate-spin absolute right-3" />}
       </div>
 
       {isOpen && (query.length > 1) && (
-        <div className="absolute top-full left-0 w-full mt-2 bg-white border border-[#EFEFEF] rounded-sm shadow-xl z-50 max-h-96 overflow-y-auto">
+        <div className="absolute top-full left-0 w-full mt-2 bg-white border border-border-light rounded-sm shadow-xl z-50 max-h-96 overflow-y-auto">
           {results.length === 0 && !loading ? (
-            <div className="p-4 text-sm text-[#999999] text-center">No results found</div>
+            <div className="p-4 text-sm text-neutral-400 text-center">No results found</div>
           ) : (
             <ul className="py-2">
               {results.map((res, i) => (
                 <li 
                   key={`${res.type}-${res.id}-${i}`}
                   onClick={() => navigateToResult(res)}
-                  className="px-4 py-3 hover:bg-[#FAF8F5] cursor-pointer flex items-start gap-3 transition-colors border-b border-[#EFEFEF] last:border-0"
+                  className="px-4 py-3 hover:bg-ivory cursor-pointer flex items-start gap-3 transition-colors border-b border-border-light last:border-0"
                 >
                   <div className="mt-0.5">
-                    {res.type === 'product' && <Package className="w-4 h-4 text-[#C7A17A]" />}
-                    {res.type === 'order' && <ShoppingCart className="w-4 h-4 text-[#C7A17A]" />}
+                    {res.type === 'product' && <Package className="w-4 h-4 text-gold" />}
+                    {res.type === 'order' && <ShoppingCart className="w-4 h-4 text-gold" />}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#111111]">{res.title}</p>
-                    <p className="text-xs text-[#666666]">{res.subtitle}</p>
+                    <p className="text-sm font-medium text-rich-black">{res.title}</p>
+                    <p className="text-xs text-neutral-500">{res.subtitle}</p>
                   </div>
                 </li>
               ))}

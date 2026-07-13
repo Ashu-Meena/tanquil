@@ -53,14 +53,14 @@ const CONTACT_DETAILS = [
 
 export default function ContactPage() {
   return (
-    <div className="bg-[#FAF8F5] min-h-screen pt-32 pb-0">
+    <div className="bg-ivory min-h-screen pt-32 pb-0">
       {/* Hero */}
       <div className="container mx-auto px-6 lg:px-12 max-w-6xl mb-16">
-        <p className="text-xs text-[#666666] uppercase tracking-widest mb-4">
-          <Link href="/" className="hover:text-[#C7A17A] transition-colors">Home</Link> / Contact
+        <p className="text-xs text-neutral-500 uppercase tracking-widest mb-4">
+          <Link href="/" className="hover:text-gold transition-colors">Home</Link> / Contact
         </p>
-        <h1 className="font-serif text-5xl lg:text-6xl text-[#111111] mb-4">Get In Touch</h1>
-        <p className="text-[#666666] text-lg max-w-xl">
+        <h1 className="font-serif text-5xl lg:text-6xl text-rich-black mb-4">Get In Touch</h1>
+        <p className="text-neutral-500 text-lg max-w-xl">
           Come visit us, WhatsApp us, or drop an email — we&apos;re here for styling advice, order queries, and everything in between.
         </p>
       </div>
@@ -73,17 +73,17 @@ export default function ContactPage() {
           <div className="space-y-8">
             {CONTACT_DETAILS.map((item) => (
               <div key={item.label} className="flex items-start gap-5">
-                <div className="mt-0.5 text-[#C7A17A] shrink-0">{item.icon}</div>
+                <div className="mt-0.5 text-gold shrink-0">{item.icon}</div>
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#999999] mb-1">{item.label}</p>
-                  <p className="text-[#111111] font-medium text-sm leading-relaxed">{item.value}</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-1">{item.label}</p>
+                  <p className="text-rich-black font-medium text-sm leading-relaxed">{item.value}</p>
                   {item.sub && <p className="text-[#888888] text-xs mt-0.5">{item.sub}</p>}
                   {item.link && (
                     <a
                       href={item.link}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-block text-[10px] uppercase tracking-widest text-[#C7A17A] hover:text-[#111111] transition-colors mt-2 border-b border-[#C7A17A] hover:border-[#111111] pb-0.5"
+                      className="inline-block text-[10px] uppercase tracking-widest text-gold hover:text-rich-black transition-colors mt-2 border-b border-gold hover:border-rich-black pb-0.5"
                     >
                       {item.linkLabel}
                     </a>
@@ -94,25 +94,25 @@ export default function ContactPage() {
           </div>
 
           {/* Right — Contact Form */}
-          <form className="bg-white border border-[#EFEFEF] p-8 lg:p-10 space-y-6 shadow-[0_0_40px_rgba(0,0,0,0.03)]">
-            <h2 className="font-serif text-2xl text-[#111111] mb-2">Send a Message</h2>
+          <form className="bg-white border border-border-light p-8 lg:p-10 space-y-6 shadow-[0_0_40px_rgba(0,0,0,0.03)]">
+            <h2 className="font-serif text-2xl text-rich-black mb-2">Send a Message</h2>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-[#666666] mb-2">Your Name</label>
-              <input type="text" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 text-sm focus:outline-none focus:border-[#111111] transition-colors placeholder-[#BBBBBB]" placeholder="Full name" />
+              <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Your Name</label>
+              <input type="text" className="w-full bg-transparent border-b border-border-light py-3 text-sm focus:outline-none focus:border-rich-black transition-colors placeholder-[#BBBBBB]" placeholder="Full name" />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-[#666666] mb-2">Email</label>
-              <input type="email" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 text-sm focus:outline-none focus:border-[#111111] transition-colors placeholder-[#BBBBBB]" placeholder="your@email.com" />
+              <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Email</label>
+              <input type="email" className="w-full bg-transparent border-b border-border-light py-3 text-sm focus:outline-none focus:border-rich-black transition-colors placeholder-[#BBBBBB]" placeholder="your@email.com" />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-[#666666] mb-2">Phone / WhatsApp</label>
-              <input type="tel" className="w-full bg-transparent border-b border-[#EFEFEF] py-3 text-sm focus:outline-none focus:border-[#111111] transition-colors placeholder-[#BBBBBB]" placeholder="+91 XXXXX XXXXX" />
+              <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Phone / WhatsApp</label>
+              <input type="tel" className="w-full bg-transparent border-b border-border-light py-3 text-sm focus:outline-none focus:border-rich-black transition-colors placeholder-[#BBBBBB]" placeholder="+91 XXXXX XXXXX" />
             </div>
             <div>
-              <label className="block text-[10px] uppercase tracking-widest text-[#666666] mb-2">Message</label>
-              <textarea rows={4} className="w-full bg-transparent border-b border-[#EFEFEF] py-3 text-sm focus:outline-none focus:border-[#111111] transition-colors resize-none placeholder-[#BBBBBB]" placeholder="How can we help you?" />
+              <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Message</label>
+              <textarea rows={4} className="w-full bg-transparent border-b border-border-light py-3 text-sm focus:outline-none focus:border-rich-black transition-colors resize-none placeholder-[#BBBBBB]" placeholder="How can we help you?" />
             </div>
-            <button type="submit" className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-4 uppercase tracking-widest text-xs font-medium transition-colors">
+            <button type="submit" className="w-full bg-rich-black hover:bg-gold text-white py-4 uppercase tracking-widest text-xs font-medium transition-colors">
               Send Message
             </button>
           </form>
@@ -142,7 +142,7 @@ export default function ContactPage() {
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C7A17A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
           </svg>
-          <span className="text-[10px] uppercase tracking-widest text-[#111111] font-medium group-hover:text-[#C7A17A] transition-colors">Open in Google Maps</span>
+          <span className="text-[10px] uppercase tracking-widest text-rich-black font-medium group-hover:text-gold transition-colors">Open in Google Maps</span>
         </a>
       </div>
     </div>

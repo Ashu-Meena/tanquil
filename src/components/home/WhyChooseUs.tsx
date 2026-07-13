@@ -33,14 +33,14 @@ const features = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-12 md:py-24 bg-[#111111] text-white">
+    <section className="py-12 md:py-24 bg-rich-black text-white">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-10 md:mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-2xl md:text-4xl lg:text-5xl text-[#C7A17A] mb-2 md:mb-4"
+            className="font-serif text-2xl md:text-4xl lg:text-5xl text-gold mb-2 md:mb-4"
           >
             The Tranquil Experience
           </motion.h2>
@@ -49,7 +49,7 @@ export default function WhyChooseUs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-[#666666] uppercase tracking-widest text-sm"
+            className="text-neutral-500 uppercase tracking-widest text-sm"
           >
             Why choose our luxury pieces
           </motion.p>
@@ -67,11 +67,11 @@ export default function WhyChooseUs() {
                 transition={{ delay: index * 0.1, duration: 0.6 }}
                 className="flex flex-col items-center text-center group"
               >
-                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border border-[#333333] flex items-center justify-center mb-4 md:mb-6 group-hover:border-[#C7A17A] group-hover:text-[#C7A17A] transition-colors duration-300">
+                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border border-neutral-800 flex items-center justify-center mb-4 md:mb-6 group-hover:border-gold group-hover:text-gold transition-colors duration-300">
                   <Icon className="w-5 h-5 md:w-6 md:h-6 stroke-[1.5]" />
                 </div>
                 <h3 className="font-serif text-base md:text-xl tracking-wide mb-2 md:mb-3">{feature.title}</h3>
-                <p className="text-[#666666] text-xs md:text-sm leading-relaxed">{feature.description}</p>
+                <p className="text-neutral-500 text-xs md:text-sm leading-relaxed">{feature.description}</p>
               </motion.div>
             );
           })}

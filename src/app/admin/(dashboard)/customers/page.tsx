@@ -85,22 +85,22 @@ export default function CustomersPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="font-serif text-3xl text-[#111111] mb-1">Customers</h1>
-          <p className="text-[#666666] text-sm">View and manage your registered store customers.</p>
+          <h1 className="font-serif text-3xl text-rich-black mb-1">Customers</h1>
+          <p className="text-neutral-500 text-sm">View and manage your registered store customers.</p>
         </div>
       </div>
 
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
         {/* Toolbar */}
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#999999]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
             <input 
               type="text" 
               placeholder="Search customers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm border border-[#EFEFEF] rounded-sm focus:outline-none focus:border-[#C7A17A]"
+              className="w-full pl-9 pr-4 py-2 text-sm border border-border-light rounded-sm focus:outline-none focus:border-gold"
             />
           </div>
         </div>
@@ -109,11 +109,11 @@ export default function CustomersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-white border-b border-[#EFEFEF] text-xs uppercase tracking-wider text-[#999999]">
+              <tr className="bg-white border-b border-border-light text-xs uppercase tracking-wider text-neutral-400">
                 <th className="p-4 font-medium">Customer Name</th>
                 <th className="p-4 font-medium">Contact</th>
                 <th 
-                  className="p-4 font-medium flex items-center gap-1 cursor-pointer hover:text-[#111111]"
+                  className="p-4 font-medium flex items-center gap-1 cursor-pointer hover:text-rich-black"
                   onClick={() => setSortDir(d => d === 'desc' ? 'asc' : 'desc')}
                 >
                   Total Orders <ArrowUpDown className="w-3 h-3" />
@@ -122,46 +122,46 @@ export default function CustomersPage() {
                 <th className="p-4 font-medium hidden md:table-cell">Joined</th>
               </tr>
             </thead>
-            <tbody className="text-sm text-[#111111]">
+            <tbody className="text-sm text-rich-black">
               {loading ? (
                 <tr>
                   <td colSpan={5} className="p-8 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-[#C7A17A] mx-auto mb-2" />
-                    <p className="text-[#666666]">Loading customers...</p>
+                    <Loader2 className="w-6 h-6 animate-spin text-gold mx-auto mb-2" />
+                    <p className="text-neutral-500">Loading customers...</p>
                   </td>
                 </tr>
               ) : filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-8 text-center text-[#999999]">
+                  <td colSpan={5} className="p-8 text-center text-neutral-400">
                     No customers found.
                   </td>
                 </tr>
               ) : (
                 filteredCustomers.map((customer) => (
-                  <tr key={customer.id} className="border-b border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors">
+                  <tr key={customer.id} className="border-b border-border-light hover:bg-ivory transition-colors">
                     <td className="p-4">
                       <div className="font-medium">
                         {customer.first_name || customer.last_name ? `${customer.first_name} ${customer.last_name}` : 'Unknown Name'}
                       </div>
-                      <div className="text-xs text-[#999999] md:hidden">{customer.email}</div>
+                      <div className="text-xs text-neutral-400 md:hidden">{customer.email}</div>
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2 mb-1">
-                        <Mail className="w-3 h-3 text-[#999999]" /> {customer.email}
+                        <Mail className="w-3 h-3 text-neutral-400" /> {customer.email}
                       </div>
                       {customer.phone && (
-                        <div className="flex items-center gap-2 text-[#666666]">
-                          <Phone className="w-3 h-3 text-[#999999]" /> {customer.phone}
+                        <div className="flex items-center gap-2 text-neutral-500">
+                          <Phone className="w-3 h-3 text-neutral-400" /> {customer.phone}
                         </div>
                       )}
                     </td>
                     <td className="p-4 font-medium">
                       {customer.total_orders}
                     </td>
-                    <td className="p-4 font-medium text-[#C7A17A]">
+                    <td className="p-4 font-medium text-gold">
                       ₹{customer.total_spend.toLocaleString()}
                     </td>
-                    <td className="p-4 text-[#666666] hidden md:table-cell">
+                    <td className="p-4 text-neutral-500 hidden md:table-cell">
                       {new Date(customer.created_at).toLocaleDateString()}
                     </td>
                   </tr>
@@ -172,7 +172,7 @@ export default function CustomersPage() {
         </div>
         
         {/* Pagination placeholder */}
-        <div className="p-4 border-t border-[#EFEFEF] flex justify-between items-center text-xs text-[#666666]">
+        <div className="p-4 border-t border-border-light flex justify-between items-center text-xs text-neutral-500">
           <span>Showing {filteredCustomers.length} customers</span>
         </div>
       </div>

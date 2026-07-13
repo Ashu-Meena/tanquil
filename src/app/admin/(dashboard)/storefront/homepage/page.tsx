@@ -207,16 +207,16 @@ export default function HomepageManager() {
   return (
     <div className="space-y-8">
       {/* Hero Banner Section */}
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
           <div>
-            <h2 className="font-serif text-xl text-[#111111]">Hero Banner</h2>
-            <p className="text-sm text-[#666666]">Manage the 3-slide carousel on the storefront.</p>
+            <h2 className="font-serif text-xl text-rich-black">Hero Banner</h2>
+            <p className="text-sm text-neutral-500">Manage the 3-slide carousel on the storefront.</p>
           </div>
           <button 
             onClick={saveHeroBanner}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2 text-sm hover:bg-gold transition-colors rounded-sm"
           >
             <Save className="w-4 h-4" /> Save Banner
           </button>
@@ -224,11 +224,11 @@ export default function HomepageManager() {
         <div className="p-6">
           <div className="space-y-8">
             {heroData.map((item, index) => (
-              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-[#EFEFEF] rounded-sm">
+              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-border-light rounded-sm">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-[#111111]">Slide {index + 1}</h3>
+                  <h3 className="font-medium text-rich-black">Slide {index + 1}</h3>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Title</label>
                     <input 
                       type="text" 
                       value={item.title || ""}
@@ -237,11 +237,11 @@ export default function HomepageManager() {
                         newData[index].title = e.target.value;
                         setHeroData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Subtitle</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Subtitle</label>
                     <textarea 
                       value={item.subtitle || ""}
                       onChange={e => {
@@ -249,12 +249,12 @@ export default function HomepageManager() {
                         newData[index].subtitle = e.target.value;
                         setHeroData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold min-h-[100px]"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-[#111111] mb-2">Button Text</label>
+                      <label className="block text-sm font-medium text-rich-black mb-2">Button Text</label>
                       <input 
                         type="text" 
                         value={item.button_text || ""}
@@ -263,11 +263,11 @@ export default function HomepageManager() {
                           newData[index].button_text = e.target.value;
                           setHeroData(newData);
                         }}
-                        className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                        className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-[#111111] mb-2">Button Link</label>
+                      <label className="block text-sm font-medium text-rich-black mb-2">Button Link</label>
                       <input 
                         type="text" 
                         value={item.button_link || ""}
@@ -276,13 +276,13 @@ export default function HomepageManager() {
                           newData[index].button_link = e.target.value;
                           setHeroData(newData);
                         }}
-                        className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                        className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                       />
                     </div>
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Slide Image</label>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Slide Image</label>
                   <ImageUploader 
                     value={item.image_url || ""} 
                     onChange={(url) => {
@@ -304,13 +304,13 @@ export default function HomepageManager() {
       </div>
 
       {/* Featured Collection Section */}
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
-          <h2 className="font-serif text-xl text-[#111111]">Featured Collection</h2>
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
+          <h2 className="font-serif text-xl text-rich-black">Featured Collection</h2>
           <button 
             onClick={() => saveSection(featuredData)}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2 text-sm hover:bg-gold transition-colors rounded-sm"
           >
             <Save className="w-4 h-4" /> Save
           </button>
@@ -318,25 +318,25 @@ export default function HomepageManager() {
         <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
+              <label className="block text-sm font-medium text-rich-black mb-2">Title</label>
               <input 
                 type="text" 
                 value={featuredData.title || ""}
                 onChange={e => setFeaturedData({...featuredData, title: e.target.value})}
-                className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#111111] mb-2">Subtitle</label>
+              <label className="block text-sm font-medium text-rich-black mb-2">Subtitle</label>
               <textarea 
                 value={featuredData.subtitle || ""}
                 onChange={e => setFeaturedData({...featuredData, subtitle: e.target.value})}
-                className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
+                className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold min-h-[100px]"
               />
             </div>
           </div>
           <div className="space-y-4">
-            <label className="block text-sm font-medium text-[#111111] mb-2">Banner Image</label>
+            <label className="block text-sm font-medium text-rich-black mb-2">Banner Image</label>
             <ImageUploader 
               value={featuredData.image_url || ""} 
               onChange={(url) => setFeaturedData({...featuredData, image_url: url})} 
@@ -351,16 +351,16 @@ export default function HomepageManager() {
       </div>
 
       {/* Trending Mosaic Section */}
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
           <div>
-            <h2 className="font-serif text-xl text-[#111111]">Trending Mosaic</h2>
-            <p className="text-sm text-[#666666]">Manage the 5-image collage on the homepage.</p>
+            <h2 className="font-serif text-xl text-rich-black">Trending Mosaic</h2>
+            <p className="text-sm text-neutral-500">Manage the 5-image collage on the homepage.</p>
           </div>
           <button 
             onClick={saveTrendingMosaic}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2 text-sm hover:bg-gold transition-colors rounded-sm"
           >
             <Save className="w-4 h-4" /> Save Mosaic
           </button>
@@ -368,11 +368,11 @@ export default function HomepageManager() {
         <div className="p-6">
           <div className="space-y-8">
             {trendingData.map((item, index) => (
-              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-[#EFEFEF] rounded-sm">
+              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-border-light rounded-sm">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-[#111111]">Mosaic Tile {index + 1}</h3>
+                  <h3 className="font-medium text-rich-black">Mosaic Tile {index + 1}</h3>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Title</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Title</label>
                     <input 
                       type="text" 
                       value={item.title || ""}
@@ -381,11 +381,11 @@ export default function HomepageManager() {
                         newData[index].title = e.target.value;
                         setTrendingData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Link Slug (e.g. 'clothing' or 'all')</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Link Slug (e.g. 'clothing' or 'all')</label>
                     <input 
                       type="text" 
                       value={item.subtitle || ""}
@@ -394,12 +394,12 @@ export default function HomepageManager() {
                         newData[index].subtitle = e.target.value;
                         setTrendingData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     />
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Tile Image</label>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Tile Image</label>
                   <ImageUploader 
                     value={item.image_url || ""} 
                     onChange={(url) => {
@@ -409,7 +409,7 @@ export default function HomepageManager() {
                     }} 
                   />
                   {item.image_url && (
-                    <div className="mt-4 aspect-[4/3] w-48 bg-gray-100 rounded-sm overflow-hidden border border-[#EFEFEF]">
+                    <div className="mt-4 aspect-[4/3] w-48 bg-gray-100 rounded-sm overflow-hidden border border-border-light">
                       <img src={item.image_url} alt="Tile Preview" className="w-full h-full object-cover" />
                     </div>
                   )}
@@ -421,16 +421,16 @@ export default function HomepageManager() {
       </div>
 
       {/* Editorial Stories Section */}
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
           <div>
-            <h2 className="font-serif text-xl text-[#111111]">Fashion Stories (Editorial)</h2>
-            <p className="text-sm text-[#666666]">Manage the 2 editorial blocks on the homepage.</p>
+            <h2 className="font-serif text-xl text-rich-black">Fashion Stories (Editorial)</h2>
+            <p className="text-sm text-neutral-500">Manage the 2 editorial blocks on the homepage.</p>
           </div>
           <button 
             onClick={saveEditorial}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2 text-sm hover:bg-gold transition-colors rounded-sm"
           >
             <Save className="w-4 h-4" /> Save Stories
           </button>
@@ -438,11 +438,11 @@ export default function HomepageManager() {
         <div className="p-6">
           <div className="space-y-8">
             {editorialData.map((item, index) => (
-              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-[#EFEFEF] rounded-sm">
+              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-border-light rounded-sm">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-[#111111]">Story {index + 1}</h3>
+                  <h3 className="font-medium text-rich-black">Story {index + 1}</h3>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Headline</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Headline</label>
                     <input 
                       type="text" 
                       value={item.title || ""}
@@ -451,11 +451,11 @@ export default function HomepageManager() {
                         newData[index].title = e.target.value;
                         setEditorialData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Description</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Description</label>
                     <textarea 
                       value={item.subtitle || ""}
                       onChange={e => {
@@ -463,11 +463,11 @@ export default function HomepageManager() {
                         newData[index].subtitle = e.target.value;
                         setEditorialData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold min-h-[100px]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Image Alignment (left or right)</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Image Alignment (left or right)</label>
                     <select
                       value={item.button_text || ""}
                       onChange={e => {
@@ -475,7 +475,7 @@ export default function HomepageManager() {
                         newData[index].button_text = e.target.value;
                         setEditorialData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     >
                       <option value="left">Left</option>
                       <option value="right">Right</option>
@@ -483,7 +483,7 @@ export default function HomepageManager() {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Editorial Image</label>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Editorial Image</label>
                   <ImageUploader 
                     value={item.image_url || ""} 
                     onChange={(url) => {
@@ -493,7 +493,7 @@ export default function HomepageManager() {
                     }} 
                   />
                   {item.image_url && (
-                    <div className="mt-4 aspect-video w-full bg-gray-100 rounded-sm overflow-hidden border border-[#EFEFEF]">
+                    <div className="mt-4 aspect-video w-full bg-gray-100 rounded-sm overflow-hidden border border-border-light">
                       <img src={item.image_url} alt="Editorial Preview" className="w-full h-full object-cover" />
                     </div>
                   )}
@@ -505,16 +505,16 @@ export default function HomepageManager() {
       </div>
 
       {/* Testimonials Section */}
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
           <div>
-            <h2 className="font-serif text-xl text-[#111111]">Tranquil Muses (Testimonials)</h2>
-            <p className="text-sm text-[#666666]">Manage the 3 customer reviews on the homepage.</p>
+            <h2 className="font-serif text-xl text-rich-black">Tranquil Muses (Testimonials)</h2>
+            <p className="text-sm text-neutral-500">Manage the 3 customer reviews on the homepage.</p>
           </div>
           <button 
             onClick={saveTestimonials}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2 text-sm hover:bg-gold transition-colors rounded-sm"
           >
             <Save className="w-4 h-4" /> Save Reviews
           </button>
@@ -522,11 +522,11 @@ export default function HomepageManager() {
         <div className="p-6">
           <div className="space-y-8">
             {testimonialData.map((item, index) => (
-              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-[#EFEFEF] rounded-sm">
+              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-4 border border-border-light rounded-sm">
                 <div className="space-y-4">
-                  <h3 className="font-medium text-[#111111]">Review {index + 1}</h3>
+                  <h3 className="font-medium text-rich-black">Review {index + 1}</h3>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Customer Name</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Customer Name</label>
                     <input 
                       type="text" 
                       value={item.title || ""}
@@ -535,11 +535,11 @@ export default function HomepageManager() {
                         newData[index].title = e.target.value;
                         setTestimonialData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Review Text</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Review Text</label>
                     <textarea 
                       value={item.subtitle || ""}
                       onChange={e => {
@@ -547,11 +547,11 @@ export default function HomepageManager() {
                         newData[index].subtitle = e.target.value;
                         setTestimonialData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] min-h-[100px]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold min-h-[100px]"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-[#111111] mb-2">Product Name Bought</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Product Name Bought</label>
                     <input 
                       type="text" 
                       value={item.button_text || ""}
@@ -560,12 +560,12 @@ export default function HomepageManager() {
                         newData[index].button_text = e.target.value;
                         setTestimonialData(newData);
                       }}
-                      className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]"
+                      className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold"
                     />
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <label className="block text-sm font-medium text-[#111111] mb-2">Customer Image</label>
+                  <label className="block text-sm font-medium text-rich-black mb-2">Customer Image</label>
                   <ImageUploader 
                     value={item.image_url || ""} 
                     onChange={(url) => {
@@ -575,7 +575,7 @@ export default function HomepageManager() {
                     }} 
                   />
                   {item.image_url && (
-                    <div className="mt-4 aspect-square w-24 rounded-full bg-gray-100 overflow-hidden border border-[#EFEFEF]">
+                    <div className="mt-4 aspect-square w-24 rounded-full bg-gray-100 overflow-hidden border border-border-light">
                       <img src={item.image_url} alt="Customer Preview" className="w-full h-full object-cover" />
                     </div>
                   )}
@@ -587,24 +587,24 @@ export default function HomepageManager() {
       </div>
 
       {/* Instagram Feed Section */}
-      <div className="bg-white border border-[#EFEFEF] rounded-sm shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-[#EFEFEF] flex justify-between items-center bg-[#FAF8F5]">
-          <h2 className="font-serif text-xl text-[#111111]">Instagram Feed (Footer)</h2>
+      <div className="bg-white border border-border-light rounded-sm shadow-sm overflow-hidden">
+        <div className="p-4 border-b border-border-light flex justify-between items-center bg-ivory">
+          <h2 className="font-serif text-xl text-rich-black">Instagram Feed (Footer)</h2>
           <button 
             onClick={saveInstagram}
             disabled={saving}
-            className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2 text-sm hover:bg-[#C7A17A] transition-colors rounded-sm"
+            className="flex items-center gap-2 bg-rich-black text-white px-4 py-2 text-sm hover:bg-gold transition-colors rounded-sm"
           >
             <Save className="w-4 h-4" /> Save
           </button>
         </div>
         <div className="p-6">
-          <p className="text-sm text-[#666666] mb-6">Upload up to 4 images to show in your site footer. Enter the post link so users can click through to Instagram.</p>
+          <p className="text-sm text-neutral-500 mb-6">Upload up to 4 images to show in your site footer. Enter the post link so users can click through to Instagram.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {instagramData.map((item, index) => (
-              <div key={index} className="space-y-4 border border-[#EFEFEF] p-4 rounded-sm">
+              <div key={index} className="space-y-4 border border-border-light p-4 rounded-sm">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs font-bold text-[#666666] uppercase tracking-widest">Post {index + 1}</span>
+                  <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Post {index + 1}</span>
                 </div>
                 
                 <ImageUploader 
@@ -617,7 +617,7 @@ export default function HomepageManager() {
                 />
 
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2 flex items-center gap-2">
+                  <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2 flex items-center gap-2">
                     <LinkIcon className="w-3 h-3" /> Post URL
                   </label>
                   <input 
@@ -629,7 +629,7 @@ export default function HomepageManager() {
                       setInstagramData(newData);
                     }}
                     placeholder="https://instagram.com/p/..."
-                    className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A] transition-colors"
+                    className="w-full bg-ivory border border-border-light p-3 text-sm focus:outline-none focus:border-gold transition-colors"
                   />
                 </div>
               </div>

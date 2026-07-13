@@ -33,7 +33,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
   if (!slides || slides.length === 0) return null;
 
   return (
-    <section ref={containerRef} className="relative w-full h-[100dvh] lg:h-[100vh] overflow-hidden bg-[#111111]">
+    <section ref={containerRef} className="relative w-full h-[100dvh] lg:h-[100vh] overflow-hidden bg-rich-black">
       <AnimatePresence initial={false}>
         {slides.map((slide, index) => (
           index === currentSlide && (
@@ -98,7 +98,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
           <MagneticButton>
             <Link
               href="/collections/new"
-              className="bg-white text-[#111111] px-8 py-4 md:px-12 md:py-5 uppercase tracking-widest text-xs md:text-sm font-bold hover:bg-[#C7A17A] hover:text-[#111111] transition-colors duration-300 w-full sm:w-auto text-center inline-block shadow-xl"
+              className="bg-white text-rich-black px-8 py-4 md:px-12 md:py-5 uppercase tracking-widest text-xs md:text-sm font-bold hover:bg-gold hover:text-rich-black transition-colors duration-300 w-full sm:w-auto text-center inline-block shadow-xl"
             >
               Shop New Arrivals
             </Link>
@@ -112,7 +112,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
           <button
             key={i}
             onClick={() => setCurrentSlide(i)}
-            className={`w-12 h-1 transition-all duration-300 ${i === currentSlide ? 'bg-[#C7A17A]' : 'bg-white/40 hover:bg-white/70'}`}
+            className={`w-12 h-1 transition-all duration-300 ${i === currentSlide ? 'bg-gold' : 'bg-white/40 hover:bg-white/70'}`}
           />
         ))}
       </div>

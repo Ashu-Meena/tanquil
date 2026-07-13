@@ -21,10 +21,10 @@ export default function BestSellers({ products }: { products: Product[] }) {
         <div className="container mx-auto px-6 lg:px-12">
           <div className="flex flex-col md:flex-row justify-between items-end text-left mb-16 gap-6">
             <div>
-              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4">
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4">
                 Best Sellers
               </h2>
-              <p className="text-[#666666] font-serif italic text-xl">
+              <p className="text-neutral-500 font-serif italic text-xl">
                 Currently updating our collection
               </p>
             </div>
@@ -42,7 +42,7 @@ export default function BestSellers({ products }: { products: Product[] }) {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
+              className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4"
             >
               Best Sellers
             </motion.h2>
@@ -51,14 +51,14 @@ export default function BestSellers({ products }: { products: Product[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-[#666666] font-serif italic text-xl"
+              className="text-neutral-500 font-serif italic text-xl"
             >
               Our most loved pieces
             </motion.p>
           </div>
           <Link 
             href="/collections/bestsellers" 
-            className="uppercase tracking-widest text-xs font-medium text-[#111111] hover:text-[#C7A17A] flex items-center gap-2 transition-colors border-b border-[#111111] hover:border-[#C7A17A] pb-1"
+            className="uppercase tracking-widest text-xs font-medium text-rich-black hover:text-gold flex items-center gap-2 transition-colors border-b border-rich-black hover:border-gold pb-1"
           >
             Shop All <ArrowRight className="w-4 h-4" />
           </Link>

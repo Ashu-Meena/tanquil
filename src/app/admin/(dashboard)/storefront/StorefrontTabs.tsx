@@ -11,7 +11,7 @@ export default function StorefrontTabs() {
   ];
 
   return (
-    <div className="border-b border-[#EFEFEF] mb-6 flex gap-6">
+    <div className="border-b border-border-light mb-6 flex gap-6">
       {tabs.map((tab) => {
         const isActive = pathname.startsWith(tab.href);
         return (
@@ -20,8 +20,8 @@ export default function StorefrontTabs() {
             href={tab.href}
             className={`pb-3 text-sm font-medium transition-colors border-b-2 ${
               isActive 
-                ? "border-[#111111] text-[#111111]" 
-                : "border-transparent text-[#999999] hover:text-[#666666]"
+                ? "border-rich-black text-rich-black" 
+                : "border-transparent text-neutral-400 hover:text-neutral-500"
             }`}
           >
             {tab.name}

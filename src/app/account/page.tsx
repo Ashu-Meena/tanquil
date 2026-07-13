@@ -298,8 +298,8 @@ function AccountContent() {
 
   if (isLoading) {
     return (
-      <div className="bg-[#FAF8F5] min-h-screen pt-32 pb-24 flex justify-center items-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#C7A17A]" />
+      <div className="bg-ivory min-h-screen pt-32 pb-24 flex justify-center items-center">
+        <Loader2 className="w-8 h-8 animate-spin text-gold" />
       </div>
     );
   }
@@ -350,34 +350,34 @@ function AccountContent() {
 
   if (!isAuth) {
     return (
-      <div className="bg-[#FAF8F5] min-h-screen pt-32 pb-24 flex justify-center items-center">
+      <div className="bg-ivory min-h-screen pt-32 pb-24 flex justify-center items-center">
         <div className="container mx-auto px-6 lg:px-12 flex justify-center">
-          <div className="bg-white border border-[#EFEFEF] p-8 lg:p-12 max-w-md w-full shadow-sm">
+          <div className="bg-white border border-border-light p-8 lg:p-12 max-w-md w-full shadow-sm">
             {registrationSuccess ? (
               <div className="text-center py-8 animate-in fade-in zoom-in duration-300">
-                <div className="w-16 h-16 bg-[#FAF8F5] rounded-full flex items-center justify-center mx-auto mb-6 text-[#C7A17A]">
+                <div className="w-16 h-16 bg-ivory rounded-full flex items-center justify-center mx-auto mb-6 text-gold">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 </div>
-                <h2 className="font-serif text-3xl text-[#111111] mb-4">Check your email</h2>
-                <p className="text-[#666666] mb-8 leading-relaxed">
-                  We've sent a confirmation link to <br /><span className="font-medium text-[#111111]">{authEmail}</span>.<br />Please click the link to verify your account and complete registration.
+                <h2 className="font-serif text-3xl text-rich-black mb-4">Check your email</h2>
+                <p className="text-neutral-500 mb-8 leading-relaxed">
+                  We've sent a confirmation link to <br /><span className="font-medium text-rich-black">{authEmail}</span>.<br />Please click the link to verify your account and complete registration.
                 </p>
-                <button onClick={() => { setRegistrationSuccess(false); setAuthMode("login"); }} className="bg-[#111111] text-white px-8 py-3 uppercase tracking-widest text-xs font-medium hover:bg-[#C7A17A] transition-colors w-full">
+                <button onClick={() => { setRegistrationSuccess(false); setAuthMode("login"); }} className="bg-rich-black text-white px-8 py-3 uppercase tracking-widest text-xs font-medium hover:bg-gold transition-colors w-full">
                   Return to login
                 </button>
               </div>
             ) : (
               <>
                 {feedbackMessage && (
-              <div className="mb-6 bg-[#111111] text-white px-4 py-3 text-sm text-center">
+              <div className="mb-6 bg-rich-black text-white px-4 py-3 text-sm text-center">
                 {feedbackMessage}
               </div>
             )}
 
-            <h1 className="font-serif text-3xl text-[#111111] mb-2 text-center">
+            <h1 className="font-serif text-3xl text-rich-black mb-2 text-center">
               {authMode === "login" ? "Welcome Back" : "Create Account"}
             </h1>
-            <p className="text-[#666666] text-sm text-center mb-8">
+            <p className="text-neutral-500 text-sm text-center mb-8">
               {authMode === "login" ? "Sign in to access your account." : "Join Tranquil to track your orders."}
             </p>
 
@@ -385,40 +385,40 @@ function AccountContent() {
               {authMode === "signup" && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">First Name</label>
-                    <input required type="text" value={authFirstName} onChange={e => setAuthFirstName(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                    <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">First Name</label>
+                    <input required type="text" value={authFirstName} onChange={e => setAuthFirstName(e.target.value)} className="w-full bg-ivory border border-border-light p-3 focus:outline-none focus:border-gold transition-colors" />
                   </div>
                   <div>
-                    <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Last Name</label>
-                    <input required type="text" value={authLastName} onChange={e => setAuthLastName(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                    <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Last Name</label>
+                    <input required type="text" value={authLastName} onChange={e => setAuthLastName(e.target.value)} className="w-full bg-ivory border border-border-light p-3 focus:outline-none focus:border-gold transition-colors" />
                   </div>
                 </div>
               )}
               
               <div>
-                <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Email Address</label>
-                <input required type="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Email Address</label>
+                <input required type="email" value={authEmail} onChange={e => setAuthEmail(e.target.value)} className="w-full bg-ivory border border-border-light p-3 focus:outline-none focus:border-gold transition-colors" />
               </div>
               
               <div>
-                <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Password</label>
-                <input required type="password" value={authPassword} onChange={e => setAuthPassword(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Password</label>
+                <input required type="password" value={authPassword} onChange={e => setAuthPassword(e.target.value)} className="w-full bg-ivory border border-border-light p-3 focus:outline-none focus:border-gold transition-colors" />
               </div>
 
-              <button disabled={authLoading} type="submit" className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors mt-4 flex justify-center">
+              <button disabled={authLoading} type="submit" className="w-full bg-rich-black hover:bg-gold text-white py-4 uppercase tracking-widest text-sm font-medium transition-colors mt-4 flex justify-center">
                 {authLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : (authMode === "login" ? "Sign In" : "Create Account")}
               </button>
             </form>
 
             <div className="mt-6 flex items-center justify-center space-x-4">
-              <div className="h-px bg-[#EFEFEF] w-full"></div>
-              <span className="text-[#999999] text-xs uppercase tracking-widest">Or</span>
-              <div className="h-px bg-[#EFEFEF] w-full"></div>
+              <div className="h-px bg-border-light w-full"></div>
+              <span className="text-neutral-400 text-xs uppercase tracking-widest">Or</span>
+              <div className="h-px bg-border-light w-full"></div>
             </div>
 
             <button
               onClick={() => supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/account' } })}
-              className="mt-6 w-full flex items-center justify-center gap-3 border border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors py-3.5 rounded-sm"
+              className="mt-6 w-full flex items-center justify-center gap-3 border border-border-light hover:bg-ivory transition-colors py-3.5 rounded-sm"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -426,21 +426,21 @@ function AccountContent() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              <span className="text-sm font-medium text-[#111111]">Continue with Google</span>
+              <span className="text-sm font-medium text-rich-black">Continue with Google</span>
             </button>
 
-            <div className="mt-8 text-center text-sm text-[#666666]">
+            <div className="mt-8 text-center text-sm text-neutral-500">
               {authMode === "login" ? (
                 <>
                   Don't have an account?{" "}
-                  <button onClick={() => setAuthMode("signup")} className="text-[#111111] hover:text-[#C7A17A] font-medium underline underline-offset-4">
+                  <button onClick={() => setAuthMode("signup")} className="text-rich-black hover:text-gold font-medium underline underline-offset-4">
                     Sign up
                   </button>
                 </>
               ) : (
                 <>
                   Already have an account?{" "}
-                  <button onClick={() => setAuthMode("login")} className="text-[#111111] hover:text-[#C7A17A] font-medium underline underline-offset-4">
+                  <button onClick={() => setAuthMode("login")} className="text-rich-black hover:text-gold font-medium underline underline-offset-4">
                     Sign in
                   </button>
                 </>
@@ -455,16 +455,16 @@ function AccountContent() {
   }
 
   return (
-    <div className="bg-[#FAF8F5] min-h-screen pt-32 pb-24">
+    <div className="bg-ivory min-h-screen pt-32 pb-24">
       <div className="container mx-auto px-6 lg:px-12">
-        <h1 className="font-serif text-4xl text-[#111111] mb-12 text-center">My Account</h1>
+        <h1 className="font-serif text-4xl text-rich-black mb-12 text-center">My Account</h1>
         
         <div className="flex flex-col gap-12 max-w-5xl mx-auto">
           {/* Content */}
           <main className="w-full">
 
             {feedbackMessage && (
-              <div className="fixed top-24 right-6 bg-[#111111] text-white px-6 py-3 shadow-lg z-50 text-sm animate-fade-in">
+              <div className="fixed top-24 right-6 bg-rich-black text-white px-6 py-3 shadow-lg z-50 text-sm animate-fade-in">
                 {feedbackMessage}
               </div>
             )}
@@ -474,70 +474,70 @@ function AccountContent() {
                 {/* Orders Card */}
                 <button 
                   onClick={() => setActiveTab("orders")}
-                  className="flex items-start gap-4 p-6 border border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors text-left rounded-sm"
+                  className="flex items-start gap-4 p-6 border border-border-light hover:bg-ivory transition-colors text-left rounded-sm"
                 >
                   <div className="mt-1 flex-shrink-0">
-                    <Package className="w-8 h-8 text-[#C7A17A] opacity-80" strokeWidth={1.5} />
+                    <Package className="w-8 h-8 text-gold opacity-80" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-[#111111] font-medium text-lg mb-1">Your Orders</h3>
-                    <p className="text-sm text-[#666666]">Track, return, or view your past orders</p>
+                    <h3 className="text-rich-black font-medium text-lg mb-1">Your Orders</h3>
+                    <p className="text-sm text-neutral-500">Track, return, or view your past orders</p>
                   </div>
                 </button>
 
                 {/* Profile Card */}
                 <button 
                   onClick={() => setActiveTab("profile")}
-                  className="flex items-start gap-4 p-6 border border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors text-left rounded-sm"
+                  className="flex items-start gap-4 p-6 border border-border-light hover:bg-ivory transition-colors text-left rounded-sm"
                 >
                   <div className="mt-1 flex-shrink-0">
-                    <User className="w-8 h-8 text-[#C7A17A] opacity-80" strokeWidth={1.5} />
+                    <User className="w-8 h-8 text-gold opacity-80" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-[#111111] font-medium text-lg mb-1">Login & Security</h3>
-                    <p className="text-sm text-[#666666]">Edit login, name, and mobile number</p>
+                    <h3 className="text-rich-black font-medium text-lg mb-1">Login & Security</h3>
+                    <p className="text-sm text-neutral-500">Edit login, name, and mobile number</p>
                   </div>
                 </button>
 
                 {/* Addresses Card */}
                 <button 
                   onClick={() => setActiveTab("addresses")}
-                  className="flex items-start gap-4 p-6 border border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors text-left rounded-sm"
+                  className="flex items-start gap-4 p-6 border border-border-light hover:bg-ivory transition-colors text-left rounded-sm"
                 >
                   <div className="mt-1 flex-shrink-0">
-                    <MapPin className="w-8 h-8 text-[#C7A17A] opacity-80" strokeWidth={1.5} />
+                    <MapPin className="w-8 h-8 text-gold opacity-80" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-[#111111] font-medium text-lg mb-1">Your Addresses</h3>
-                    <p className="text-sm text-[#666666]">Edit addresses for orders</p>
+                    <h3 className="text-rich-black font-medium text-lg mb-1">Your Addresses</h3>
+                    <p className="text-sm text-neutral-500">Edit addresses for orders</p>
                   </div>
                 </button>
 
                 {/* Wishlist Card */}
                 <button 
                   onClick={() => setActiveTab("wishlist")}
-                  className="flex items-start gap-4 p-6 border border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors text-left rounded-sm"
+                  className="flex items-start gap-4 p-6 border border-border-light hover:bg-ivory transition-colors text-left rounded-sm"
                 >
                   <div className="mt-1 flex-shrink-0">
-                    <Heart className="w-8 h-8 text-[#C7A17A] opacity-80" strokeWidth={1.5} />
+                    <Heart className="w-8 h-8 text-gold opacity-80" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-[#111111] font-medium text-lg mb-1">Your Wishlist</h3>
-                    <p className="text-sm text-[#666666]">View your saved items</p>
+                    <h3 className="text-rich-black font-medium text-lg mb-1">Your Wishlist</h3>
+                    <p className="text-sm text-neutral-500">View your saved items</p>
                   </div>
                 </button>
 
                 {/* Sign Out Card */}
                 <button 
                   onClick={handleSignOut}
-                  className="flex items-start gap-4 p-6 border border-[#EFEFEF] hover:bg-[#FAF8F5] transition-colors text-left rounded-sm"
+                  className="flex items-start gap-4 p-6 border border-border-light hover:bg-ivory transition-colors text-left rounded-sm"
                 >
                   <div className="mt-1 flex-shrink-0">
-                    <LogOut className="w-8 h-8 text-[#111111] opacity-60" strokeWidth={1.5} />
+                    <LogOut className="w-8 h-8 text-rich-black opacity-60" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <h3 className="text-[#111111] font-medium text-lg mb-1">Sign Out</h3>
-                    <p className="text-sm text-[#666666]">Securely log out of your account</p>
+                    <h3 className="text-rich-black font-medium text-lg mb-1">Sign Out</h3>
+                    <p className="text-sm text-neutral-500">Securely log out of your account</p>
                   </div>
                 </button>
                 
@@ -545,75 +545,75 @@ function AccountContent() {
             )}
 
             {activeTab === "orders" && (
-              <div className="bg-white md:border border-[#EFEFEF] py-6 md:p-8 lg:p-12 md:rounded-sm md:shadow-sm -mx-6 md:mx-0">
+              <div className="bg-white md:border border-border-light py-6 md:p-8 lg:p-12 md:rounded-sm md:shadow-sm -mx-6 md:mx-0">
                 <div className="px-6 md:px-0 mb-6 flex items-center text-sm font-medium">
-                  <button onClick={() => setActiveTab("home")} className="text-[#C7A17A] hover:underline">Your Account</button>
-                  <span className="mx-2 text-[#999999]">›</span>
-                  <span className="text-[#111111]">Your Orders</span>
+                  <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
+                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="text-rich-black">Your Orders</span>
                 </div>
-                <h2 className="px-6 md:px-0 font-serif text-2xl md:text-3xl text-[#111111] mb-6 md:mb-8">Order History</h2>
+                <h2 className="px-6 md:px-0 font-serif text-2xl md:text-3xl text-rich-black mb-6 md:mb-8">Order History</h2>
                 <div className="space-y-4 md:space-y-8">
                   {orders.length === 0 ? (
-                    <div className="text-center py-12 border border-dashed border-[#EFEFEF]">
-                      <Package className="w-12 h-12 text-[#EFEFEF] mx-auto mb-4" />
-                      <p className="text-[#666666]">You haven't placed any orders yet.</p>
-                      <button onClick={() => router.push('/collections/all')} className="mt-4 text-[#111111] font-medium hover:text-[#C7A17A] underline underline-offset-4">Start Shopping</button>
+                    <div className="text-center py-12 border border-dashed border-border-light">
+                      <Package className="w-12 h-12 text-border-light mx-auto mb-4" />
+                      <p className="text-neutral-500">You haven't placed any orders yet.</p>
+                      <button onClick={() => router.push('/collections/all')} className="mt-4 text-rich-black font-medium hover:text-gold underline underline-offset-4">Start Shopping</button>
                     </div>
                   ) : (
                     orders.map(order => {
 
                       return (
-                        <div key={order.id} className="border-y md:border border-[#EFEFEF] md:rounded-sm overflow-hidden mb-2 bg-white">
+                        <div key={order.id} className="border-y md:border border-border-light md:rounded-sm overflow-hidden mb-2 bg-white">
                           
                           {/* --- MOBILE COMPACT HEADER (Flipkart style) --- */}
                           <div 
-                            className="md:hidden p-4 px-6 md:px-4 border-b border-[#EFEFEF] flex items-center justify-between cursor-pointer" 
+                            className="md:hidden p-4 px-6 md:px-4 border-b border-border-light flex items-center justify-between cursor-pointer" 
                             onClick={() => toggleOrderExpand(order.id)}
                           >
                             <div className="flex gap-4 items-center w-full pr-4">
-                              <div className="w-16 h-16 bg-[#FAF8F5] relative flex-shrink-0 rounded-sm overflow-hidden border border-[#EFEFEF]">
+                              <div className="w-16 h-16 bg-ivory relative flex-shrink-0 rounded-sm overflow-hidden border border-border-light">
                                 {order.items?.[0]?.image_url || order.items?.[0]?.image || order.items?.[0]?.product?.product_images?.[0]?.url ? (
                                   <Image src={order.items[0].image_url || order.items[0].image || order.items[0].product?.product_images?.[0]?.url} alt="Product" fill className="object-cover" />
                                 ) : (
-                                  <div className="w-full h-full flex items-center justify-center text-[10px] uppercase text-[#999999]">No Img</div>
+                                  <div className="w-full h-full flex items-center justify-center text-[10px] uppercase text-neutral-400">No Img</div>
                                 )}
                               </div>
                               <div className="flex-1">
                                 <p className={`text-[10px] md:text-xs font-bold mb-1 uppercase tracking-wider ${order.status === 'delivered' ? 'text-green-600' : 'text-orange-500'}`}>
                                   {order.status === 'delivered' ? `Delivered on ${new Date(order.updated_at || order.created_at).toLocaleDateString('en-US', {day:'numeric', month:'short'})}` : order.status.charAt(0).toUpperCase() + order.status.slice(1).replace('_', ' ')}
                                 </p>
-                                <p className="text-xs text-[#999999] mb-1 font-medium tracking-wide">ORDER #{(order.order_number || order.id.split('-')[0]).toUpperCase()}</p>
-                                <p className="text-sm text-[#111111] line-clamp-1 font-medium">{order.items?.[0]?.product_name || order.items?.[0]?.name || 'Order Item'}</p>
-                                {order.items?.length > 1 && <p className="text-xs text-[#666666] mt-0.5">+{order.items.length - 1} more items</p>}
+                                <p className="text-xs text-neutral-400 mb-1 font-medium tracking-wide">ORDER #{(order.order_number || order.id.split('-')[0]).toUpperCase()}</p>
+                                <p className="text-sm text-rich-black line-clamp-1 font-medium">{order.items?.[0]?.product_name || order.items?.[0]?.name || 'Order Item'}</p>
+                                {order.items?.length > 1 && <p className="text-xs text-neutral-500 mt-0.5">+{order.items.length - 1} more items</p>}
                               </div>
                             </div>
                             <div>
-                              {expandedOrders[order.id] ? <ChevronUp className="w-5 h-5 text-[#999999]" /> : <ChevronDown className="w-5 h-5 text-[#999999]" />}
+                              {expandedOrders[order.id] ? <ChevronUp className="w-5 h-5 text-neutral-400" /> : <ChevronDown className="w-5 h-5 text-neutral-400" />}
                             </div>
                           </div>
                           
                           {/* --- EXPANDABLE/DESKTOP DETAILS --- */}
                           <div className={`${expandedOrders[order.id] ? 'block' : 'hidden'} md:block`}>
                             {/* Desktop Order Header */}
-                            <div className="hidden md:flex bg-[#FAF8F5] p-6 border-b border-[#EFEFEF] flex-wrap justify-between items-center gap-6">
+                            <div className="hidden md:flex bg-ivory p-6 border-b border-border-light flex-wrap justify-between items-center gap-6">
                               <div className="flex gap-8">
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-[#666666] mb-1">Order Placed</p>
-                                  <p className="text-sm font-medium text-[#111111]">{new Date(order.created_at).toLocaleDateString()}</p>
+                                  <p className="text-xs uppercase tracking-widest text-neutral-500 mb-1">Order Placed</p>
+                                  <p className="text-sm font-medium text-rich-black">{new Date(order.created_at).toLocaleDateString()}</p>
                                 </div>
                                 <div>
-                                  <p className="text-xs uppercase tracking-widest text-[#666666] mb-1">Total</p>
-                                  <p className="text-sm font-medium text-[#111111]">₹{order.total_amount?.toLocaleString('en-IN')}</p>
+                                  <p className="text-xs uppercase tracking-widest text-neutral-500 mb-1">Total</p>
+                                  <p className="text-sm font-medium text-rich-black">₹{order.total_amount?.toLocaleString('en-IN')}</p>
                                 </div>
                               </div>
                               <div className="text-right">
-                                <p className="text-xs uppercase tracking-widest text-[#666666] mb-1">Order #</p>
-                                <p className="text-sm font-medium text-[#111111]">{(order.order_number || order.id.split('-')[0]).toUpperCase()}</p>
+                                <p className="text-xs uppercase tracking-widest text-neutral-500 mb-1">Order #</p>
+                                <p className="text-sm font-medium text-rich-black">{(order.order_number || order.id.split('-')[0]).toUpperCase()}</p>
                               </div>
                             </div>
 
                             {/* Progress Bar & Status Info */}
-                            <div className="p-6 md:px-10 py-8 border-b border-[#EFEFEF]">
+                            <div className="p-6 md:px-10 py-8 border-b border-border-light">
                               {['cancelled', 'returned', 'refunded'].includes(order.status) ? (
                                 <div className="text-center py-4">
                                   <p className={`font-bold uppercase tracking-widest text-lg ${
@@ -626,11 +626,11 @@ function AccountContent() {
                               ) : (
                                 <div className="relative pb-8 pt-2">
                                     {/* The Background Bar */}
-                                    <div className="absolute top-[14px] md:top-[15px] left-0 w-full h-[2px] bg-[#EFEFEF]"></div>
+                                    <div className="absolute top-[14px] md:top-[15px] left-0 w-full h-[2px] bg-border-light"></div>
                                     
                                     {/* The Active Bar */}
                                     <div 
-                                      className="absolute top-[14px] md:top-[15px] left-0 h-[2px] bg-[#111111] transition-all duration-700 ease-out" 
+                                      className="absolute top-[14px] md:top-[15px] left-0 h-[2px] bg-rich-black transition-all duration-700 ease-out" 
                                       style={{ width: `${(
                                         order.status === 'pending_verification' ? 0 :
                                         ['confirmed', 'packed'].includes(order.status) ? 33.3 :
@@ -654,10 +654,10 @@ function AccountContent() {
                                         
                                         return (
                                           <div key={status} className="flex flex-col items-center relative w-8">
-                                            <div className={`w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center bg-white border-[2px] transition-colors duration-500 ${isCompleted ? 'border-[#111111]' : 'border-[#EFEFEF]'}`}>
-                                              {isCompleted && <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-[#111111]"></div>}
+                                            <div className={`w-3.5 h-3.5 md:w-4 md:h-4 rounded-full flex items-center justify-center bg-white border-[2px] transition-colors duration-500 ${isCompleted ? 'border-rich-black' : 'border-border-light'}`}>
+                                              {isCompleted && <div className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-rich-black"></div>}
                                             </div>
-                                            <span className={`absolute top-6 whitespace-nowrap text-[9px] sm:text-[10px] md:text-xs tracking-wider uppercase font-medium ${isActive ? 'text-[#111111] font-bold' : isCompleted ? 'text-[#111111]' : 'text-[#999999]'}`}>
+                                            <span className={`absolute top-6 whitespace-nowrap text-[9px] sm:text-[10px] md:text-xs tracking-wider uppercase font-medium ${isActive ? 'text-rich-black font-bold' : isCompleted ? 'text-rich-black' : 'text-neutral-400'}`}>
                                               {/* Show all on sm screens, only active on mobile */}
                                               <span className="hidden sm:inline">{status}</span>
                                               <span className="sm:hidden">{isActive ? status : ''}</span>
@@ -681,34 +681,34 @@ function AccountContent() {
                                 const isExchangeEligible = order.status === 'delivered' ? new Date() <= exchangeDeadline : true;
                                 
                                 return (
-                                <div key={idx} className="flex flex-col sm:flex-row gap-4 md:gap-6 border-b border-[#EFEFEF] pb-6 last:border-0 last:pb-0">
+                                <div key={idx} className="flex flex-col sm:flex-row gap-4 md:gap-6 border-b border-border-light pb-6 last:border-0 last:pb-0">
                                   <div className="flex gap-4 sm:w-full">
-                                    <div className="relative w-20 h-28 md:w-24 md:h-32 bg-[#FAF8F5] flex-shrink-0">
+                                    <div className="relative w-20 h-28 md:w-24 md:h-32 bg-ivory flex-shrink-0">
                                       {item.image_url || item.image || item.product?.product_images?.[0]?.url ? (
                                         <Image src={item.image_url || item.image || item.product?.product_images?.[0]?.url} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
                                       ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-[#999999] text-xs uppercase tracking-widest text-center px-2">No Image</div>
+                                        <div className="w-full h-full flex items-center justify-center text-neutral-400 text-xs uppercase tracking-widest text-center px-2">No Image</div>
                                       )}
                                     </div>
                                     <div className="flex-1 flex flex-col justify-center">
-                                      <h3 className="font-medium text-[#111111] text-base md:text-lg mb-1">{item.product_name || item.name}</h3>
-                                      <p className="text-xs md:text-sm text-[#666666] mb-2">{item.color_name || item.color} / {item.size}</p>
+                                      <h3 className="font-medium text-rich-black text-base md:text-lg mb-1">{item.product_name || item.name}</h3>
+                                      <p className="text-xs md:text-sm text-neutral-500 mb-2">{item.color_name || item.color} / {item.size}</p>
                                       <div className="flex items-center gap-3 text-xs md:text-sm">
-                                        <span className="font-medium text-[#111111]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
-                                        <span className="text-[#999999]">|</span>
-                                        <span className="text-[#666666]">Qty: {item.quantity}</span>
+                                        <span className="font-medium text-rich-black">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                                        <span className="text-neutral-400">|</span>
+                                        <span className="text-neutral-500">Qty: {item.quantity}</span>
                                       </div>
                                     </div>
                                   </div>
                                   <div className="sm:text-right flex flex-col justify-center gap-2 mt-2 sm:mt-0">
                                     {order.status === 'delivered' && (
-                                      <div className={`text-[10px] flex items-center gap-1 sm:justify-end mb-1 ${isExchangeEligible ? 'text-green-600' : 'text-[#999999]'}`}>
+                                      <div className={`text-[10px] flex items-center gap-1 sm:justify-end mb-1 ${isExchangeEligible ? 'text-green-600' : 'text-neutral-400'}`}>
                                         <Info className="w-3 h-3" />
                                         {isExchangeEligible ? `Exchange valid till ${exchangeDeadline.toLocaleDateString('en-US', {day:'numeric', month:'short'})}` : 'Exchange window closed'}
                                       </div>
                                     )}
-                                    <button onClick={() => router.push(`/products/${item.product_id}`)} className="bg-[#111111] text-white hover:bg-[#C7A17A] px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-medium transition-colors w-full sm:w-auto text-center">Buy it again</button>
-                                    <button onClick={() => showFeedback('Review system coming soon.')} className="border border-[#EFEFEF] hover:border-[#111111] px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-medium transition-colors w-full sm:w-auto text-center flex items-center justify-center gap-1">
+                                    <button onClick={() => router.push(`/products/${item.product_id}`)} className="bg-rich-black text-white hover:bg-gold px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-medium transition-colors w-full sm:w-auto text-center">Buy it again</button>
+                                    <button onClick={() => showFeedback('Review system coming soon.')} className="border border-border-light hover:border-rich-black px-4 py-2 text-[10px] md:text-xs uppercase tracking-widest font-medium transition-colors w-full sm:w-auto text-center flex items-center justify-center gap-1">
                                       <Star className="w-3 h-3" /> Write a Review
                                     </button>
                                   </div>
@@ -717,23 +717,23 @@ function AccountContent() {
                             </div>
 
                             {/* Footer Actions */}
-                            <div className="bg-[#FAF8F5] p-4 md:px-6 flex flex-col lg:flex-row justify-between lg:items-center border-t border-[#EFEFEF] gap-4">
+                            <div className="bg-ivory p-4 md:px-6 flex flex-col lg:flex-row justify-between lg:items-center border-t border-border-light gap-4">
                               {order.tracking_id ? (
                                 <div className="flex items-center gap-2">
-                                  <Truck className="w-4 h-4 text-[#C7A17A] flex-shrink-0" />
-                                  <span className="text-xs md:text-sm text-[#111111]">
+                                  <Truck className="w-4 h-4 text-gold flex-shrink-0" />
+                                  <span className="text-xs md:text-sm text-rich-black">
                                     Shipped via <span className="font-bold">{order.courier_name}</span> | Tracking: <span className="font-mono font-bold break-all">{order.tracking_id}</span>
                                   </span>
                                 </div>
                               ) : (
-                                <div className="text-xs md:text-sm text-[#999999] flex items-center gap-2">
+                                <div className="text-xs md:text-sm text-neutral-400 flex items-center gap-2">
                                   <Truck className="w-4 h-4 flex-shrink-0" /> Tracking info will appear here once shipped.
                                 </div>
                               )}
                               
                               <div className="flex flex-wrap gap-2 w-full lg:w-auto">
                                 {order.payment_status === 'paid' && (
-                                  <button onClick={() => triggerPrint(order)} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium hover:text-[#C7A17A] transition-colors flex justify-center items-center gap-1.5 border border-[#EFEFEF] bg-white px-3 py-2.5 md:py-2 hover:border-[#111111]">
+                                  <button onClick={() => triggerPrint(order)} className="flex-1 lg:flex-none text-[10px] md:text-xs uppercase tracking-widest font-medium hover:text-gold transition-colors flex justify-center items-center gap-1.5 border border-border-light bg-white px-3 py-2.5 md:py-2 hover:border-rich-black">
                                     <FileDown className="w-3 h-3 md:w-4 md:h-4" /> Download Invoice
                                   </button>
                                 )}
@@ -752,36 +752,36 @@ function AccountContent() {
             )}
 
             {activeTab === "wishlist" && (
-              <div className="bg-white border border-[#EFEFEF] p-8 lg:p-12 rounded-sm shadow-sm">
+              <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
-                  <button onClick={() => setActiveTab("home")} className="text-[#C7A17A] hover:underline">Your Account</button>
-                  <span className="mx-2 text-[#999999]">›</span>
-                  <span className="text-[#111111]">Your Wishlist</span>
+                  <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
+                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="text-rich-black">Your Wishlist</span>
                 </div>
-                <h2 className="font-serif text-3xl text-[#111111] mb-8">My Wishlist</h2>
+                <h2 className="font-serif text-3xl text-rich-black mb-8">My Wishlist</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                   {wishlist.length === 0 ? (
-                    <div className="col-span-2 md:col-span-3 text-center py-12 border border-dashed border-[#EFEFEF]">
-                      <Heart className="w-12 h-12 text-[#EFEFEF] mx-auto mb-4" />
-                      <p className="text-[#666666]">Your wishlist is currently empty.</p>
-                      <button onClick={() => router.push('/collections/all')} className="mt-4 text-[#111111] font-medium hover:text-[#C7A17A] underline underline-offset-4">Discover Pieces</button>
+                    <div className="col-span-2 md:col-span-3 text-center py-12 border border-dashed border-border-light">
+                      <Heart className="w-12 h-12 text-border-light mx-auto mb-4" />
+                      <p className="text-neutral-500">Your wishlist is currently empty.</p>
+                      <button onClick={() => router.push('/collections/all')} className="mt-4 text-rich-black font-medium hover:text-gold underline underline-offset-4">Discover Pieces</button>
                     </div>
                   ) : (
                     wishlist.map(item => (
                       <div key={item.id} className="group flex flex-col">
-                        <div className="relative aspect-[3/4] overflow-hidden bg-[#FAF8F5] mb-4">
+                        <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-4">
                           <Image src={item.products?.images?.[0] || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill className="object-cover" />
-                          <button onClick={() => handleRemoveFromWishlist(item.id)} className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-[#111111] hover:text-[#E63946] hover:bg-white transition-all shadow-sm">
+                          <button onClick={() => handleRemoveFromWishlist(item.id)} className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
                             <Trash2 className="w-4 h-4" />
                           </button>
                           <div className="absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20">
-                            <button onClick={() => handleMoveToCart(item)} className="w-full bg-white/90 backdrop-blur-md text-[#111111] hover:bg-[#C7A17A] hover:text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors">
+                            <button onClick={() => handleMoveToCart(item)} className="w-full bg-white/90 backdrop-blur-md text-rich-black hover:bg-gold hover:text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors">
                               Move to Cart
                             </button>
                           </div>
                         </div>
-                        <Link href={`/products/${item.products?.slug}`} className="font-medium text-[#111111] hover:text-[#C7A17A] transition-colors mb-1 truncate">{item.products?.name}</Link>
-                        <span className="text-[#666666]">₹{item.products?.price?.toLocaleString('en-IN')}</span>
+                        <Link href={`/products/${item.products?.slug}`} className="font-medium text-rich-black hover:text-gold transition-colors mb-1 truncate">{item.products?.name}</Link>
+                        <span className="text-neutral-500">₹{item.products?.price?.toLocaleString('en-IN')}</span>
                       </div>
                     ))
                   )}
@@ -790,68 +790,68 @@ function AccountContent() {
             )}
 
             {activeTab === "addresses" && (
-              <div className="bg-white border border-[#EFEFEF] p-8 lg:p-12 rounded-sm shadow-sm">
+              <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
-                  <button onClick={() => setActiveTab("home")} className="text-[#C7A17A] hover:underline">Your Account</button>
-                  <span className="mx-2 text-[#999999]">›</span>
-                  <span className="text-[#111111]">Your Addresses</span>
+                  <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
+                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="text-rich-black">Your Addresses</span>
                 </div>
                 <div className="flex justify-between items-center mb-8">
-                  <h2 className="font-serif text-3xl text-[#111111]">Saved Addresses</h2>
-                  <button onClick={() => setShowAddressForm(!showAddressForm)} className="bg-[#111111] text-white hover:bg-[#C7A17A] text-xs uppercase tracking-widest font-medium px-6 py-3 transition-colors flex items-center gap-2">
+                  <h2 className="font-serif text-3xl text-rich-black">Saved Addresses</h2>
+                  <button onClick={() => setShowAddressForm(!showAddressForm)} className="bg-rich-black text-white hover:bg-gold text-xs uppercase tracking-widest font-medium px-6 py-3 transition-colors flex items-center gap-2">
                     {showAddressForm ? "Cancel" : <><Plus className="w-4 h-4" /> Add New Address</>}
                   </button>
                 </div>
 
                 {showAddressForm && (
-                  <form onSubmit={handleSaveAddress} className="mb-12 bg-[#FAF8F5] p-8 border border-[#EFEFEF]">
+                  <form onSubmit={handleSaveAddress} className="mb-12 bg-ivory p-8 border border-border-light">
                     <h3 className="font-serif text-xl mb-6">Add New Address</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <div className="md:col-span-2">
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Full Name</label>
-                        <input required type="text" value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Full Name</label>
+                        <input required type="text" value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Address Line 1</label>
-                        <input required type="text" value={addressForm.address_line1} onChange={e => setAddressForm({...addressForm, address_line1: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Address Line 1</label>
+                        <input required type="text" value={addressForm.address_line1} onChange={e => setAddressForm({...addressForm, address_line1: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Address Line 2 (Optional)</label>
-                        <input type="text" value={addressForm.address_line2} onChange={e => setAddressForm({...addressForm, address_line2: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Address Line 2 (Optional)</label>
+                        <input type="text" value={addressForm.address_line2} onChange={e => setAddressForm({...addressForm, address_line2: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">City</label>
-                        <input required type="text" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">City</label>
+                        <input required type="text" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">State / Province</label>
-                        <select required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A] text-[#666]">
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">State / Province</label>
+                        <select required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold text-[#666]">
                           <option value="" disabled>Select State</option>
                           {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Postal / Zip Code</label>
-                        <input required type="text" value={addressForm.postal_code} onChange={e => setAddressForm({...addressForm, postal_code: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Postal / Zip Code</label>
+                        <input required type="text" value={addressForm.postal_code} onChange={e => setAddressForm({...addressForm, postal_code: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Country</label>
-                        <input required type="text" value={addressForm.country} onChange={e => setAddressForm({...addressForm, country: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Country</label>
+                        <input required type="text" value={addressForm.country} onChange={e => setAddressForm({...addressForm, country: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Landmark (Optional)</label>
-                        <input type="text" value={addressForm.landmark} onChange={e => setAddressForm({...addressForm, landmark: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Landmark (Optional)</label>
+                        <input type="text" value={addressForm.landmark} onChange={e => setAddressForm({...addressForm, landmark: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Phone Number</label>
-                        <input required type="tel" value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Phone Number</label>
+                        <input required type="tel" value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Alternate Phone (Optional)</label>
-                        <input type="tel" value={addressForm.alternate_phone} onChange={e => setAddressForm({...addressForm, alternate_phone: e.target.value})} className="w-full bg-white border border-[#EFEFEF] p-3 focus:outline-none focus:border-[#C7A17A]" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Alternate Phone (Optional)</label>
+                        <input type="tel" value={addressForm.alternate_phone} onChange={e => setAddressForm({...addressForm, alternate_phone: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold" />
                       </div>
                     </div>
-                    <button disabled={isSubmittingAddress} type="submit" className="bg-[#111111] hover:bg-[#C7A17A] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors">
+                    <button disabled={isSubmittingAddress} type="submit" className="bg-rich-black hover:bg-gold text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors">
                       {isSubmittingAddress ? "Saving..." : "Save Address"}
                     </button>
                   </form>
@@ -859,16 +859,16 @@ function AccountContent() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {addresses.length === 0 ? (
-                    <div className="col-span-2 text-center py-12 border border-dashed border-[#EFEFEF]">
-                      <MapPin className="w-12 h-12 text-[#EFEFEF] mx-auto mb-4" />
-                      <p className="text-[#666666]">You don't have any saved addresses.</p>
+                    <div className="col-span-2 text-center py-12 border border-dashed border-border-light">
+                      <MapPin className="w-12 h-12 text-border-light mx-auto mb-4" />
+                      <p className="text-neutral-500">You don't have any saved addresses.</p>
                     </div>
                   ) : (
                     addresses.map(addr => (
-                      <div key={addr.id} className={`border p-6 relative transition-colors ${addr.is_default ? 'border-[#C7A17A] bg-[#FAF8F5]' : 'border-[#EFEFEF] hover:border-[#111111]'}`}>
-                        {addr.is_default && <span className="absolute top-0 right-0 bg-[#C7A17A] text-white text-[10px] uppercase tracking-widest px-3 py-1">Default</span>}
-                        <h3 className="font-medium mb-2 text-[#111111]">{addr.name}</h3>
-                        <p className="text-sm text-[#666666] leading-relaxed mb-6">
+                      <div key={addr.id} className={`border p-6 relative transition-colors ${addr.is_default ? 'border-gold bg-ivory' : 'border-border-light hover:border-rich-black'}`}>
+                        {addr.is_default && <span className="absolute top-0 right-0 bg-gold text-white text-[10px] uppercase tracking-widest px-3 py-1">Default</span>}
+                        <h3 className="font-medium mb-2 text-rich-black">{addr.name}</h3>
+                        <p className="text-sm text-neutral-500 leading-relaxed mb-6">
                           {addr.address_line1}<br />
                           {addr.address_line2 && <>{addr.address_line2}<br /></>}
                           {addr.city}, {addr.state} {addr.postal_code}<br />
@@ -877,11 +877,11 @@ function AccountContent() {
                           Phone: {addr.phone || userProfile?.phone || 'Not provided'}<br />
                           {addr.alternate_phone && <>Alternate Phone: {addr.alternate_phone}</>}
                         </p>
-                        <div className="flex gap-4 pt-4 border-t border-[#EFEFEF]">
+                        <div className="flex gap-4 pt-4 border-t border-border-light">
                           {!addr.is_default && (
-                            <button onClick={() => handleSetDefaultAddress(addr.id)} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#C7A17A] transition-colors">Set Default</button>
+                            <button onClick={() => handleSetDefaultAddress(addr.id)} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-gold transition-colors">Set Default</button>
                           )}
-                          <button onClick={() => handleDeleteAddress(addr.id)} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-[#E63946] transition-colors">Delete</button>
+                          <button onClick={() => handleDeleteAddress(addr.id)} className="text-xs uppercase tracking-widest underline underline-offset-4 hover:text-sale transition-colors">Delete</button>
                         </div>
                       </div>
                     ))
@@ -891,34 +891,34 @@ function AccountContent() {
             )}
 
             {activeTab === "profile" && (
-              <div className="bg-white border border-[#EFEFEF] p-8 lg:p-12 rounded-sm shadow-sm">
+              <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
-                  <button onClick={() => setActiveTab("home")} className="text-[#C7A17A] hover:underline">Your Account</button>
-                  <span className="mx-2 text-[#999999]">›</span>
-                  <span className="text-[#111111]">Login & Security</span>
+                  <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
+                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="text-rich-black">Login & Security</span>
                 </div>
-                <h2 className="font-serif text-3xl text-[#111111] mb-8">Login & Security</h2>
+                <h2 className="font-serif text-3xl text-rich-black mb-8">Login & Security</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                   {/* Personal Information */}
                   <div>
-                    <h3 className="font-medium text-lg mb-6 border-b border-[#EFEFEF] pb-2">Personal Information</h3>
+                    <h3 className="font-medium text-lg mb-6 border-b border-border-light pb-2">Personal Information</h3>
                     <form onSubmit={handleUpdateProfile} className="space-y-6">
                       <div className="grid grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">First Name</label>
-                          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">First Name</label>
+                          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} className="w-full bg-ivory border border-border-light p-4 focus:outline-none focus:border-gold transition-colors" />
                         </div>
                         <div>
-                          <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Last Name</label>
-                          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                          <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Last Name</label>
+                          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} className="w-full bg-ivory border border-border-light p-4 focus:outline-none focus:border-gold transition-colors" />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Phone Number</label>
-                        <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Phone Number</label>
+                        <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="w-full bg-ivory border border-border-light p-4 focus:outline-none focus:border-gold transition-colors" />
                       </div>
-                      <button type="submit" className="bg-[#111111] hover:bg-[#C7A17A] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors w-full">
+                      <button type="submit" className="bg-rich-black hover:bg-gold text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors w-full">
                         Save Personal Info
                       </button>
                     </form>
@@ -926,17 +926,17 @@ function AccountContent() {
 
                   {/* Security */}
                   <div>
-                    <h3 className="font-medium text-lg mb-6 border-b border-[#EFEFEF] pb-2">Account Security</h3>
+                    <h3 className="font-medium text-lg mb-6 border-b border-border-light pb-2">Account Security</h3>
                     <form onSubmit={handleUpdatePassword} className="space-y-6">
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">Email Address</label>
-                        <input type="email" value={userProfile?.email || ""} disabled className="w-full bg-[#EFEFEF] border border-[#EFEFEF] p-4 text-[#666666] cursor-not-allowed" />
-                        <p className="text-xs text-[#999999] mt-2">Email address cannot be changed.</p>
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">Email Address</label>
+                        <input type="email" value={userProfile?.email || ""} disabled className="w-full bg-border-light border border-border-light p-4 text-neutral-500 cursor-not-allowed" />
+                        <p className="text-xs text-neutral-400 mt-2">Email address cannot be changed.</p>
                       </div>
                       <div>
-                        <label className="block text-xs uppercase tracking-widest text-[#666666] mb-2">New Password</label>
-                        <input type="password" placeholder="Leave blank to keep current password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="w-full bg-[#FAF8F5] border border-[#EFEFEF] p-4 focus:outline-none focus:border-[#C7A17A] transition-colors" />
-                        <button disabled={!newPassword || isUpdatingPassword} type="submit" className="bg-[#111111] hover:bg-[#C7A17A] disabled:opacity-50 disabled:hover:bg-[#111111] text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors w-full">
+                        <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">New Password</label>
+                        <input type="password" placeholder="Leave blank to keep current password" value={newPassword} onChange={e => setNewPassword(e.target.value)} className="w-full bg-ivory border border-border-light p-4 focus:outline-none focus:border-gold transition-colors" />
+                        <button disabled={!newPassword || isUpdatingPassword} type="submit" className="bg-rich-black hover:bg-gold disabled:opacity-50 disabled:hover:bg-rich-black text-white py-4 px-10 uppercase tracking-widest text-sm font-medium transition-colors w-full">
                           {isUpdatingPassword ? "Updating..." : "Update Password"}
                         </button>
                       </div>
@@ -951,7 +951,7 @@ function AccountContent() {
               <div className="overflow-hidden h-0 w-0 absolute -left-[9999px]">
                 <div id="invoice-content" className="p-10 bg-white text-black w-[800px] font-sans leading-relaxed">
                 {/* Header */}
-                <div className="flex justify-between items-start border-b-2 border-[#111111] pb-8 mb-8">
+                <div className="flex justify-between items-start border-b-2 border-rich-black pb-8 mb-8">
                   <div>
                     <h1 className="text-4xl font-serif font-bold tracking-widest uppercase mb-2">{invoiceSettings.companyName}</h1>
                     <p className="text-sm text-gray-600 font-medium tracking-wide uppercase">{invoiceSettings.tagline}</p>
@@ -962,7 +962,7 @@ function AccountContent() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <h2 className="text-3xl font-bold text-[#111111] uppercase tracking-wider mb-4">Invoice</h2>
+                    <h2 className="text-3xl font-bold text-rich-black uppercase tracking-wider mb-4">Invoice</h2>
                     <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600 text-left w-64 ml-auto">
                       <span className="font-semibold text-gray-800">Invoice No:</span>
                       <span className="text-right uppercase">{selectedOrderToPrint.order_number || selectedOrderToPrint.id.slice(0, 8)}</span>
@@ -980,14 +980,14 @@ function AccountContent() {
                 <div className="grid grid-cols-2 gap-12 mb-10">
                   <div>
                     <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Billed To</h3>
-                    <p className="font-bold text-[#111111] text-lg">{selectedOrderToPrint.customer_name}</p>
+                    <p className="font-bold text-rich-black text-lg">{selectedOrderToPrint.customer_name}</p>
                     <p className="text-sm text-gray-600 mt-1">{selectedOrderToPrint.customer_email}</p>
                     <p className="text-sm text-gray-600 mb-2">{selectedOrderToPrint.customer_phone}</p>
                   </div>
                   {selectedOrderToPrint.shipping_address && (
                     <div>
                       <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 border-b pb-2">Shipped To</h3>
-                      <p className="font-bold text-[#111111]">{selectedOrderToPrint.shipping_address.name || selectedOrderToPrint.customer_name}</p>
+                      <p className="font-bold text-rich-black">{selectedOrderToPrint.shipping_address.name || selectedOrderToPrint.customer_name}</p>
                       <p className="text-sm text-gray-600 mt-1">{selectedOrderToPrint.shipping_address.address}</p>
                       <p className="text-sm text-gray-600">{selectedOrderToPrint.shipping_address.city}, {selectedOrderToPrint.shipping_address.state}</p>
                       <p className="text-sm text-gray-600">PIN: {selectedOrderToPrint.shipping_address.pin}</p>
@@ -999,7 +999,7 @@ function AccountContent() {
                 <div className="mb-10">
                   <table className="w-full text-left text-sm border-collapse">
                     <thead>
-                      <tr className="bg-[#FAF8F5] border-y border-[#111111]">
+                      <tr className="bg-ivory border-y border-rich-black">
                         <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs">Item Description</th>
                         <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-center">HSN</th>
                         <th className="py-3 px-4 font-bold uppercase tracking-wider text-xs text-center">Qty</th>
@@ -1011,7 +1011,7 @@ function AccountContent() {
                       {selectedOrderToPrint.items?.map((item: any, i: number) => (
                         <tr key={i}>
                           <td className="py-4 px-4">
-                            <p className="font-bold text-[#111111]">{item.product_name || item.name}</p>
+                            <p className="font-bold text-rich-black">{item.product_name || item.name}</p>
                             <p className="text-xs text-gray-500 mt-1">Color: {item.color_name || 'N/A'} | Size: {item.size}</p>
                           </td>
                           <td className="py-4 px-4 text-center text-gray-600">6204</td>
@@ -1035,7 +1035,7 @@ function AccountContent() {
                       <span>Shipping &amp; Handling</span>
                       <span>₹{selectedOrderToPrint.shipping_fee?.toLocaleString('en-IN') ?? 0}</span>
                     </div>
-                    <div className="flex justify-between py-4 text-xl font-bold text-[#111111]">
+                    <div className="flex justify-between py-4 text-xl font-bold text-rich-black">
                       <span>Grand Total</span>
                       <span>₹{selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
                     </div>
@@ -1043,9 +1043,9 @@ function AccountContent() {
                 </div>
 
                 {/* Footer & T&C */}
-                <div className="grid grid-cols-2 gap-8 border-t-2 border-[#EFEFEF] pt-8 text-xs text-gray-500">
+                <div className="grid grid-cols-2 gap-8 border-t-2 border-border-light pt-8 text-xs text-gray-500">
                   <div>
-                    <h4 className="font-bold text-[#111111] mb-2 uppercase tracking-widest">Terms & Conditions</h4>
+                    <h4 className="font-bold text-rich-black mb-2 uppercase tracking-widest">Terms & Conditions</h4>
                     <ul className="list-disc pl-4 space-y-1">
                       {invoiceSettings.terms.split('\n').map((term: string, idx: number) => (
                         <li key={idx}>{term}</li>
@@ -1053,7 +1053,7 @@ function AccountContent() {
                     </ul>
                   </div>
                   <div className="text-right flex flex-col justify-end">
-                    <h4 className="font-bold text-[#111111] mb-1">For {invoiceSettings.companyName}</h4>
+                    <h4 className="font-bold text-rich-black mb-1">For {invoiceSettings.companyName}</h4>
                     <p className="italic">{invoiceSettings.signatory}</p>
                   </div>
                 </div>
@@ -1069,7 +1069,7 @@ function AccountContent() {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]"><Loader2 className="w-8 h-8 animate-spin text-[#C7A17A]" /></div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-ivory"><Loader2 className="w-8 h-8 animate-spin text-gold" /></div>}>
       <AccountContent />
     </Suspense>
   );

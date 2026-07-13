@@ -1,10 +1,10 @@
 export default function VisitStore() {
   return (
-    <section className="bg-[#111111] text-white py-10 lg:py-14">
+    <section className="bg-rich-black text-white py-10 lg:py-14">
       <div className="container mx-auto px-6 lg:px-12">
         {/* Header */}
         <div className="text-center mb-7">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-[#C7A17A] mb-2">Come Find Us</p>
+          <p className="text-[9px] uppercase tracking-[0.3em] text-gold mb-2">Come Find Us</p>
           <h2 className="font-serif text-2xl lg:text-3xl text-white">Visit Our Store</h2>
         </div>
 
@@ -34,7 +34,7 @@ export default function VisitStore() {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C7A17A] mb-2">Address</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-2">Address</p>
                 <p className="text-[#CCCCCC] text-sm leading-relaxed">
                   Kanwarram Park, Sant, Last Bungalow 3rd Lane,<br />
                   Opp. Sukhwani Citi, Near Royal World School,<br />
@@ -45,7 +45,7 @@ export default function VisitStore() {
                   href="https://share.google/ZjCsuVrExC932t0MS"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#C7A17A] hover:text-white transition-colors mt-3 border-b border-[#C7A17A] hover:border-white pb-0.5"
+                  className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-gold hover:text-white transition-colors mt-3 border-b border-gold hover:border-white pb-0.5"
                 >
                   Get Directions
                   <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>
@@ -63,7 +63,7 @@ export default function VisitStore() {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C7A17A] mb-2">Hours</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-2">Hours</p>
                 <p className="text-[#CCCCCC] text-sm">10:00 AM – 9:00 PM</p>
                 <p className="text-[#888888] text-xs mt-1 uppercase tracking-widest">Open All Days</p>
               </div>
@@ -79,7 +79,7 @@ export default function VisitStore() {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#C7A17A] mb-2">Call / WhatsApp</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-2">Call / WhatsApp</p>
                 <a href="tel:+919226120292" className="text-[#CCCCCC] text-sm hover:text-white transition-colors">+91 92261 20292</a>
               </div>
             </div>

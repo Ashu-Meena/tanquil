@@ -37,14 +37,14 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center p-4 md:p-6">
-      <div className="w-full max-w-md bg-white p-6 md:p-8 border border-[#EFEFEF] shadow-sm rounded-sm">
+    <div className="min-h-screen bg-ivory flex items-center justify-center p-4 md:p-6">
+      <div className="w-full max-w-md bg-white p-6 md:p-8 border border-border-light shadow-sm rounded-sm">
         <div className="text-center mb-6 md:mb-8">
-          <div className="w-12 h-12 bg-[#111111] text-[#C7A17A] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-12 h-12 bg-rich-black text-gold rounded-full flex items-center justify-center mx-auto mb-4">
             <Lock className="w-5 h-5" />
           </div>
-          <h1 className="font-serif text-2xl md:text-3xl text-[#111111] tracking-widest uppercase">Tranquil Admin</h1>
-          <p className="text-[#666666] text-sm mt-2">Sign in to access the control panel</p>
+          <h1 className="font-serif text-2xl md:text-3xl text-rich-black tracking-widest uppercase">Tranquil Admin</h1>
+          <p className="text-neutral-500 text-sm mt-2">Sign in to access the control panel</p>
         </div>
 
         {error && (
@@ -55,24 +55,24 @@ export default function AdminLogin() {
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#111111] mb-1">Admin Email</label>
+            <label className="block text-sm font-medium text-rich-black mb-1">Admin Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-[#EFEFEF] p-3 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] transition-colors"
+              className="w-full border border-border-light p-3 text-sm rounded-sm focus:outline-none focus:border-gold transition-colors"
               placeholder="admin@tranquil.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#111111] mb-1">Password</label>
+            <label className="block text-sm font-medium text-rich-black mb-1">Password</label>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-[#EFEFEF] p-3 text-sm rounded-sm focus:outline-none focus:border-[#C7A17A] transition-colors"
+              className="w-full border border-border-light p-3 text-sm rounded-sm focus:outline-none focus:border-gold transition-colors"
               placeholder="••••••••"
             />
           </div>
@@ -80,7 +80,7 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 bg-[#111111] hover:bg-[#C7A17A] text-white py-3.5 uppercase tracking-widest text-sm font-medium transition-colors rounded-sm disabled:opacity-50 mt-4"
+            className="w-full flex items-center justify-center gap-2 bg-rich-black hover:bg-gold text-white py-3.5 uppercase tracking-widest text-sm font-medium transition-colors rounded-sm disabled:opacity-50 mt-4"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Secure Login"}
             {!loading && <ArrowRight className="w-4 h-4" />}

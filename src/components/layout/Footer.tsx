@@ -48,13 +48,13 @@ export default function Footer() {
   const isProductPage = pathname.startsWith("/products/");
 
   return (
-    <footer className={`bg-[#111111] text-white pt-8 md:pt-12 ${isProductPage ? 'pb-40 md:pb-28' : 'pb-16 md:pb-10'}`}>
+    <footer className={`bg-rich-black text-white pt-8 md:pt-12 ${isProductPage ? 'pb-40 md:pb-28' : 'pb-16 md:pb-10'}`}>
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="flex flex-col items-center text-center mb-12 border-b border-[#333333] pb-12">
+        <div className="flex flex-col items-center text-center mb-12 border-b border-neutral-800 pb-12">
           {/* WhatsApp Community */}
           <div className="flex flex-col items-center max-w-xl w-full">
             <h2 className="font-serif text-2xl lg:text-3xl mb-3 text-white">Join Our WhatsApp Community</h2>
-            <p className="text-[#999999] text-xs mb-8 uppercase tracking-widest">
+            <p className="text-neutral-400 text-xs mb-8 uppercase tracking-widest">
               Get first access to new drops, exclusive offers &amp; styling tips
             </p>
             <a
@@ -76,17 +76,17 @@ export default function Footer() {
           {/* Brand */}
           <div className="mb-8 md:mb-0 lg:col-span-1">
             <h4 className="font-serif text-xl tracking-widest uppercase mb-4 text-white">Tranquil</h4>
-            <p className="text-[#666666] mb-6 leading-relaxed text-[10px] uppercase tracking-widest">
+            <p className="text-neutral-500 mb-6 leading-relaxed text-[10px] uppercase tracking-widest">
               Your official outfit plug.<br/>Modern clothes for modern girls.
             </p>
             <div className="flex gap-4">
               {storeInfo?.instagram && (
-                <a href={storeInfo.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-[#666666] hover:text-white transition-colors">
+                <a href={storeInfo.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="text-neutral-500 hover:text-white transition-colors">
                   <InstagramIcon className="w-4 h-4" />
                 </a>
               )}
               {storeInfo?.facebook && (
-                <a href={storeInfo.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="text-[#666666] hover:text-white transition-colors">
+                <a href={storeInfo.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="text-neutral-500 hover:text-white transition-colors">
                   <FacebookIcon className="w-4 h-4" />
                 </a>
               )}
@@ -94,15 +94,15 @@ export default function Footer() {
           </div>
 
           {/* Shop */}
-          <div className="border-b border-[#222222] md:border-none pb-4 md:pb-0">
+          <div className="border-b border-neutral-900 md:border-none pb-4 md:pb-0">
             <button 
               onClick={() => toggleAccordion("shop")}
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">Shop</h4>
-              <span className="text-lg font-light leading-none md:hidden text-[#666666]">{activeAccordion === "shop" ? "—" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "shop" ? "—" : "+"}</span>
             </button>
-            <ul className={`flex flex-col gap-3 text-[#666666] text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "shop" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
+            <ul className={`flex flex-col gap-3 text-neutral-500 text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "shop" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/collections/new" className="hover:text-white transition-colors">New Arrivals</Link></li>
               <li><Link href="/collections/bestsellers" className="hover:text-white transition-colors">Best Sellers</Link></li>
               <li><Link href="/collections/sale" className="hover:text-white transition-colors">Sale</Link></li>
@@ -111,15 +111,15 @@ export default function Footer() {
           </div>
 
           {/* Categories */}
-          <div className="border-b border-[#222222] md:border-none pb-4 md:pb-0">
+          <div className="border-b border-neutral-900 md:border-none pb-4 md:pb-0">
             <button 
               onClick={() => toggleAccordion("categories")}
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">Categories</h4>
-              <span className="text-lg font-light leading-none md:hidden text-[#666666]">{activeAccordion === "categories" ? "—" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "categories" ? "—" : "+"}</span>
             </button>
-            <ul className={`flex flex-col gap-3 text-[#666666] text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "categories" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
+            <ul className={`flex flex-col gap-3 text-neutral-500 text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "categories" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/collections/dresses" className="hover:text-white transition-colors">Dresses</Link></li>
               <li><Link href="/collections/corsets" className="hover:text-white transition-colors">Corsets</Link></li>
               <li><Link href="/collections/coord" className="hover:text-white transition-colors">Co-Ords</Link></li>
@@ -135,9 +135,9 @@ export default function Footer() {
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">About</h4>
-              <span className="text-lg font-light leading-none md:hidden text-[#666666]">{activeAccordion === "about" ? "—" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "about" ? "—" : "+"}</span>
             </button>
-            <ul className={`flex flex-col gap-3 text-[#666666] text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "about" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
+            <ul className={`flex flex-col gap-3 text-neutral-500 text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "about" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/about" className="hover:text-white transition-colors">Our Story</Link></li>
               <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
               <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
@@ -147,15 +147,15 @@ export default function Footer() {
           </div>
 
           {/* Visit Us */}
-          <div className="border-b border-[#222222] md:border-none pb-4 md:pb-0">
+          <div className="border-b border-neutral-900 md:border-none pb-4 md:pb-0">
             <button
               onClick={() => toggleAccordion("visit")}
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">Visit Us</h4>
-              <span className="text-lg font-light leading-none md:hidden text-[#666666]">{activeAccordion === "visit" ? "—" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "visit" ? "—" : "+"}</span>
             </button>
-            <div className={`flex flex-col gap-3 text-[#666666] text-[10px] overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "visit" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
+            <div className={`flex flex-col gap-3 text-neutral-500 text-[10px] overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "visit" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <p className="leading-relaxed normal-case tracking-normal">
                 Kanwarram Park, Sant, Last Bungalow 3rd Lane,<br />
                 Vaibhav Nagar, Pimpri Colony,<br />
@@ -168,7 +168,7 @@ export default function Footer() {
                 href="https://share.google/ZjCsuVrExC932t0MS"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[#C7A17A] hover:text-white transition-colors border-b border-[#C7A17A] hover:border-white pb-0.5 w-fit"
+                className="text-gold hover:text-white transition-colors border-b border-gold hover:border-white pb-0.5 w-fit"
               >
                 Get Directions →
               </a>
@@ -177,10 +177,10 @@ export default function Footer() {
         </div>
 
         {/* Bottom Section */}
-        <div className="pt-8 border-t border-[#333333] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-[#666666]">
+        <div className="pt-8 border-t border-neutral-800 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-neutral-500">
           <div className="flex flex-col items-center md:items-start gap-1">
             <p>&copy; {new Date().getFullYear()} Tranquil. All Rights Reserved.</p>
-            <p>Designed & Developed by <a href="https://samvix-technologies.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-[#C7A17A] hover:text-white transition-colors">Samvix Technologies</a></p>
+            <p>Designed & Developed by <a href="https://samvix-technologies.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-gold hover:text-white transition-colors">Samvix Technologies</a></p>
           </div>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>

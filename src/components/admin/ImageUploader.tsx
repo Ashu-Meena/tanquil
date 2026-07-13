@@ -27,13 +27,13 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
 
   return (
     <div className={`w-full ${className}`}>
-      <label className="flex items-center gap-2 text-sm font-medium text-[#111111] mb-2">
+      <label className="flex items-center gap-2 text-sm font-medium text-rich-black mb-2">
         {label}
       </label>
       
       <div 
         onClick={() => !value && setIsModalOpen(true)}
-        className={`relative border-2 border-dashed border-[#EFEFEF] rounded-sm flex flex-col items-center justify-center text-center transition-colors aspect-square w-full overflow-hidden ${!value ? "hover:bg-[#FAF8F5] cursor-pointer" : ""}`}
+        className={`relative border-2 border-dashed border-border-light rounded-sm flex flex-col items-center justify-center text-center transition-colors aspect-square w-full overflow-hidden ${!value ? "hover:bg-ivory cursor-pointer" : ""}`}
       >
         {value ? (
           <div className="relative w-full h-full flex-1 group">
@@ -57,7 +57,7 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
               <button 
                 onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
-                className="bg-white text-black px-4 py-2 text-sm font-medium rounded-sm hover:bg-[#FAF8F5] transition-colors"
+                className="bg-white text-black px-4 py-2 text-sm font-medium rounded-sm hover:bg-ivory transition-colors"
               >
                 Change
               </button>
@@ -71,9 +71,9 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
           </div>
         ) : (
           <div className="p-6">
-            <UploadCloud className="w-8 h-8 text-[#C7A17A] mx-auto mb-2" />
-            <p className="text-sm font-medium text-[#111111]">Click to select or upload media</p>
-            <p className="text-xs text-[#999999] mt-1">From Media Library or Computer</p>
+            <UploadCloud className="w-8 h-8 text-gold mx-auto mb-2" />
+            <p className="text-sm font-medium text-rich-black">Click to select or upload media</p>
+            <p className="text-xs text-neutral-400 mt-1">From Media Library or Computer</p>
           </div>
         )}
       </div>

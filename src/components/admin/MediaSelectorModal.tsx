@@ -122,26 +122,26 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
 
   return (
     <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-      <div className="bg-[#FAF8F5] rounded-sm shadow-2xl max-w-5xl w-full h-[80vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="bg-ivory rounded-sm shadow-2xl max-w-5xl w-full h-[80vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* Header */}
-        <div className="bg-white p-4 border-b border-[#EFEFEF] flex justify-between items-center shrink-0">
-          <h2 className="font-serif text-2xl text-[#111111]">Select Media</h2>
-          <button onClick={onClose} className="text-[#999999] hover:text-[#111111] transition-colors p-2">
+        <div className="bg-white p-4 border-b border-border-light flex justify-between items-center shrink-0">
+          <h2 className="font-serif text-2xl text-rich-black">Select Media</h2>
+          <button onClick={onClose} className="text-neutral-400 hover:text-rich-black transition-colors p-2">
             <X className="w-6 h-6" />
           </button>
         </div>
 
         {/* Toolbar */}
-        <div className="bg-white p-4 border-b border-[#EFEFEF] flex justify-between items-center shrink-0">
-          <div className="flex items-center w-full sm:w-auto bg-[#FAF8F5] px-3 py-2 rounded-sm border border-[#EFEFEF] focus-within:border-[#C7A17A] transition-colors">
-            <Search className="w-4 h-4 text-[#999999] mr-2" />
+        <div className="bg-white p-4 border-b border-border-light flex justify-between items-center shrink-0">
+          <div className="flex items-center w-full sm:w-auto bg-ivory px-3 py-2 rounded-sm border border-border-light focus-within:border-gold transition-colors">
+            <Search className="w-4 h-4 text-neutral-400 mr-2" />
             <input 
               type="text" 
               placeholder="Search files..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-[#111111] placeholder:text-[#999999]"
+              className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
             />
           </div>
           <div>
@@ -155,7 +155,7 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="flex items-center gap-2 bg-[#111111] text-white px-4 py-2.5 text-sm font-medium hover:bg-[#C7A17A] transition-colors rounded-sm disabled:opacity-50"
+              className="flex items-center gap-2 bg-rich-black text-white px-4 py-2.5 text-sm font-medium hover:bg-gold transition-colors rounded-sm disabled:opacity-50"
             >
               {uploading ? (
                 <>
@@ -176,14 +176,14 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
         <PasteUrlSection onSelect={onSelect} onClose={onClose} />
 
         {/* Grid Content */}
-        <div className="flex-1 overflow-y-auto p-6 bg-[#FAF8F5]">
+        <div className="flex-1 overflow-y-auto p-6 bg-ivory">
           {loading ? (
-            <div className="flex h-full items-center justify-center text-[#666666]">
-              <Loader2 className="w-8 h-8 animate-spin text-[#C7A17A]" />
+            <div className="flex h-full items-center justify-center text-neutral-500">
+              <Loader2 className="w-8 h-8 animate-spin text-gold" />
             </div>
           ) : filteredFiles.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center text-[#666666]">
-              <ImageIcon className="w-12 h-12 mx-auto mb-3 text-[#EFEFEF]" />
+            <div className="flex h-full flex-col items-center justify-center text-neutral-500">
+              <ImageIcon className="w-12 h-12 mx-auto mb-3 text-border-light" />
               <p>No media files found.</p>
             </div>
           ) : (
@@ -198,7 +198,7 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
                       onSelect(url);
                       onClose();
                     }}
-                    className="group relative border border-[#EFEFEF] rounded-sm overflow-hidden bg-white aspect-square cursor-pointer hover:border-[#C7A17A] transition-colors"
+                    className="group relative border border-border-light rounded-sm overflow-hidden bg-white aspect-square cursor-pointer hover:border-gold transition-colors"
                   >
                     {isVideo ? (
                       <video src={url} className="w-full h-full object-cover" muted />
@@ -241,13 +241,13 @@ function PasteUrlSection({ onSelect, onClose }: { onSelect: (url: string) => voi
   };
 
   return (
-    <div className="bg-white border-b border-[#EFEFEF] px-4 shrink-0">
+    <div className="bg-white border-b border-border-light px-4 shrink-0">
       <button
         onClick={() => setExpanded(v => !v)}
-        className="w-full flex items-center justify-between py-3 text-sm text-[#666666] hover:text-[#111111] transition-colors"
+        className="w-full flex items-center justify-between py-3 text-sm text-neutral-500 hover:text-rich-black transition-colors"
       >
         <span className="font-medium">Or paste an image URL</span>
-        <span className="text-xs text-[#999999]">{expanded ? "▲ Hide" : "▼ Show"}</span>
+        <span className="text-xs text-neutral-400">{expanded ? "▲ Hide" : "▼ Show"}</span>
       </button>
       {expanded && (
         <div className="pb-4 flex gap-2">
@@ -257,13 +257,13 @@ function PasteUrlSection({ onSelect, onClose }: { onSelect: (url: string) => voi
             onChange={e => setUrl(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleUse()}
             placeholder="https://images.unsplash.com/..."
-            className="flex-1 border border-[#EFEFEF] px-3 py-2 text-sm focus:outline-none focus:border-[#C7A17A] rounded-sm transition-colors"
+            className="flex-1 border border-border-light px-3 py-2 text-sm focus:outline-none focus:border-gold rounded-sm transition-colors"
             autoFocus
           />
           <button
             onClick={handleUse}
             disabled={!url.trim()}
-            className="bg-[#C7A17A] text-white px-4 py-2 text-sm font-medium rounded-sm hover:bg-[#b8926b] transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+            className="bg-gold text-white px-4 py-2 text-sm font-medium rounded-sm hover:bg-[#b8926b] transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
           >
             Use URL
           </button>

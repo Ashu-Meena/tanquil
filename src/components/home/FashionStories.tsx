@@ -73,16 +73,16 @@ const StoryCard = ({ story }: { story: Story }) => {
         transition={{ duration: 0.8, delay: 0.2 }}
         className="w-full md:w-1/2 lg:w-2/5 flex flex-col justify-center"
       >
-        <span className="text-[#C7A17A] text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium mb-2 md:mb-6 block">Editorial</span>
-        <h3 className="font-serif text-3xl md:text-3xl lg:text-5xl text-[#111111] mb-2 md:mb-6 leading-tight">
+        <span className="text-gold text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium mb-2 md:mb-6 block">Editorial</span>
+        <h3 className="font-serif text-3xl md:text-3xl lg:text-5xl text-rich-black mb-2 md:mb-6 leading-tight">
           {story.title}
         </h3>
-        <p className="text-[#666666] leading-relaxed mb-6 md:mb-10 text-sm md:text-lg">
+        <p className="text-neutral-500 leading-relaxed mb-6 md:mb-10 text-sm md:text-lg">
           {story.description}
         </p>
         <Link 
           href="/collections/editorial" 
-          className="inline-flex items-center gap-1.5 md:gap-3 text-[#111111] uppercase tracking-wider md:tracking-widest text-[8px] md:text-sm font-medium hover:text-[#C7A17A] transition-colors group self-start"
+          className="inline-flex items-center gap-1.5 md:gap-3 text-rich-black uppercase tracking-wider md:tracking-widest text-[8px] md:text-sm font-medium hover:text-gold transition-colors group self-start"
         >
           Read The Story 
           <ArrowRight className="w-3 h-3 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
@@ -103,7 +103,7 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4"
           >
             Fashion Stories
           </motion.h2>
@@ -112,7 +112,7 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-serif italic text-xl text-[#666666]"
+            className="font-serif italic text-xl text-neutral-500"
           >
             Editorial inspiration and curations
           </motion.p>

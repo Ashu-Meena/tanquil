@@ -7,8 +7,8 @@ export default function StorefrontLayout({ children }: { children: ReactNode }) 
   return (
     <div className="space-y-6 max-w-full">
       <div>
-        <h1 className="font-serif text-3xl text-[#111111] mb-1">Storefront</h1>
-        <p className="text-[#666666] text-sm">Manage your homepage layout and static pages</p>
+        <h1 className="font-serif text-3xl text-rich-black mb-1">Storefront</h1>
+        <p className="text-neutral-500 text-sm">Manage your homepage layout and static pages</p>
       </div>
 
       <StorefrontTabs />

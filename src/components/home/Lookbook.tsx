@@ -58,7 +58,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, duration: 0.6 }}
-      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-[75vw] sm:w-[45vw] lg:w-full flex-shrink-0 snap-center bg-[#EFEFEF]`}
+      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-[75vw] sm:w-[45vw] lg:w-full flex-shrink-0 snap-center bg-border-light`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -96,7 +96,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
         className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center z-10"
         aria-label={`View on Instagram`}
       >
-        <div className="bg-white text-[#111111] hover:bg-[#C7A17A] hover:text-white rounded-full p-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
+        <div className="bg-white text-rich-black hover:bg-gold hover:text-white rounded-full p-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
           <InstagramIcon className="w-5 h-5" />
         </div>
         <span className="text-white mt-3 font-medium uppercase tracking-widest text-xs transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
@@ -110,16 +110,16 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
 export default function Lookbook({ items }: { items?: LookbookItem[] }) {
   const displayItems = items && items.length > 0 ? items : defaultItems;
   return (
-    <section className="py-12 md:py-24 bg-[#FAF8F5]">
+    <section className="py-12 md:py-24 bg-ivory">
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-16">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-[#111111] mb-4 flex justify-center items-center gap-3"
+            className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4 flex justify-center items-center gap-3"
           >
-            <InstagramIcon className="w-8 h-8 md:w-10 md:h-10 text-[#C7A17A]" />
+            <InstagramIcon className="w-8 h-8 md:w-10 md:h-10 text-gold" />
             Instagram Gallery
           </motion.h2>
           <motion.p 
@@ -127,7 +127,7 @@ export default function Lookbook({ items }: { items?: LookbookItem[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-[#666666] uppercase tracking-widest text-sm"
+            className="text-neutral-500 uppercase tracking-widest text-sm"
           >
             @tranquil.co.in
           </motion.p>
