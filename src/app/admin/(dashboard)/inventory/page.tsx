@@ -136,23 +136,31 @@ export default function InventoryPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
-                          {isLowStock && (
-                            <span title="Low Stock">
-                              <AlertTriangle className="w-4 h-4 text-orange-500" />
-                            </span>
+                          {variant.size === "Custom" ? (
+                            <div className="w-24 text-center text-[#B38D66] font-medium text-sm">
+                              On Demand
+                            </div>
+                          ) : (
+                            <>
+                              {isLowStock && (
+                                <span title="Low Stock">
+                                  <AlertTriangle className="w-4 h-4 text-orange-500" />
+                                </span>
+                              )}
+                              <input 
+                                type="number" 
+                                value={variant.stock_quantity}
+                                onChange={(e) => handleStockChange(variant.id, e.target.value)}
+                                onBlur={(e) => updateStock(variant.id, parseInt(e.target.value) || 0)}
+                                className={`w-20 border p-2 text-sm text-right focus:outline-none focus:border-gold rounded-sm transition-colors ${
+                                  isLowStock ? 'border-orange-300 bg-orange-50 text-orange-700' : 'border-border-light'
+                                }`}
+                              />
+                              <div className="w-5 flex items-center justify-center">
+                                {savingId === variant.id && <Save className="w-4 h-4 text-green-500 animate-pulse" />}
+                              </div>
+                            </>
                           )}
-                          <input 
-                            type="number" 
-                            value={variant.stock_quantity}
-                            onChange={(e) => handleStockChange(variant.id, e.target.value)}
-                            onBlur={(e) => updateStock(variant.id, parseInt(e.target.value) || 0)}
-                            className={`w-20 border p-2 text-sm text-right focus:outline-none focus:border-gold rounded-sm transition-colors ${
-                              isLowStock ? 'border-orange-300 bg-orange-50 text-orange-700' : 'border-border-light'
-                            }`}
-                          />
-                          <div className="w-5 flex items-center justify-center">
-                            {savingId === variant.id && <Save className="w-4 h-4 text-green-500 animate-pulse" />}
-                          </div>
                         </div>
                       </td>
                     </tr>
