@@ -23,7 +23,6 @@ interface Order {
   notes?: string;
   tracking_id?: string;
   courier_name?: string;
-  tracking_status?: string;
   transaction_id?: string;
   screenshot_url?: string;
   payment_status: string;
@@ -512,28 +511,7 @@ export default function OrdersPage() {
               <div className="bg-white p-5 border border-[#EFEFEF] rounded-sm">
                 <h3 className="font-serif text-lg text-[#111111] mb-4 border-b border-[#EFEFEF] pb-2">Fulfillment Details</h3>
                 
-                {/* Tracking Status Display */}
-                {(selectedOrder.tracking_status && selectedOrder.tracking_status !== 'Pending') && (
-                  <div className="flex items-center justify-between mb-4 bg-[#F9F9F9] p-3 border border-[#EFEFEF] rounded-sm">
-                    <div>
-                      <span className="text-xs text-[#666666] block mb-0.5 uppercase tracking-wider">Live Tracking Status</span>
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${selectedOrder.tracking_status === 'Delivered' ? 'bg-green-500' : selectedOrder.tracking_status === 'Exception' || selectedOrder.tracking_status === 'Failed Attempt' ? 'bg-red-500' : 'bg-blue-500 animate-pulse'}`}></div>
-                        <span className="text-sm font-medium text-[#111111]">{selectedOrder.tracking_status}</span>
-                      </div>
-                      {selectedOrder.tracking_last_updated && (
-                        <span className="text-[10px] text-[#999999] mt-1 block">Last updated: {new Date(selectedOrder.tracking_last_updated).toLocaleString()}</span>
-                      )}
-                    </div>
-                    <button 
-                      onClick={refreshTrackingStatus}
-                      disabled={updating}
-                      className="text-xs text-[#C7A17A] font-medium uppercase tracking-widest hover:text-[#A68A68] transition-colors disabled:opacity-50"
-                    >
-                      {updating ? 'Refreshing...' : 'Refresh Status'}
-                    </button>
-                  </div>
-                )}
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div>
