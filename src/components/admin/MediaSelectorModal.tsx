@@ -68,13 +68,33 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
         setUploading(false);
         return;
       }
-      const fileExt = file.name.split('.').pop();
+      let fileToUpload: File = file;
+      let fileExt = file.name.split('.').pop() || "jpg";
+
+      if (isHeic) {
+        try {
+          toast.success(`Converting ${file.name} to JPG...`, { id: 'heic-convert' });
+          const heic2any = (await import("heic2any")).default;
+          const convertedBlob = await heic2any({ blob: file, toType: "image/jpeg" });
+          const blobToUse = Array.isArray(convertedBlob) ? convertedBlob[0] : convertedBlob;
+          
+          const originalNameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+          fileToUpload = new File([blobToUse], `${originalNameWithoutExt}.jpg`, { type: "image/jpeg" });
+          fileExt = "jpg";
+        } catch (e) {
+          console.error("HEIC conversion error:", e);
+          toast.error(`Failed to convert ${file.name}`);
+          setUploading(false);
+          return;
+        }
+      }
+
       const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from(bucketName)
-        .upload(filePath, file, { contentType: file.type || 'image/jpeg' });
+        .upload(filePath, fileToUpload, { contentType: fileToUpload.type || 'image/jpeg' });
 
       if (uploadError) throw uploadError;
       
