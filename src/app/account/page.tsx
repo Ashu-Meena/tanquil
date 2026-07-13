@@ -113,7 +113,7 @@ function AccountContent() {
       }
 
       // Fetch orders
-      const { data: userOrders } = await supabase.from('orders').select('*, order_items(*)').eq('customer_email', session.user.email || '').order('created_at', { ascending: false });
+      const { data: userOrders } = await supabase.from('orders').select('*, items:order_items(*, product:products(product_images(url)))').eq('customer_email', session.user.email || '').order('created_at', { ascending: false });
       if (userOrders) {
         setOrders(userOrders);
       }
@@ -572,8 +572,8 @@ function AccountContent() {
                           >
                             <div className="flex gap-4 items-center w-full pr-4">
                               <div className="w-16 h-16 bg-[#FAF8F5] relative flex-shrink-0 rounded-sm overflow-hidden border border-[#EFEFEF]">
-                                {order.items?.[0]?.image_url || order.items?.[0]?.image || order.items?.[0]?.product?.images?.[0] ? (
-                                  <Image src={order.items[0].image_url || order.items[0].image || order.items[0].product?.images[0]} alt="Product" fill className="object-cover" />
+                                {order.items?.[0]?.image_url || order.items?.[0]?.image || order.items?.[0]?.product?.product_images?.[0]?.url ? (
+                                  <Image src={order.items[0].image_url || order.items[0].image || order.items[0].product?.product_images?.[0]?.url} alt="Product" fill className="object-cover" />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center text-[10px] uppercase text-[#999999]">No Img</div>
                                 )}
@@ -684,8 +684,8 @@ function AccountContent() {
                                 <div key={idx} className="flex flex-col sm:flex-row gap-4 md:gap-6 border-b border-[#EFEFEF] pb-6 last:border-0 last:pb-0">
                                   <div className="flex gap-4 sm:w-full">
                                     <div className="relative w-20 h-28 md:w-24 md:h-32 bg-[#FAF8F5] flex-shrink-0">
-                                      {item.image_url || item.image || item.product?.images?.[0] ? (
-                                        <Image src={item.image_url || item.image || item.product?.images?.[0]} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
+                                      {item.image_url || item.image || item.product?.product_images?.[0]?.url ? (
+                                        <Image src={item.image_url || item.image || item.product?.product_images?.[0]?.url} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
                                       ) : (
                                         <div className="w-full h-full flex items-center justify-center text-[#999999] text-xs uppercase tracking-widest text-center px-2">No Image</div>
                                       )}
