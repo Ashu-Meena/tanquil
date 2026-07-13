@@ -142,7 +142,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         </Link>
 
         {/* Hover Actions Panel (Desktop Only) */}
-        <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
+        <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 bg-gradient-to-t from-black/50 to-transparent">
           <div className="bg-white/95 backdrop-blur-md p-3 rounded-sm shadow-xl">
             {activeStep === 'color' ? (
               <div className="flex flex-col gap-2">

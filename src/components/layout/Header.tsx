@@ -51,7 +51,7 @@ export default function Header() {
   const isHomePage = pathname === '/';
   const forceSolidHeader = !isHomePage;
 
-  if (pathname.startsWith('/admin')) return null;
+  if (pathname.startsWith('/admin') || pathname.startsWith('/checkout')) return null;
 
   return (
     <>

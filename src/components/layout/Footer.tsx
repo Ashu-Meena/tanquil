@@ -44,7 +44,7 @@ export default function Footer() {
   }, []);
 
 
-  if (pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin") || pathname.startsWith("/checkout")) return null;
   const isProductPage = pathname.startsWith("/products/");
 
   return (
