@@ -26,7 +26,7 @@ export default function ProductsPage() {
     setLoading(true);
     const { data, error } = await supabase
       .from("products")
-      .select("*, product_categories(categories(name)), product_images(url), product_variants(stock_quantity)")
+      .select("*, product_categories(categories(name)), product_images(url), product_variants(stock_quantity, sku, size)")
       .order("created_at", { ascending: false });
     
     if (data) {
@@ -36,13 +36,21 @@ export default function ProductsPage() {
         
         // Sum up total stock from all variants
         const totalStock = product.product_variants?.reduce((sum: number, variant: any) => sum + (variant.stock_quantity || 0), 0) || 0;
+        const hasCustomSize = product.product_variants?.some((v: any) => v.size === 'Custom') || false;
         
+        let displaySku = product.sku;
+        if (!displaySku && product.product_variants && product.product_variants.length > 0) {
+          displaySku = product.product_variants[0].sku;
+        }
+
         const categoryText = product.product_categories?.map((pc: any) => pc.categories?.name).filter(Boolean).join(", ") || "Uncategorized";
         
         return {
           ...product,
           images,
           stock_quantity: totalStock,
+          hasCustomSize,
+          sku: displaySku,
           categoryText
         };
       });
@@ -211,6 +219,8 @@ export default function ProductsPage() {
                         <span className="text-green-600">{product.stock_quantity} in stock</span>
                       ) : product.stock_quantity > 0 ? (
                         <span className="text-yellow-600">Low stock ({product.stock_quantity})</span>
+                      ) : product.hasCustomSize ? (
+                        <span className="text-[#B38D66] font-medium">On Demand</span>
                       ) : (
                         <span className="text-red-600">Out of stock</span>
                       )}
