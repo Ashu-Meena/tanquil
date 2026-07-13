@@ -42,18 +42,18 @@ export default function SearchModal() {
         setIsSearching(true);
         const { data } = await supabase
           .from("products")
-          .select("id, title, price, slug, product_images(image_url)")
+          .select("id, name, price, slug, product_images(url)")
           .eq("is_featured", true)
-          .eq("is_active", true)
+          .eq("status", "active")
           .limit(4);
           
         if (data) {
           setResults(data.map(p => ({
             id: p.id,
-            name: p.title,
+            name: p.name,
             slug: p.slug,
             price: p.price,
-            image: p.product_images?.[0]?.image_url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
+            image: p.product_images?.[0]?.url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
           })));
         }
         setIsSearching(false);
@@ -63,18 +63,18 @@ export default function SearchModal() {
       setIsSearching(true);
       const { data } = await supabase
         .from("products")
-        .select("id, title, price, slug, product_images(image_url)")
-        .ilike("title", `%${query}%`)
-        .eq("is_active", true)
+        .select("id, name, price, slug, product_images(url)")
+        .ilike("name", `%${query}%`)
+        .eq("status", "active")
         .limit(6);
         
       if (data) {
         setResults(data.map(p => ({
           id: p.id,
-          name: p.title,
+          name: p.name,
           slug: p.slug,
           price: p.price,
-          image: p.product_images?.[0]?.image_url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
+          image: p.product_images?.[0]?.url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
         })));
       }
       setIsSearching(false);

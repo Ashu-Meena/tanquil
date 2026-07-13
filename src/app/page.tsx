@@ -91,13 +91,13 @@ export default async function Home() {
   // Fetch Best Sellers (trending products)
   const { data: products } = await supabase
     .from("products")
-    .select("*, product_images(image_url, color_name), product_variants(color_name)")
+    .select("*, product_images(url, color_name), product_variants(color_name)")
     .eq("is_featured", true)
-    .eq("is_active", true)
+    .eq("status", "active")
     .limit(10);
 
   const mappedProducts = products?.map(p => {
-    const images = p.product_images?.map((img: any) => img.image_url) || [];
+    const images = p.product_images?.map((img: any) => img.url) || [];
     
     // Extract unique colors with their first image
     const colorsMap = new Map<string, string>();
@@ -105,7 +105,7 @@ export default async function Home() {
       p.product_variants.forEach((v: any) => {
         if (!colorsMap.has(v.color_name)) {
           const matchingImg = p.product_images?.find((img: any) => img.color_name === v.color_name);
-          colorsMap.set(v.color_name, matchingImg?.image_url || images[0]);
+          colorsMap.set(v.color_name, matchingImg?.url || images[0]);
         }
       });
     }
@@ -113,12 +113,12 @@ export default async function Home() {
     return {
       id: p.id,
       slug: p.slug,
-      name: p.title,
+      name: p.name,
       price: p.price,
       images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
       isNew: p.is_featured,
-      isSale: (p.original_price ?? 0) > p.price
+      isSale: (p.compare_at_price ?? 0) > p.price
     };
   }) || [];
   const instagramItems = sections?.filter(s => s.section_type === 'instagram').slice(0, 4).map((s, index) => ({

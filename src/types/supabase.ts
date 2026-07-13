@@ -9,54 +9,68 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      products: {
-        Row: {
+      products: { Row: {
           id: string
-          title: string
+          name: string
           slug: string
           description: string | null
-          category_id: string | null
+          sku: string | null
           price: number
-          original_price: number | null
-          is_new_arrival: boolean
+          compare_at_price: number | null
+          brand: string | null
+          fabric: string | null
+          weight: number | null
+          status: string
           is_featured: boolean
-          is_active: boolean
+          is_trending: boolean
+          seo_title: string | null
+          seo_description: string | null
+          category_id: string | null
+          tags: string[] | null
           created_at: string
           updated_at: string
-          original_color: string | null
-          size: string | null
         }
         Insert: {
           id?: string
-          title: string
+          name: string
           slug: string
-          description?: string | null
-          category_id?: string | null
+          description: string | null
+          sku?: string | null
           price: number
-          original_price?: number | null
-          is_new_arrival?: boolean
-          is_featured?: boolean
-          is_active?: boolean
+          compare_at_price: number | null
+          brand?: string | null
+          fabric?: string | null
+          weight?: number | null
+          status: string
+          is_featured: boolean
+          is_trending?: boolean
+          seo_title?: string | null
+          seo_description?: string | null
+          category_id: string | null
+          tags?: string[] | null
           created_at?: string
           updated_at?: string
-          original_color?: string | null
-          size?: string | null
         }
         Update: {
           id?: string
-          title?: string
+          name?: string
           slug?: string
           description?: string | null
-          category_id?: string | null
+          sku?: string | null
           price?: number
-          original_price?: number | null
-          is_new_arrival?: boolean
+          compare_at_price?: number | null
+          brand?: string | null
+          fabric?: string | null
+          weight?: number | null
+          status?: string
           is_featured?: boolean
-          is_active?: boolean
+          is_trending?: boolean
+          seo_title?: string | null
+          seo_description?: string | null
+          category_id?: string | null
+          tags?: string[] | null
           created_at?: string
           updated_at?: string
-          original_color?: string | null
-          size?: string | null
         }
         Relationships: [
           {
@@ -110,30 +124,32 @@ export interface Database {
           }
         ]
       }
-      product_images: {
-        Row: {
+      product_images: { Row: {
           id: string
           product_id: string
-          image_url: string
-          color_name: string | null
-          is_primary: boolean
+          url: string
+          alt_text: string | null
           display_order: number
+          created_at: string
+          color_name: string | null
         }
         Insert: {
           id?: string
           product_id: string
-          image_url: string
-          color_name?: string | null
-          is_primary?: boolean
-          display_order?: number
+          url: string
+          alt_text: string | null
+          display_order: number
+          created_at?: string
+          color_name: string | null
         }
         Update: {
           id?: string
           product_id?: string
-          image_url?: string
-          color_name?: string | null
-          is_primary?: boolean
+          url?: string
+          alt_text?: string | null
           display_order?: number
+          created_at?: string
+          color_name?: string | null
         }
         Relationships: [
           {

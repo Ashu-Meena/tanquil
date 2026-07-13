@@ -75,10 +75,10 @@ export default function ProductsPage() {
     
     // Update all selected products
     await Promise.all(selectedProducts.map(id => 
-      supabase.from("products").update({ is_active: bulkStatus === "active" }).eq("id", id)
+      supabase.from("products").update({ status: bulkStatus }).eq("id", id)
     ));
     
-    setProducts(prev => prev.map(p => selectedProducts.includes(p.id) ? { ...p, status: bulkStatus, is_active: bulkStatus === "active" } : p));
+    setProducts(prev => prev.map(p => selectedProducts.includes(p.id) ? { ...p, status: bulkStatus } : p));
     setSelectedProducts([]);
     setBulkStatus("");
     setUpdating(false);

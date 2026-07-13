@@ -23,7 +23,7 @@ export default function InventoryPage() {
       .from("product_variants")
       .select(`
         *,
-        products (title, is_active, product_images(image_url, color_name))
+        products (name, status, product_images(url, color_name))
       `)
       .order("stock_quantity", { ascending: true }); // Lowest stock first
       
@@ -112,14 +112,14 @@ export default function InventoryPage() {
                               const img = variant.products?.product_images?.find((i: any) => i.color_name === variant.color_name) 
                                 || variant.products?.product_images?.[0];
                               return img ? (
-                                <Image src={img.image_url} alt={variant.products.title} fill className="object-cover" />
+                                <Image src={img.url} alt={variant.products?.name || 'Product'} fill className="object-cover" />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px]">No Img</div>
                               );
                             })()}
                           </div>
                           <div>
-                            <p className="font-medium text-[#111111]">{variant.products?.title}</p>
+                            <p className="font-medium text-[#111111]">{variant.products?.name}</p>
                           </div>
                         </div>
                       </td>
@@ -129,9 +129,9 @@ export default function InventoryPage() {
                       </td>
                       <td className="px-6 py-4">
                         <span className={`inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded-sm ${
-                          variant.products?.is_active ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                          variant.products?.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
                         }`}>
-                          {variant.products?.is_active ? 'Active' : 'Inactive'}
+                          {variant.products?.status === 'active' ? 'Active' : 'Inactive'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
