@@ -65,26 +65,39 @@ export default function MediaLibraryPage() {
     try {
       setUploading(true);
       if (!event.target.files || event.target.files.length === 0) return;
-      const file = event.target.files[0];
+      
+      const filesToUpload = Array.from(event.target.files);
+      let successCount = 0;
+      let failCount = 0;
 
-      if (file.size > 10 * 1024 * 1024) {
-        toast.error("Image must be less than 10MB");
-        return;
+      for (const file of filesToUpload) {
+        if (file.size > 10 * 1024 * 1024) {
+          toast.error(`${file.name} is over 10MB`);
+          failCount++;
+          continue;
+        }
+        if (!file.type.startsWith("image/")) {
+          failCount++;
+          continue;
+        }
+
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random().toString(36).substring(2, 12)}_${Date.now()}.${fileExt}`;
+
+        const { error } = await supabase.storage
+          .from(bucketName)
+          .upload(fileName, file, { contentType: file.type });
+
+        if (error) {
+          failCount++;
+        } else {
+          successCount++;
+        }
       }
-      if (!file.type.startsWith("image/")) {
-        toast.error("Only image files are allowed here");
-        return;
-      }
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2, 12)}_${Date.now()}.${fileExt}`;
-
-      const { error } = await supabase.storage
-        .from(bucketName)
-        .upload(fileName, file, { contentType: file.type });
-
-      if (error) throw error;
-      toast.success("Image uploaded successfully");
+      if (successCount > 0) toast.success(`Successfully uploaded ${successCount} image${successCount > 1 ? 's' : ''}`);
+      if (failCount > 0) toast.error(`Failed to upload ${failCount} image${failCount > 1 ? 's' : ''}`);
+      
       fetchFiles();
     } catch (err: any) {
       console.error(err);
@@ -108,33 +121,52 @@ export default function MediaLibraryPage() {
     try {
       setUploading(true);
       if (!event.target.files || event.target.files.length === 0) return;
-      const file = event.target.files[0];
+      
+      const filesToUpload = Array.from(event.target.files);
+      const spaceLeft = VIDEO_LIMIT - videoFiles.length;
 
-      // Re-check limit at upload time
-      if (videoFiles.length >= VIDEO_LIMIT) {
+      if (spaceLeft <= 0) {
         setShowVideoLimitModal(true);
         setUploading(false);
         return;
       }
 
-      if (file.size > 100 * 1024 * 1024) {
-        toast.error("Video must be less than 100MB");
-        return;
-      }
-      if (!file.type.startsWith("video/")) {
-        toast.error("Only video files are allowed here");
-        return;
+      const filesWeCanUpload = filesToUpload.slice(0, spaceLeft);
+      if (filesWeCanUpload.length < filesToUpload.length) {
+        toast.error(`You can only upload ${spaceLeft} more video(s). Limit reached.`);
       }
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${Math.random().toString(36).substring(2, 12)}_${Date.now()}.${fileExt}`;
+      let successCount = 0;
+      let failCount = 0;
 
-      const { error } = await supabase.storage
-        .from(bucketName)
-        .upload(fileName, file, { contentType: file.type });
+      for (const file of filesWeCanUpload) {
+        if (file.size > 100 * 1024 * 1024) {
+          toast.error(`${file.name} is over 100MB`);
+          failCount++;
+          continue;
+        }
+        if (!file.type.startsWith("video/")) {
+          failCount++;
+          continue;
+        }
 
-      if (error) throw error;
-      toast.success("Video uploaded successfully");
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Math.random().toString(36).substring(2, 12)}_${Date.now()}.${fileExt}`;
+
+        const { error } = await supabase.storage
+          .from(bucketName)
+          .upload(fileName, file, { contentType: file.type });
+
+        if (error) {
+          failCount++;
+        } else {
+          successCount++;
+        }
+      }
+
+      if (successCount > 0) toast.success(`Successfully uploaded ${successCount} video(s)`);
+      if (failCount > 0) toast.error(`Failed to upload ${failCount} video(s)`);
+      
       fetchFiles();
     } catch (err: any) {
       console.error(err);
@@ -234,6 +266,7 @@ export default function MediaLibraryPage() {
           {/* Hidden inputs */}
           <input
             type="file"
+            multiple
             ref={imageInputRef}
             onChange={handleImageUpload}
             accept="image/*"
@@ -241,6 +274,7 @@ export default function MediaLibraryPage() {
           />
           <input
             type="file"
+            multiple
             ref={videoInputRef}
             onChange={handleVideoUpload}
             accept="video/mp4,video/mov,video/webm,video/ogg,video/m4v,video/*"
