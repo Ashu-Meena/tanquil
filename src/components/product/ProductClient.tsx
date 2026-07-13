@@ -498,9 +498,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                     <span className="text-lg font-light leading-none">{activeTab === "desc" ? "—" : "+"}</span>
                   </button>
                   <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeTab === "desc" ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
-                    <div className="text-neutral-500 leading-relaxed text-[13px] pb-2">
-                      {product.description}
-                    </div>
+                    <div 
+                      className="text-neutral-500 leading-relaxed text-[13px] pb-2 whitespace-pre-wrap [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_b]:font-bold [&_strong]:font-bold [&_i]:italic [&_em]:italic"
+                      dangerouslySetInnerHTML={{ __html: product.description }}
+                    />
                   </div>
                 </div>
                 <div className="py-5 border-b border-border-light">
