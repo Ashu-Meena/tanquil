@@ -410,6 +410,8 @@ tracking_id?: string | null
           quantity: number
           price: number
           created_at: string
+          color_name: string | null
+          size: string | null
         }
         Insert: {
           id?: string
@@ -421,6 +423,8 @@ tracking_id?: string | null
           quantity: number
           price: number
           created_at?: string
+          color_name?: string | null
+          size?: string | null
         }
         Update: {
           id?: string
@@ -432,6 +436,8 @@ tracking_id?: string | null
           quantity?: number
           price?: number
           created_at?: string
+          color_name?: string | null
+          size?: string | null
         }
         Relationships: [
           {

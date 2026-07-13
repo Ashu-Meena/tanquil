@@ -20,7 +20,7 @@ export default function AddProductPage() {
     name: "",
     description: "",
     price: "",
-    compare_at_price: "",
+    original_price: "",
     sku: "",
     category_id: "",
     status: "active",
@@ -105,7 +105,7 @@ export default function AddProductPage() {
       slug: slug,
       description: formData.description,
       price: parseFloat(formData.price) || 0,
-      original_price: parseFloat(formData.compare_at_price) || null,
+      original_price: parseFloat(formData.original_price) || null,
       category_id: formData.category_id || null,
       is_active: formData.status === 'active',
       is_featured: formData.is_featured,
@@ -257,7 +257,7 @@ export default function AddProductPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-[#111111] mb-2">Compare-at (₹)</label>
-                    <input type="number" step="0.01" name="compare_at_price" value={formData.compare_at_price} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="0.00" />
+                    <input type="number" step="0.01" name="original_price" value={formData.original_price} onChange={handleChange} className="w-full border border-[#EFEFEF] p-3 text-sm focus:outline-none focus:border-[#C7A17A]" placeholder="0.00" />
                   </div>
                 </div>
 
