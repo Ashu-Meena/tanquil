@@ -23,7 +23,7 @@ export default function InventoryPage() {
       .from("product_variants")
       .select(`
         *,
-        products (name, status, product_images(url))
+        products (name, status, product_images(url, color_name))
       `)
       .order("stock_quantity", { ascending: true }); // Lowest stock first
       
@@ -108,11 +108,15 @@ export default function InventoryPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-16 bg-[#EFEFEF] relative rounded-sm overflow-hidden flex-shrink-0">
-                            {variant.products?.product_images && variant.products.product_images[0] ? (
-                              <Image src={variant.products.product_images[0].url} alt={variant.products.name} fill className="object-cover" />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px]">No Img</div>
-                            )}
+                            {(() => {
+                              const img = variant.products?.product_images?.find((i: any) => i.color_name === variant.color_name) 
+                                || variant.products?.product_images?.[0];
+                              return img ? (
+                                <Image src={img.url} alt={variant.products.name} fill className="object-cover" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[#999999] text-[10px]">No Img</div>
+                              );
+                            })()}
                           </div>
                           <div>
                             <p className="font-medium text-[#111111]">{variant.products?.name}</p>
