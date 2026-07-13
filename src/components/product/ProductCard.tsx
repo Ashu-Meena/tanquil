@@ -15,11 +15,13 @@ interface CardProduct {
   images: string[];
   isNew?: boolean;
   isSale?: boolean;
+  colors?: { name: string; image?: string }[];
 }
 
 export default function ProductCard({ product }: { product: CardProduct }) {
   const [isHovered, setIsHovered] = useState(false);
-  const [isSelectingSize, setIsSelectingSize] = useState(false);
+  const [activeStep, setActiveStep] = useState<'none' | 'color' | 'size'>('none');
+  const [selectedColor, setSelectedColor] = useState<{name: string, image?: string} | null>(null);
   
   const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
   const { addItem, openCart } = useCartStore();
@@ -38,19 +40,50 @@ export default function ProductCard({ product }: { product: CardProduct }) {
     window.location.href = `/products/${product.slug || product.id}`;
   };
 
+  const startQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product.colors && product.colors.length > 1) {
+      setActiveStep('color');
+    } else {
+      setActiveStep('size');
+    }
+  };
+
+  const handleColorSelect = (e: React.MouseEvent, color: {name: string, image?: string}) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedColor(color);
+    setActiveStep('size');
+  };
+
   const handleAddToCartWithSize = (e: React.MouseEvent, size: string) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Determine the color to add
+    let colorToAdd = "Default";
+    let imageToAdd = product.images[0] || "";
+
+    if (product.colors && product.colors.length > 1 && selectedColor) {
+      colorToAdd = selectedColor.name;
+      imageToAdd = selectedColor.image || imageToAdd;
+    } else if (product.colors && product.colors.length === 1) {
+      colorToAdd = product.colors[0].name;
+      imageToAdd = product.colors[0].image || imageToAdd;
+    }
+
     addItem({
       id: String(product.id),
       name: product.name,
       price: product.price,
-      image: product.images[0] || "",
-      color: "Default",
+      image: imageToAdd,
+      color: colorToAdd,
       size: size,
       quantity: 1,
     });
-    setIsSelectingSize(false);
+    setActiveStep('none');
+    setSelectedColor(null);
     openCart();
   };
 
@@ -60,7 +93,8 @@ export default function ProductCard({ product }: { product: CardProduct }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
-        setIsSelectingSize(false);
+        setActiveStep('none');
+        setSelectedColor(null);
       }}
     >
       <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-[#FAF8F5] mb-4">
@@ -110,7 +144,23 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         {/* Hover Actions Panel (Desktop Only) */}
         <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
           <div className="bg-white/95 backdrop-blur-md p-3 rounded-sm shadow-xl">
-            {isSelectingSize ? (
+            {activeStep === 'color' ? (
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] text-center uppercase tracking-widest text-[#666666]">Select Color</span>
+                <div className="flex justify-center gap-1 flex-wrap">
+                  {product.colors?.map((color) => (
+                    <button
+                      key={color.name}
+                      onClick={(e) => handleColorSelect(e, color)}
+                      className="w-16 h-8 flex items-center justify-center border border-[#EFEFEF] text-[10px] hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-colors overflow-hidden whitespace-nowrap px-1"
+                      title={color.name}
+                    >
+                      {color.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : activeStep === 'size' ? (
               <div className="flex flex-col gap-2">
                 <span className="text-[10px] text-center uppercase tracking-widest text-[#666666]">Select Size</span>
                 <div className="flex justify-center gap-1">
@@ -127,11 +177,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
               </div>
             ) : (
               <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsSelectingSize(true);
-                }}
+                onClick={startQuickAdd}
                 className="w-full bg-[#111111] hover:bg-[#C7A17A] text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
               >
                 Quick Add to Cart
@@ -159,7 +205,22 @@ export default function ProductCard({ product }: { product: CardProduct }) {
       </div>
         
         {/* Quick View/Add Button */}
-        {isSelectingSize ? (
+        {activeStep === 'color' ? (
+          <div className="mt-3 flex flex-col gap-2 md:hidden">
+            <span className="text-[10px] text-center uppercase tracking-widest text-[#666666]">Select Color</span>
+            <div className="flex justify-center gap-2 flex-wrap">
+              {product.colors?.map((color) => (
+                <button
+                  key={color.name}
+                  onClick={(e) => handleColorSelect(e, color)}
+                  className="px-2 h-10 flex items-center justify-center border border-[#EFEFEF] bg-[#FAF8F5] text-[10px] hover:border-[#111111] hover:bg-[#111111] hover:text-white transition-colors whitespace-nowrap"
+                >
+                  {color.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : activeStep === 'size' ? (
           <div className="mt-3 flex flex-col gap-2 md:hidden">
             <span className="text-[10px] text-center uppercase tracking-widest text-[#666666]">Select Size</span>
             <div className="flex justify-center gap-2">
@@ -176,11 +237,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           </div>
         ) : (
           <button 
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsSelectingSize(true);
-            }}
+            onClick={startQuickAdd}
             className="mt-3 w-full bg-[#FAF8F5] text-[#111111] py-2 text-xs uppercase tracking-widest font-medium border border-[#EFEFEF] hover:bg-[#111111] hover:text-white transition-colors block text-center md:hidden"
           >
             Quick Add to Cart

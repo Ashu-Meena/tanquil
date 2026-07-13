@@ -48,7 +48,8 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     .from("products")
     .select(`
       id, name, price, slug,
-      product_images(url)
+      product_images(url, color_name),
+      product_variants(color_name)
     `)
     .eq("category_id", productData.category_id)
     .neq("id", productData.id)
@@ -103,13 +104,28 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     details: [],
   };
 
-  const formattedRelated = relatedData?.map(rp => ({
-    id: rp.id,
-    name: rp.name,
-    price: rp.price,
-    slug: rp.slug,
-    images: rp.product_images?.map((img: any) => img.url) || []
-  })) || [];
+  const formattedRelated = relatedData?.map(rp => {
+    const images = rp.product_images?.map((img: any) => img.url) || [];
+    
+    const colorsMap = new Map<string, string>();
+    if (rp.product_variants) {
+      rp.product_variants.forEach((v: any) => {
+        if (!colorsMap.has(v.color_name)) {
+          const matchingImg = rp.product_images?.find((img: any) => img.color_name === v.color_name);
+          colorsMap.set(v.color_name, matchingImg?.url || images[0]);
+        }
+      });
+    }
+
+    return {
+      id: rp.id,
+      name: rp.name,
+      price: rp.price,
+      slug: rp.slug,
+      images,
+      colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image }))
+    };
+  }) || [];
 
   return (
     <ProductClient 
