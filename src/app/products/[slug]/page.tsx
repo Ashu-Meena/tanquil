@@ -100,7 +100,10 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     colors,
     sizes,
     variants: productData.product_variants || [],
-    details: [],
+    brand: productData.brand,
+    fabric: productData.fabric,
+    tags: productData.tags,
+    details: ["Dry clean only", "Handle with care"],
   };
 
   const formattedRelated = relatedData?.map(rp => {

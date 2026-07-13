@@ -121,6 +121,12 @@ export default function AddProductPage() {
       status: formData.status,
       is_featured: formData.is_featured,
       is_bestseller: formData.is_bestseller,
+      brand: formData.brand,
+      fabric: formData.fabric,
+      weight: parseFloat(formData.weight) || null,
+      tags: tagsArray,
+      seo_title: formData.seo_title,
+      seo_description: formData.seo_description,
     };
 
     const { data: product, error } = await supabase.from("products").insert([payload]).select().single();
