@@ -167,12 +167,16 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   };
 
   const handleAddToCart = () => {
+    const nameParts = selectedColor.name.split("||");
+    const baseColorName = nameParts[0] || selectedColor.name;
+    const customProductTitle = nameParts.length > 1 ? nameParts[1] : product.name;
+
     addItem({
       id: product.id,
-      name: product.name,
+      name: customProductTitle,
       price: product.price,
       image: activeImages[0] || product.images[0],
-      color: selectedColor.name,
+      color: baseColorName,
       size: getFinalSizeString(),
       quantity,
     });
@@ -180,12 +184,16 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   };
 
   const handleBuyNow = () => {
+    const nameParts = selectedColor.name.split("||");
+    const baseColorName = nameParts[0] || selectedColor.name;
+    const customProductTitle = nameParts.length > 1 ? nameParts[1] : product.name;
+
     addItem({
       id: product.id,
-      name: product.name,
+      name: customProductTitle,
       price: product.price,
       image: activeImages[0] || product.images[0],
-      color: selectedColor.name,
+      color: baseColorName,
       size: getFinalSizeString(),
       quantity,
     });
@@ -227,7 +235,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             <span>/</span>
             <Link href={`/collections/${product.category.toLowerCase()}`} className="hover:text-gold-text transition-colors">{product.category}</Link>
             <span>/</span>
-            <span className="text-rich-black">{product.name}</span>
+            <span className="text-rich-black">{selectedColor.name.includes("||") ? selectedColor.name.split("||")[1] : product.name}</span>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20">
@@ -294,7 +302,9 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             {/* Product Info (Right) */}
             <div className="w-full lg:w-[40%] flex flex-col">
               <div className="flex justify-between items-start mb-2 md:mb-4">
-                <h1 className="font-serif text-2xl md:text-4xl text-rich-black leading-tight pr-4">{product.name}</h1>
+                <h1 className="font-serif text-2xl md:text-4xl text-rich-black leading-tight pr-4">
+                  {selectedColor.name.includes("||") ? selectedColor.name.split("||")[1] : product.name}
+                </h1>
                 <button
                   onClick={handleShare}
                   title={shareCopied ? "Link Copied!" : "Share"}
@@ -320,7 +330,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               {product.colors && product.colors.length > 0 && (
                 <div className="mb-8">
                   <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-4">
-                    Color <span className="text-rich-black font-medium ml-2">{selectedColor.name}</span>
+                    Color <span className="text-rich-black font-medium ml-2">{selectedColor.name.split("||")[0]}</span>
                   </p>
                   <div className="flex gap-2">
                     {product.colors.map(color => (
@@ -328,11 +338,19 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                         key={color.name}
                         onClick={() => handleColorSelect(color)}
                         className={`w-8 h-8 rounded-full border transition-all flex items-center justify-center ${selectedColor.name === color.name ? 'border-rich-black p-[2px]' : 'border-transparent p-0'}`}
+                        title={color.name.split("||")[0]}
                       >
-                        <span 
-                          className="block w-full h-full rounded-full border border-black/10" 
-                          style={{ backgroundColor: color.hex }}
-                        />
+                        {color.hex.includes(',') ? (
+                          <span 
+                            className="block w-full h-full rounded-full border border-black/10" 
+                            style={{ background: `linear-gradient(135deg, ${color.hex.split(',')[0]} 50%, ${color.hex.split(',')[1]} 50%)` }}
+                          />
+                        ) : (
+                          <span 
+                            className="block w-full h-full rounded-full border border-black/10" 
+                            style={{ backgroundColor: color.hex }}
+                          />
+                        )}
                       </button>
                     ))}
                   </div>
@@ -573,13 +591,15 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             <Image src={activeImages[0] || product.images[0]} alt={product.name} fill className="object-cover" />
           </div>
           <div>
-            <h3 className="font-serif text-lg text-rich-black">{product.name}</h3>
+            <h3 className="font-serif text-lg text-rich-black">
+              {selectedColor.name.includes("||") ? selectedColor.name.split("||")[1] : product.name}
+            </h3>
             <p className="text-sm font-medium text-rich-black">₹{product.price.toLocaleString('en-IN')}</p>
           </div>
         </div>
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-4 text-xs uppercase tracking-widest text-neutral-500">
-            <span>Color: <span className="text-rich-black font-medium">{selectedColor.name}</span></span>
+            <span>Color: <span className="text-rich-black font-medium">{selectedColor.name.split("||")[0]}</span></span>
             <span>Size: <span className="text-rich-black font-medium">{selectedSize === 'Custom' ? 'Custom' : selectedSize}</span></span>
           </div>
           <button 

@@ -86,13 +86,23 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
     onChange(groups.map((g) => (g.id === gid ? { ...g, ...fields } : g)));
   };
 
-  const handleColorNameChange = (gid: string, newName: string) => {
-    const match = Object.entries(COMMON_COLORS).find(([k]) => k.toLowerCase() === newName.toLowerCase());
+  const handleColorNameChange = (gid: string, newBaseName: string, currentCustomTitle: string) => {
+    const match = Object.entries(COMMON_COLORS).find(([k]) => k.toLowerCase() === newBaseName.toLowerCase());
+    const finalName = currentCustomTitle ? `${newBaseName}||${currentCustomTitle}` : newBaseName;
     if (match) {
-      updateGroupFields(gid, { color_name: newName, color_hex: match[1] });
+      // Keep any existing secondary color intact
+      const group = groups.find((g) => g.id === gid);
+      const hexParts = (group?.color_hex || "").split(",");
+      const newHex = hexParts.length > 1 ? `${match[1]},${hexParts[1]}` : match[1];
+      updateGroupFields(gid, { color_name: finalName, color_hex: newHex });
     } else {
-      updateGroup(gid, "color_name", newName);
+      updateGroup(gid, "color_name", finalName);
     }
+  };
+
+  const handleCustomTitleChange = (gid: string, baseName: string, newCustomTitle: string) => {
+    const finalName = newCustomTitle ? `${baseName}||${newCustomTitle}` : baseName;
+    updateGroup(gid, "color_name", finalName);
   };
 
   // ── Size Row helpers ─────────────────────────────────────────────────────
@@ -162,23 +172,78 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
           className="border border-border-light rounded-sm bg-white shadow-sm hover:border-gold transition-colors"
         >
           {/* ── Card Header: Color ── */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-border-light bg-[#FAFAFA]">
-            <div className="flex items-center gap-3 flex-1 min-w-0">
-              <input
-                type="color"
-                value={group.color_hex}
-                onChange={(e) => updateGroup(group.id, "color_hex", e.target.value)}
-                className="w-9 h-9 border border-border-light p-0.5 cursor-pointer rounded-sm flex-shrink-0 bg-white"
-                title="Pick colour"
-              />
-              <input
-                type="text"
-                list="common-colors"
-                value={group.color_name}
-                onChange={(e) => handleColorNameChange(group.id, e.target.value)}
-                placeholder="Color name (e.g. Midnight Blue)"
-                className="flex-1 border border-border-light px-3 py-1.5 text-sm focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-sm"
-              />
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-5 py-3 border-b border-border-light bg-[#FAFAFA] gap-3">
+            <div className="flex items-center gap-2 flex-1 w-full min-w-0 flex-wrap">
+              {(() => {
+                const hexParts = group.color_hex.split(",");
+                const primaryHex = hexParts[0] || "#000000";
+                const secondaryHex = hexParts.length > 1 ? hexParts[1] : "";
+                
+                const nameParts = group.color_name.split("||");
+                const baseName = nameParts[0] || "";
+                const customTitle = nameParts.length > 1 ? nameParts[1] : "";
+
+                return (
+                  <>
+                    <div className="flex items-center gap-1 bg-white p-1 border border-border-light rounded-sm shadow-sm">
+                      <input
+                        type="color"
+                        value={primaryHex}
+                        onChange={(e) => updateGroup(group.id, "color_hex", secondaryHex ? `${e.target.value},${secondaryHex}` : e.target.value)}
+                        className="w-7 h-7 cursor-pointer bg-transparent border-none p-0"
+                        title="Primary Colour"
+                      />
+                      {secondaryHex ? (
+                        <>
+                          <input
+                            type="color"
+                            value={secondaryHex}
+                            onChange={(e) => updateGroup(group.id, "color_hex", `${primaryHex},${e.target.value}`)}
+                            className="w-7 h-7 cursor-pointer bg-transparent border-none p-0"
+                            title="Secondary Colour"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => updateGroup(group.id, "color_hex", primaryHex)}
+                            className="text-neutral-400 hover:text-red-500 ml-1 px-1"
+                            title="Remove Secondary Colour"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => updateGroup(group.id, "color_hex", `${primaryHex},#ffffff`)}
+                          className="text-xs text-neutral-400 hover:text-gold ml-1 px-1 flex items-center"
+                          title="Add Secondary Colour"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-col flex-1 min-w-[120px]">
+                      <input
+                        type="text"
+                        list="common-colors"
+                        value={baseName}
+                        onChange={(e) => handleColorNameChange(group.id, e.target.value, customTitle)}
+                        placeholder="Color name (e.g. Midnight Blue)"
+                        className="w-full border border-border-light px-2 py-1 text-sm focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-t-sm"
+                      />
+                      <input
+                        type="text"
+                        value={customTitle}
+                        onChange={(e) => handleCustomTitleChange(group.id, baseName, e.target.value)}
+                        placeholder="Custom Variant Title (Optional)"
+                        className="w-full border border-t-0 border-border-light px-2 py-1 text-xs text-neutral-500 focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-b-sm"
+                        title="Use this to override the product title for this specific colour variant"
+                      />
+                    </div>
+                  </>
+                );
+              })()}
               <datalist id="common-colors">
                 {Object.keys(COMMON_COLORS).map((c) => (
                   <option key={c} value={c} />

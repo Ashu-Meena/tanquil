@@ -150,18 +150,21 @@ export default function ProductCard({ product }: { product: CardProduct }) {
               <div className="flex flex-col gap-2">
                 <span className="text-[10px] text-center uppercase tracking-widest text-neutral-500">Select Color</span>
                 <div className="flex justify-center gap-1 flex-wrap" role="radiogroup" aria-label="Select Color">
-                  {product.colors?.map((color) => (
-                    <button
-                      key={color.name}
-                      role="radio"
-                      aria-checked={selectedColor?.name === color.name}
-                      onClick={(e) => handleColorSelect(e, color)}
-                      className={`min-w-[44px] px-2 h-11 flex items-center justify-center border text-[10px] transition-colors overflow-hidden whitespace-nowrap ${selectedColor?.name === color.name ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black hover:bg-rich-black hover:text-white'}`}
-                      title={color.name}
-                    >
-                      {color.name}
-                    </button>
-                  ))}
+                  {product.colors?.map((color) => {
+                    const baseColorName = color.name.split("||")[0];
+                    return (
+                      <button
+                        key={color.name}
+                        role="radio"
+                        aria-checked={selectedColor?.name === color.name}
+                        onClick={(e) => handleColorSelect(e, color)}
+                        className={`min-w-[44px] px-2 h-11 flex items-center justify-center border text-[10px] transition-colors overflow-hidden whitespace-nowrap ${selectedColor?.name === color.name ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black hover:bg-rich-black hover:text-white'}`}
+                        title={baseColorName}
+                      >
+                        {baseColorName}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ) : activeStep === 'size' ? (
@@ -214,17 +217,20 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           <div className="mt-3 flex flex-col gap-2 md:hidden">
             <span className="text-[10px] text-center uppercase tracking-widest text-neutral-500">Select Color</span>
             <div className="flex justify-center gap-2 flex-wrap" role="radiogroup" aria-label="Select Color">
-              {product.colors?.map((color) => (
-                <button
-                  key={color.name}
-                  role="radio"
-                  aria-checked={selectedColor?.name === color.name}
-                  onClick={(e) => handleColorSelect(e, color)}
-                  className={`min-w-[44px] px-2 h-11 flex items-center justify-center border text-[10px] transition-colors whitespace-nowrap ${selectedColor?.name === color.name ? 'border-rich-black bg-rich-black text-white' : 'border-border-light bg-ivory hover:border-rich-black hover:bg-rich-black hover:text-white'}`}
-                >
-                  {color.name}
-                </button>
-              ))}
+              {product.colors?.map((color) => {
+                const baseColorName = color.name.split("||")[0];
+                return (
+                  <button
+                    key={color.name}
+                    role="radio"
+                    aria-checked={selectedColor?.name === color.name}
+                    onClick={(e) => handleColorSelect(e, color)}
+                    className={`min-w-[44px] px-2 h-11 flex items-center justify-center border text-[10px] transition-colors whitespace-nowrap ${selectedColor?.name === color.name ? 'border-rich-black bg-rich-black text-white' : 'border-border-light bg-ivory hover:border-rich-black hover:bg-rich-black hover:text-white'}`}
+                  >
+                    {baseColorName}
+                  </button>
+                );
+              })}
             </div>
           </div>
         ) : activeStep === 'size' ? (
