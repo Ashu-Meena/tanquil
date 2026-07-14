@@ -129,8 +129,8 @@ export default function ReviewsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="font-medium text-rich-black mb-1 truncate">{review.title}</p>
-                        <p className="text-neutral-500 line-clamp-2 text-xs leading-relaxed">{review.content}</p>
+                        <p className="font-medium text-rich-black mb-1 break-words">{review.title}</p>
+                        <p className="text-neutral-500 text-xs leading-relaxed break-words">{review.comment}</p>
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end">
