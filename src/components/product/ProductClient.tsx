@@ -9,6 +9,7 @@ import { useWishlistStore } from "@/store/useWishlistStore";
 import { Heart, Ruler, Truck, ShieldCheck, RefreshCw, ChevronDown, ChevronUp, Share2, MessageCircle } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import SizeGuideModal from "@/components/product/SizeGuideModal";
+import DOMPurify from "isomorphic-dompurify";
 
 interface Color {
   name: string;
@@ -205,7 +206,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           url,
         });
       } catch {
-        // User cancelled share — no error needed
+        // User cancelled share â€” no error needed
       }
     } else {
       await navigator.clipboard.writeText(url);
@@ -222,9 +223,9 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
         <div className="container mx-auto px-6 lg:px-12">
           {/* Breadcrumbs - Hidden on Mobile */}
           <div className="hidden md:flex text-[11px] uppercase tracking-widest text-neutral-500 mb-8 items-center gap-2">
-            <Link href="/" className="hover:text-gold transition-colors">Home</Link>
+            <Link href="/" className="hover:text-gold-text transition-colors">Home</Link>
             <span>/</span>
-            <Link href={`/collections/${product.category.toLowerCase()}`} className="hover:text-gold transition-colors">{product.category}</Link>
+            <Link href={`/collections/${product.category.toLowerCase()}`} className="hover:text-gold-text transition-colors">{product.category}</Link>
             <span>/</span>
             <span className="text-rich-black">{product.name}</span>
           </div>
@@ -297,22 +298,22 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                 <button
                   onClick={handleShare}
                   title={shareCopied ? "Link Copied!" : "Share"}
-                  className={`transition-colors p-1 md:p-2 flex-shrink-0 ${shareCopied ? 'text-[#2F855A]' : 'text-rich-black hover:text-gold'}`}
+                  className={`transition-colors p-1 md:p-2 flex-shrink-0 ${shareCopied ? 'text-success' : 'text-rich-black hover:text-gold-text'}`}
                 >
                   <Share2 className="w-4 h-4 md:w-5 md:h-5" />
                 </button>
               </div>
               <div className="text-lg md:text-xl font-medium text-rich-black mb-6 md:mb-8 flex items-center gap-3" style={{ fontFamily: 'var(--font-montserrat)' }}>
-                ₹{product.price.toLocaleString('en-IN')}
+                â‚¹{product.price.toLocaleString('en-IN')}
                 {product.compare_at_price && product.compare_at_price > product.price && (
                   <>
-                    <span className="text-neutral-400 line-through text-lg">₹{product.compare_at_price.toLocaleString('en-IN')}</span>
+                    <span className="text-neutral-400 line-through text-lg">â‚¹{product.compare_at_price.toLocaleString('en-IN')}</span>
                     <span className="bg-sale text-white text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-sm">Sale</span>
                   </>
                 )}
               </div>
               {shareCopied && (
-                <p className="text-xs text-[#2F855A] mb-2 -mt-2">Link copied to clipboard!</p>
+                <p className="text-xs text-success mb-2 -mt-2">Link copied to clipboard!</p>
               )}
 
               {/* Colors */}
@@ -346,7 +347,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   </p>
                   <button
                     onClick={() => setIsSizeGuideOpen(true)}
-                    className="text-[10px] uppercase tracking-widest text-rich-black underline underline-offset-4 flex items-center gap-1 hover:text-gold transition-colors"
+                    className="text-[10px] uppercase tracking-widest text-rich-black underline underline-offset-4 flex items-center gap-1 hover:text-gold-text transition-colors"
                   >
                     Size Guide
                   </button>
@@ -368,7 +369,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                           selectedSize === size 
                             ? 'border-rich-black bg-rich-black text-white' 
                             : isSizeOutOfStock 
-                              ? 'border-border-light text-[#CCCCCC] hover:border-[#CCCCCC]' 
+                              ? 'border-border-light text-neutral-400 hover:border-[#CCCCCC]' 
                               : 'border-border-light hover:border-rich-black text-rich-black'
                         }`}
                       >
@@ -465,7 +466,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   href="https://wa.me/919876543210" 
                   target="_blank" 
                   rel="noreferrer"
-                  className="w-full mt-2 flex items-center justify-center gap-2 text-[#25D366] hover:text-rich-black py-2 text-[10px] uppercase tracking-widest transition-colors rounded-sm"
+                  className="w-full mt-2 flex items-center justify-center gap-2 text-success hover:text-rich-black py-2 text-[10px] uppercase tracking-widest transition-colors rounded-sm"
                 >
                   <MessageCircle className="w-3 h-3 md:w-4 md:h-4" /> Need styling advice? WhatsApp Us
                 </a>
@@ -492,35 +493,41 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                 <div className="py-5 border-b border-border-light">
                   <button 
                     onClick={() => setActiveTab(activeTab === "desc" ? "" : "desc")}
+                    aria-expanded={activeTab === "desc"}
                     className="w-full flex justify-between items-center text-left uppercase tracking-[0.2em] text-[10px] font-medium text-rich-black"
                   >
                     Description
-                    <span className="text-lg font-light leading-none">{activeTab === "desc" ? "—" : "+"}</span>
+                    <span className="text-lg font-light leading-none">{activeTab === "desc" ? "â€”" : "+"}</span>
                   </button>
-                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeTab === "desc" ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
-                    <div 
-                      className="text-neutral-500 leading-relaxed text-[13px] pb-2 whitespace-pre-wrap [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_b]:font-bold [&_strong]:font-bold [&_i]:italic [&_em]:italic"
-                      dangerouslySetInnerHTML={{ __html: product.description }}
-                    />
+                  <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${activeTab === "desc" ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className="overflow-hidden">
+                      <div 
+                        className="text-neutral-500 leading-relaxed text-[13px] pb-2 whitespace-pre-wrap [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_b]:font-bold [&_strong]:font-bold [&_i]:italic [&_em]:italic"
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product.description) }}
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className="py-5 border-b border-border-light">
                   <button 
                     onClick={() => setActiveTab(activeTab === "details" ? "" : "details")}
+                    aria-expanded={activeTab === "details"}
                     className="w-full flex justify-between items-center text-left uppercase tracking-[0.2em] text-[10px] font-medium text-rich-black"
                   >
                     Details & Care
-                    <span className="text-lg font-light leading-none">{activeTab === "details" ? "—" : "+"}</span>
+                    <span className="text-lg font-light leading-none">{activeTab === "details" ? "â€”" : "+"}</span>
                   </button>
-                  <div className={`overflow-hidden transition-all duration-300 ease-in-out ${activeTab === "details" ? "max-h-[500px] opacity-100 mt-4" : "max-h-0 opacity-0"}`}>
-                    <ul className="text-neutral-500 text-[13px] space-y-2 list-none pb-2">
-                      {product.brand && <li><span className="font-medium text-rich-black">Brand:</span> {product.brand}</li>}
-                      {product.fabric && <li><span className="font-medium text-rich-black">Fabric:</span> {product.fabric}</li>}
-                      {product.tags && product.tags.length > 0 && <li><span className="font-medium text-rich-black">Tags:</span> {product.tags.join(', ')}</li>}
-                      {!product.brand && !product.fabric && product.details.map((detail, i) => (
-                        <li key={i}>{detail}</li>
-                      ))}
-                    </ul>
+                  <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${activeTab === "details" ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"}`}>
+                    <div className="overflow-hidden">
+                      <ul className="text-neutral-500 text-[13px] space-y-2 list-none pb-2">
+                        {product.brand && <li><span className="font-medium text-rich-black">Brand:</span> {product.brand}</li>}
+                        {product.fabric && <li><span className="font-medium text-rich-black">Fabric:</span> {product.fabric}</li>}
+                        {product.tags && product.tags.length > 0 && <li><span className="font-medium text-rich-black">Tags:</span> {product.tags.join(', ')}</li>}
+                        {!product.brand && !product.fabric && product.details.map((detail, i) => (
+                          <li key={i}>{detail}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -567,7 +574,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           </div>
           <div>
             <h3 className="font-serif text-lg text-rich-black">{product.name}</h3>
-            <p className="text-sm font-medium text-rich-black">₹{product.price.toLocaleString('en-IN')}</p>
+            <p className="text-sm font-medium text-rich-black">â‚¹{product.price.toLocaleString('en-IN')}</p>
           </div>
         </div>
         <div className="flex items-center gap-6">

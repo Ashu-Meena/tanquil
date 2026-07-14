@@ -57,7 +57,7 @@ export default function CartPage() {
                         </span>
                         <button 
                           onClick={() => removeItem(item.id, item.size, item.color)}
-                          className="text-neutral-400 hover:text-red-500 transition-colors p-1"
+                          className="text-neutral-400 hover:text-error transition-colors p-1"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>

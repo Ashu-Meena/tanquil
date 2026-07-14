@@ -11,14 +11,14 @@ const defaultStories = [
     id: 1,
     title: "Summer In Italy",
     description: "Embrace la dolce vita with our curated collection of breezy linens, floral midis, and sunset-ready silhouettes. Designed for wandering cobblestone streets and sipping spritzes by the coast.",
-    image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200",
+    image: "/images/fashion-1.jpg",
     align: "left"
   },
   {
     id: 2,
     title: "Vintage Core",
     description: "A nod to the glamorous eras of the past. Think delicate lace, structured corsets, and timeless draping that brings old-Hollywood elegance to the modern wardrobe.",
-    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1200",
+    image: "/images/fashion-2.jpg",
     align: "right"
   }
 ];

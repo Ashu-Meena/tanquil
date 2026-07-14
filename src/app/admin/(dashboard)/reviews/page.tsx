@@ -152,7 +152,7 @@ export default function ReviewsPage() {
                       <td className="px-6 py-4">
                         <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${
                           review.status === 'approved' ? 'bg-green-100 text-green-800' :
-                          review.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                          review.status === 'rejected' ? 'bg-error/10 text-error' :
                           'bg-yellow-100 text-yellow-800'
                         }`}>
                           {review.status}
@@ -170,7 +170,7 @@ export default function ReviewsPage() {
                               <X className="w-4 h-4" />
                             </button>
                           )}
-                          <button onClick={() => deleteReview(review.id)} className="text-red-500 hover:bg-red-50 p-1.5 rounded-sm transition-colors ml-2" title="Delete">
+                          <button onClick={() => deleteReview(review.id)} className="text-error hover:bg-error/10 p-1.5 rounded-sm transition-colors ml-2" title="Delete">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>

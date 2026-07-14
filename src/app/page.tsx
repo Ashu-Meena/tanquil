@@ -228,7 +228,7 @@ export default async function Home() {
     name: r.profiles ? `${r.profiles.first_name || ''} ${r.profiles.last_name || ''}`.trim() || 'Anonymous' : 'Anonymous',
     text: r.comment,
     product: r.products?.name,
-    image: r.profiles?.avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=200"
+    image: r.profiles?.avatar_url || "/images/avatar-1.jpg"
   })) || [];
 
   return (

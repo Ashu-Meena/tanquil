@@ -164,7 +164,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
       {/* Banner */}
       <div className="relative w-full h-[40vh] md:h-[50vh] bg-ivory">
         <Image 
-          src="https://images.unsplash.com/photo-1509319117193-57bab727e09d?q=80&w=2000" 
+          src="/images/collection-hero.jpg" 
           alt="Collection Banner"
           fill
           className="object-cover opacity-80"

@@ -9,21 +9,21 @@ const defaultReviews = [
   {
     id: 1,
     name: "Aanya S.",
-    image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=200",
+    image: "/images/avatar-1.jpg",
     text: "The quality of the satin slip dress is incredible. It feels like second skin and fits perfectly. Truly a luxury experience.",
     product: "Satin Slip Midi Dress"
   },
   {
     id: 2,
     name: "Meera K.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200",
+    image: "/images/avatar-2.jpg",
     text: "Wore the draped halter gown for my engagement party and received endless compliments. The finishing is flawless.",
     product: "Draped Halter Gown"
   },
   {
     id: 3,
     name: "Riya M.",
-    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=200",
+    image: "/images/avatar-3.jpg",
     text: "Beautiful packaging and fast shipping. The corset top is even better in person. Will definitely shop again!",
     product: "Embellished Corset Top"
   }

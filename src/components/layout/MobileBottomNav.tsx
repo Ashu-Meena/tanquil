@@ -36,7 +36,7 @@ export default function MobileBottomNav() {
           const isActive = item.href && pathname === item.href;
 
           const content = (
-            <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-gold' : 'text-neutral-500'} hover:text-rich-black transition-colors`}>
+            <div className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${isActive ? 'text-gold-text' : 'text-neutral-500'} hover:text-rich-black transition-colors`}>
               <div className="relative">
                 <Icon className={`w-5 h-5 ${isActive ? 'fill-current' : ''}`} />
                 <span 

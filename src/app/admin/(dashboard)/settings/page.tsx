@@ -197,7 +197,7 @@ export default function SettingsPage() {
               />
               <button 
                 onClick={() => removeAnnouncement(idx)}
-                className="p-2.5 text-neutral-400 hover:text-red-500 hover:bg-red-50 rounded-sm transition-colors"
+                className="p-2.5 text-neutral-400 hover:text-error hover:bg-error/10 rounded-sm transition-colors"
               >
                 Remove
               </button>

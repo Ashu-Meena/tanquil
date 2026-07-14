@@ -25,7 +25,7 @@ interface VariantsEditorProps {
 }
 
 export default function VariantsEditor({ groups, onChange }: VariantsEditorProps) {
-  // ── Color Group helpers ──────────────────────────────────────────────────
+  // â”€â”€ Color Group helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const addGroup = () => {
     onChange([
       ...groups,
@@ -48,7 +48,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
     onChange(groups.map((g) => (g.id === gid ? { ...g, [field]: value } : g)));
   };
 
-  // ── Size Row helpers ─────────────────────────────────────────────────────
+  // â”€â”€ Size Row helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const addSize = (gid: string) => {
     onChange(
       groups.map((g) =>
@@ -77,7 +77,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
     );
   };
 
-  // ── Image helpers ────────────────────────────────────────────────────────
+  // â”€â”€ Image helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const addImage = (gid: string) => {
     onChange(
       groups.map((g) =>
@@ -114,7 +114,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
           key={group.id}
           className="border border-border-light rounded-sm bg-white shadow-sm hover:border-gold transition-colors"
         >
-          {/* ── Card Header: Color ── */}
+          {/* â”€â”€ Card Header: Color â”€â”€ */}
           <div className="flex items-center justify-between px-5 py-3 border-b border-border-light bg-[#FAFAFA]">
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <input
@@ -148,7 +148,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
           </div>
 
           <div className="p-5 space-y-5">
-            {/* ── Sizes & Stock table ── */}
+            {/* â”€â”€ Sizes & Stock table â”€â”€ */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">
@@ -165,7 +165,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
 
               <div className="border border-border-light rounded-sm overflow-hidden">
                 {/* Header row */}
-                <div className="grid grid-cols-[1fr_100px_36px] bg-[#F9F9F9] border-b border-border-light px-3 py-2">
+                <div className="grid grid-cols-[1fr_100px_36px] bg-ivory border-b border-border-light px-3 py-2">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">Size</span>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 text-center">Stock</span>
                   <span />
@@ -194,7 +194,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
                         {PRESET_SIZES.map((s) => (
                           <option key={s} value={s}>{s}</option>
                         ))}
-                        <option value="Other">Other…</option>
+                        <option value="Other">Otherâ€¦</option>
                       </select>
 
                       {!PRESET_SIZES.includes(sizeRow.size) && (
@@ -230,7 +230,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
                       type="button"
                       onClick={() => removeSize(group.id, sizeRow.id)}
                       disabled={group.sizes.length === 1}
-                      className="flex items-center justify-center text-[#CCCCCC] hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                      className="flex items-center justify-center text-neutral-400 hover:text-red-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                       title="Remove size"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
@@ -262,7 +262,7 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
               </div>
             </div>
 
-            {/* ── Color Media Gallery ── */}
+            {/* â”€â”€ Color Media Gallery â”€â”€ */}
             <div className="pt-4 border-t border-border-light">
               <label className="block text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">
                 Colour Media Gallery
@@ -314,9 +314,9 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
   );
 }
 
-// ─── Helpers (used by both pages when saving) ────────────────────────────────
+// â”€â”€â”€ Helpers (used by both pages when saving) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-/** Convert ColorGroups → flat product_variants rows for DB */
+/** Convert ColorGroups â†’ flat product_variants rows for DB */
 export function groupsToVariantPayloads(
   groups: ColorGroup[],
   productId: string,
@@ -341,7 +341,7 @@ export function groupsToVariantPayloads(
   return rows;
 }
 
-/** Convert ColorGroups → flat product_images rows for DB */
+/** Convert ColorGroups â†’ flat product_images rows for DB */
 export function groupsToImagePayloads(groups: ColorGroup[], productId: string): any[] {
   const rows: any[] = [];
   groups.forEach((g) => {
@@ -353,7 +353,7 @@ export function groupsToImagePayloads(groups: ColorGroup[], productId: string): 
   return rows;
 }
 
-/** Convert flat DB product_variants + product_images → ColorGroups for the editor */
+/** Convert flat DB product_variants + product_images â†’ ColorGroups for the editor */
 export function flatVariantsToGroups(
   dbVariants: any[],
   dbImages: any[]

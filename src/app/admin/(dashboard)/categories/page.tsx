@@ -72,7 +72,7 @@ export default function CategoriesPage() {
         </div>
 
         {/* Grid Layout */}
-        <div className="p-6 bg-[#F9F9F9] min-h-[400px]">
+        <div className="p-6 bg-ivory min-h-[400px]">
           {loading ? (
             <div className="flex justify-center items-center h-full min-h-[200px]">
               <p className="text-neutral-500 animate-pulse">Loading categories...</p>
@@ -146,7 +146,7 @@ export default function CategoriesPage() {
                         </Link>
                         <button 
                           onClick={() => deleteCategory(category.id)} 
-                          className="flex items-center gap-2 text-sm font-medium text-neutral-400 hover:text-red-500 transition-colors"
+                          className="flex items-center gap-2 text-sm font-medium text-neutral-400 hover:text-error transition-colors"
                         >
                           <Trash2 className="w-4 h-4" /> Delete
                         </button>

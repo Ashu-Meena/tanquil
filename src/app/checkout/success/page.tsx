@@ -3,12 +3,18 @@
 import Link from "next/link";
 import { CheckCircle2, ShoppingBag } from "lucide-react";
 import { motion } from "framer-motion";
-import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { useEffect, useState } from "react";
 
-function SuccessContent() {
-  const searchParams = useSearchParams();
-  const orderNumber = searchParams.get("order");
+export default function CheckoutSuccessPage() {
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
+
+  useEffect(() => {
+    const savedOrder = sessionStorage.getItem('recentOrderNumber');
+    if (savedOrder) {
+      setOrderNumber(savedOrder);
+      sessionStorage.removeItem('recentOrderNumber'); // Clear it so it only shows once
+    }
+  }, []);
 
   return (
     <div className="min-h-[80vh] bg-ivory flex items-center justify-center pt-36 pb-20">
@@ -49,13 +55,5 @@ function SuccessContent() {
         </Link>
       </div>
     </div>
-  );
-}
-
-export default function CheckoutSuccessPage() {
-  return (
-    <Suspense fallback={<div className="min-h-[80vh] bg-ivory flex items-center justify-center pt-36 pb-20">Loading...</div>}>
-      <SuccessContent />
-    </Suspense>
   );
 }

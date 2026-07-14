@@ -36,7 +36,7 @@ const STATUS_OPTIONS = [
   { value: "shipped", label: "Shipped", color: "bg-purple-100 text-purple-800" },
   { value: "out_for_delivery", label: "Out for Delivery", color: "bg-pink-100 text-pink-800" },
   { value: "delivered", label: "Delivered", color: "bg-green-100 text-green-800" },
-  { value: "cancelled", label: "Cancelled", color: "bg-red-100 text-red-800" },
+  { value: "cancelled", label: "Cancelled", color: "bg-error/10 text-error" },
   { value: "returned", label: "Returned", color: "bg-gray-200 text-gray-800" },
   { value: "refunded", label: "Refunded", color: "bg-orange-100 text-orange-800" },
 ];
@@ -327,7 +327,7 @@ export default function OrdersPage() {
                       <td className="px-6 py-4">
                         <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${
                           order.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                          order.payment_status === 'failed' || order.payment_status === 'refunded' ? 'bg-red-100 text-red-800' : 
+                          order.payment_status === 'failed' || order.payment_status === 'refunded' ? 'bg-error/10 text-error' : 
                           'bg-green-100 text-green-800'
                         }`}>
                           {order.payment_status || 'pending'}

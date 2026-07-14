@@ -2,25 +2,25 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Contact Us | Tranquil",
-  description: "Visit The Tranquil Store in Pimpri-Chinchwad, Pune. Business hours 10am–9pm, all days open. Call or WhatsApp: +91 92261 20292.",
+  description: "Visit The Tranquil Store in Pimpri-Chinchwad, Pune. Business hours 10amâ€“9pm, all days open. Call or WhatsApp: +91 92261 20292.",
 };
 
 const CONTACT_DETAILS = [
   {
     label: "Address",
-    value: "Kanwarram Park, Sant, Last Bungalow 3rd Lane, Opp. Sukhwani Citi, Near Royal World School, Phase 2, Vaibhav Nagar, Pimpri Colony, Pune – 411017",
+    value: "Kanwarram Park, Sant, Last Bungalow 3rd Lane, Opp. Sukhwani Citi, Near Royal World School, Phase 2, Vaibhav Nagar, Pimpri Colony, Pune â€“ 411017",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
       </svg>
     ),
     link: "https://share.google/ZjCsuVrExC932t0MS",
-    linkLabel: "Get Directions →",
+    linkLabel: "Get Directions â†’",
   },
   {
     label: "Business Hours",
-    value: "10:00 AM – 9:00 PM",
-    sub: "Open All Days · No Holidays",
+    value: "10:00 AM â€“ 9:00 PM",
+    sub: "Open All Days Â· No Holidays",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
@@ -36,7 +36,7 @@ const CONTACT_DETAILS = [
       </svg>
     ),
     link: "https://wa.me/919226120292",
-    linkLabel: "Chat on WhatsApp →",
+    linkLabel: "Chat on WhatsApp â†’",
   },
   {
     label: "Email",
@@ -47,7 +47,7 @@ const CONTACT_DETAILS = [
       </svg>
     ),
     link: "mailto:thetranquilstor@gmail.com",
-    linkLabel: "Send Email →",
+    linkLabel: "Send Email â†’",
   },
 ];
 
@@ -61,7 +61,7 @@ export default function ContactPage() {
         </p>
         <h1 className="font-serif text-5xl lg:text-6xl text-rich-black mb-4">Get In Touch</h1>
         <p className="text-neutral-500 text-lg max-w-xl">
-          Come visit us, WhatsApp us, or drop an email — we&apos;re here for styling advice, order queries, and everything in between.
+          Come visit us, WhatsApp us, or drop an email â€” we&apos;re here for styling advice, order queries, and everything in between.
         </p>
       </div>
 
@@ -69,7 +69,7 @@ export default function ContactPage() {
       <div className="container mx-auto px-6 lg:px-12 max-w-6xl mb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
 
-          {/* Left — Contact Details */}
+          {/* Left â€” Contact Details */}
           <div className="space-y-8">
             {CONTACT_DETAILS.map((item) => (
               <div key={item.label} className="flex items-start gap-5">
@@ -77,7 +77,7 @@ export default function ContactPage() {
                 <div>
                   <p className="text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-1">{item.label}</p>
                   <p className="text-rich-black font-medium text-sm leading-relaxed">{item.value}</p>
-                  {item.sub && <p className="text-[#888888] text-xs mt-0.5">{item.sub}</p>}
+                  {item.sub && <p className="text-neutral-400 text-xs mt-0.5">{item.sub}</p>}
                   {item.link && (
                     <a
                       href={item.link}
@@ -93,7 +93,7 @@ export default function ContactPage() {
             ))}
           </div>
 
-          {/* Right — Contact Form */}
+          {/* Right â€” Contact Form */}
           <form className="bg-white border border-border-light p-8 lg:p-10 space-y-6 shadow-[0_0_40px_rgba(0,0,0,0.03)]">
             <h2 className="font-serif text-2xl text-rich-black mb-2">Send a Message</h2>
             <div>
@@ -122,7 +122,7 @@ export default function ContactPage() {
       {/* Full-width Map */}
       <div className="w-full h-[420px] lg:h-[500px] relative">
         <iframe
-          title="The Tranquil Store — Google Maps"
+          title="The Tranquil Store â€” Google Maps"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3781.4!2d73.8567!3d18.6298!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDM3JzQ3LjMiTiA3M8KwNTEnMjQuMSJF!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin&q=Kanwarram+Park,+Vaibhav+Nagar,+Pimpri+Colony,+Pune,+Maharashtra+411017"
           width="100%"
           height="100%"

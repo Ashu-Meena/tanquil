@@ -149,7 +149,7 @@ export default function AddProductPage() {
       await supabase.from("product_images").insert(imagePayloads);
     }
 
-    // Insert Variants (1 row per color × size)
+    // Insert Variants (1 row per color Ã— size)
     const variantPayloads = groupsToVariantPayloads(colorGroups, product.id, finalBaseSku);
     const { error: varError } = await supabase.from("product_variants").insert(variantPayloads);
 
@@ -169,7 +169,7 @@ export default function AddProductPage() {
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sticky top-0 z-40 bg-ivory/90 backdrop-blur-md pb-4 pt-6 md:pt-8 -mt-6 md:-mt-8 -mx-4 px-4 md:-mx-6 md:px-6">
           <div className="flex items-center gap-4">
-            <Link href="/admin/products" className="p-2 bg-white border border-border-light rounded-sm hover:bg-[#F9F9F9] transition-colors">
+            <Link href="/admin/products" className="p-2 bg-white border border-border-light rounded-sm hover:bg-ivory transition-colors">
               <ArrowLeft className="w-5 h-5 text-rich-black" />
             </Link>
             <div>
@@ -196,7 +196,7 @@ export default function AddProductPage() {
             
             {/* Basic Info */}
             <div className="bg-white border border-border-light shadow-sm">
-              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <FileText className="w-4 h-4 text-neutral-500" />
                 <h2 className="font-serif text-lg text-rich-black">Basic Information</h2>
               </div>
@@ -210,9 +210,9 @@ export default function AddProductPage() {
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-sm font-medium text-rich-black">Description</label>
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => insertFormatting('b')} className="p-1.5 border border-border-light bg-[#F9F9F9] hover:bg-border-light text-rich-black rounded-sm"><Bold className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('i')} className="p-1.5 border border-border-light bg-[#F9F9F9] hover:bg-border-light text-rich-black rounded-sm"><Italic className="w-3.5 h-3.5" /></button>
-                      <button type="button" onClick={() => insertFormatting('ul')} className="p-1.5 border border-border-light bg-[#F9F9F9] hover:bg-border-light text-rich-black rounded-sm"><List className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('b')} className="p-1.5 border border-border-light bg-ivory hover:bg-border-light text-rich-black rounded-sm"><Bold className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('i')} className="p-1.5 border border-border-light bg-ivory hover:bg-border-light text-rich-black rounded-sm"><Italic className="w-3.5 h-3.5" /></button>
+                      <button type="button" onClick={() => insertFormatting('ul')} className="p-1.5 border border-border-light bg-ivory hover:bg-border-light text-rich-black rounded-sm"><List className="w-3.5 h-3.5" /></button>
                     </div>
                   </div>
                   <textarea id="description_field" name="description" rows={8} value={formData.description} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold font-mono" placeholder="Use HTML tags like <b>, <i>, <ul> for styling..."></textarea>
@@ -223,7 +223,7 @@ export default function AddProductPage() {
 
             {/* Variants & Inventory */}
             <div className="bg-white border border-border-light shadow-sm">
-              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <LayoutGrid className="w-4 h-4 text-neutral-500" />
                 <h2 className="font-serif text-lg text-rich-black">Variants & Inventory</h2>
               </div>
@@ -234,7 +234,7 @@ export default function AddProductPage() {
 
             {/* SEO section */}
             <div className="bg-white border border-border-light shadow-sm">
-              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <AlignLeft className="w-4 h-4 text-neutral-500" />
                 <h2 className="font-serif text-lg text-rich-black">Search Engine Optimization</h2>
               </div>
@@ -259,7 +259,7 @@ export default function AddProductPage() {
             
             {/* Status & Pricing */}
             <div className="bg-white border border-border-light shadow-sm">
-              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <Settings className="w-4 h-4 text-neutral-500" />
                 <h2 className="font-serif text-lg text-rich-black">Pricing & Status</h2>
               </div>
@@ -275,11 +275,11 @@ export default function AddProductPage() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-rich-black mb-2">Price (₹)</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Price (â‚¹)</label>
                     <input type="number" step="0.01" name="price" required value={formData.price} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="0.00" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-rich-black mb-2">Compare-at (₹)</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Compare-at (â‚¹)</label>
                     <input type="number" step="0.01" name="compare_at_price" value={formData.compare_at_price} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="0.00" />
                   </div>
                 </div>
@@ -307,7 +307,7 @@ export default function AddProductPage() {
 
             {/* Organization */}
             <div className="bg-white border border-border-light shadow-sm">
-              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-[#F9F9F9]">
+              <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <Tag className="w-4 h-4 text-neutral-500" />
                 <h2 className="font-serif text-lg text-rich-black">Organization</h2>
               </div>

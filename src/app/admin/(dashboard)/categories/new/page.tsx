@@ -140,7 +140,7 @@ export default function NewCategoryPage() {
                 <img src={formData.image_url} alt="Category" className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setFormData({...formData, image_url: ''})}
-                  className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-sm shadow-sm text-red-500 hover:bg-white transition-colors"
+                  className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-sm shadow-sm text-error hover:bg-white transition-colors"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

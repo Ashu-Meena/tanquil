@@ -324,7 +324,7 @@ export default function MediaLibraryPage() {
             {/* Video count badge */}
             <span className={`ml-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
               videoFiles.length >= VIDEO_LIMIT
-                ? "bg-red-500 text-white"
+                ? "bg-error text-white"
                 : videoFiles.length >= VIDEO_LIMIT - 1
                 ? "bg-amber-400 text-white"
                 : "bg-white/30 text-white"
@@ -342,7 +342,7 @@ export default function MediaLibraryPage() {
           <div className="flex-1">
             <div className="flex justify-between text-xs text-neutral-500 mb-1.5">
               <span>Video storage</span>
-              <span className={videoFiles.length >= VIDEO_LIMIT ? "text-red-500 font-semibold" : "font-medium"}>
+              <span className={videoFiles.length >= VIDEO_LIMIT ? "text-error font-semibold" : "font-medium"}>
                 {videoFiles.length} / {VIDEO_LIMIT} videos used
               </span>
             </div>
@@ -350,7 +350,7 @@ export default function MediaLibraryPage() {
               <div
                 className={`h-full rounded-full transition-all duration-500 ${
                   videoFiles.length >= VIDEO_LIMIT
-                    ? "bg-red-500"
+                    ? "bg-error"
                     : videoFiles.length >= VIDEO_LIMIT - 1
                     ? "bg-amber-400"
                     : "bg-gold"
@@ -360,7 +360,7 @@ export default function MediaLibraryPage() {
             </div>
           </div>
           {videoFiles.length >= VIDEO_LIMIT && (
-            <span className="text-xs text-red-500 font-medium shrink-0">Limit reached — delete a video to upload more</span>
+            <span className="text-xs text-error font-medium shrink-0">Limit reached — delete a video to upload more</span>
           )}
         </div>
       )}
@@ -396,7 +396,7 @@ export default function MediaLibraryPage() {
               Videos
               <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                 videoFiles.length >= VIDEO_LIMIT
-                  ? "bg-red-100 text-red-600"
+                  ? "bg-error/10 text-error"
                   : "bg-border-light text-neutral-500"
               }`}>
                 {videoFiles.length}/{VIDEO_LIMIT}
@@ -491,7 +491,7 @@ export default function MediaLibraryPage() {
                         </button>
                         <button
                           onClick={() => setFileToDelete(file.name)}
-                          className="bg-white p-1.5 rounded-sm text-red-500 hover:text-red-700 transition-colors"
+                          className="bg-white p-1.5 rounded-sm text-error hover:text-error transition-colors"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />

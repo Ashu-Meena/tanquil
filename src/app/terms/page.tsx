@@ -14,7 +14,7 @@ export default function TermsPage() {
         </p>
         <h1 className="font-serif text-5xl text-rich-black mb-4">Terms &amp; Conditions</h1>
         <p className="text-neutral-500 mb-12">Last updated: July 2025</p>
-        <div className="space-y-8 text-[#555555] leading-relaxed">
+        <div className="space-y-8 text-warm-gray leading-relaxed">
           {[
             {
               title: "Use of Website",
@@ -26,7 +26,7 @@ export default function TermsPage() {
             },
             {
               title: "Pricing",
-              body: "All prices are in Indian Rupees (₹). We reserve the right to modify prices at any time without prior notice.",
+              body: "All prices are in Indian Rupees (â‚¹). We reserve the right to modify prices at any time without prior notice.",
             },
             {
               title: "No Returns or Cancellations",

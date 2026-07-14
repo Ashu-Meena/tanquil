@@ -226,7 +226,7 @@ export default function ProductsPage() {
                       ) : product.hasCustomSize ? (
                         <span className="text-[#B38D66] font-medium">On Demand</span>
                       ) : (
-                        <span className="text-red-600">Out of stock</span>
+                        <span className="text-error">Out of stock</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
@@ -243,7 +243,7 @@ export default function ProductsPage() {
                         </Link>
                         <button 
                           onClick={() => handleDelete(product.id, product.name)}
-                          className="p-2 text-neutral-500 hover:text-sale transition-colors rounded-sm hover:bg-red-50"
+                          className="p-2 text-neutral-500 hover:text-sale transition-colors rounded-sm hover:bg-error/10"
                           title="Delete Product"
                         >
                           <Trash2 className="w-4 h-4" />

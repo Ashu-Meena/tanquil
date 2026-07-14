@@ -99,7 +99,7 @@ export default function Header() {
                   </div>
                   <div className="w-[250px] bg-ivory relative p-6 flex flex-col justify-end">
                     <div className="absolute inset-0 z-0">
-                      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop" alt="Featured" className="w-full h-full object-cover opacity-80" />
+                      <img src="/images/placeholder-landscape.jpg" alt="Featured" className="w-full h-full object-cover opacity-80" />
                     </div>
                     <div className="relative z-10 bg-white/90 backdrop-blur-sm p-4 text-center">
                       <p className="font-serif text-lg">New Arrivals</p>

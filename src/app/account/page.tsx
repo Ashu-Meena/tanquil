@@ -200,7 +200,7 @@ function AccountContent() {
     if (error) {
       showFeedback('Error updating profile');
     } else {
-      showFeedback('Profile saved successfully! ✓');
+      showFeedback('Profile saved successfully! âœ“');
     }
   };
 
@@ -217,7 +217,7 @@ function AccountContent() {
       showFeedback('Error updating password. Please try again.');
     } else {
       setNewPassword("");
-      showFeedback('Password updated successfully! ✓');
+      showFeedback('Password updated successfully! âœ“');
     }
     setIsUpdatingPassword(false);
   };
@@ -247,7 +247,7 @@ function AccountContent() {
       setAddresses([data, ...addresses]);
       setShowAddressForm(false);
       setAddressForm({ name: "", address_line1: "", address_line2: "", city: "", state: "", postal_code: "", country: "", phone: "", landmark: "", alternate_phone: "" });
-      showFeedback('Address saved successfully! ✓');
+      showFeedback('Address saved successfully! âœ“');
     }
     setIsSubmittingAddress(false);
   };
@@ -548,7 +548,7 @@ function AccountContent() {
               <div className="bg-white md:border border-border-light py-6 md:p-8 lg:p-12 md:rounded-sm md:shadow-sm -mx-6 md:mx-0">
                 <div className="px-6 md:px-0 mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="mx-2 text-neutral-400">â€º</span>
                   <span className="text-rich-black">Your Orders</span>
                 </div>
                 <h2 className="px-6 md:px-0 font-serif text-2xl md:text-3xl text-rich-black mb-6 md:mb-8">Order History</h2>
@@ -603,7 +603,7 @@ function AccountContent() {
                                 </div>
                                 <div>
                                   <p className="text-xs uppercase tracking-widest text-neutral-500 mb-1">Total</p>
-                                  <p className="text-sm font-medium text-rich-black">₹{order.total_amount?.toLocaleString('en-IN')}</p>
+                                  <p className="text-sm font-medium text-rich-black">â‚¹{order.total_amount?.toLocaleString('en-IN')}</p>
                                 </div>
                               </div>
                               <div className="text-right">
@@ -617,7 +617,7 @@ function AccountContent() {
                               {['cancelled', 'returned', 'refunded'].includes(order.status) ? (
                                 <div className="text-center py-4">
                                   <p className={`font-bold uppercase tracking-widest text-lg ${
-                                    order.status === 'cancelled' ? 'text-red-600' : 
+                                    order.status === 'cancelled' ? 'text-error' : 
                                     order.status === 'returned' ? 'text-gray-800' : 'text-orange-600'
                                   }`}>
                                     Order {order.status}
@@ -694,7 +694,7 @@ function AccountContent() {
                                       <h3 className="font-medium text-rich-black text-base md:text-lg mb-1">{item.product_name || item.name}</h3>
                                       <p className="text-xs md:text-sm text-neutral-500 mb-2">{item.color_name || item.color} / {item.size}</p>
                                       <div className="flex items-center gap-3 text-xs md:text-sm">
-                                        <span className="font-medium text-rich-black">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
+                                        <span className="font-medium text-rich-black">â‚¹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                                         <span className="text-neutral-400">|</span>
                                         <span className="text-neutral-500">Qty: {item.quantity}</span>
                                       </div>
@@ -755,7 +755,7 @@ function AccountContent() {
               <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="mx-2 text-neutral-400">â€º</span>
                   <span className="text-rich-black">Your Wishlist</span>
                 </div>
                 <h2 className="font-serif text-3xl text-rich-black mb-8">My Wishlist</h2>
@@ -781,7 +781,7 @@ function AccountContent() {
                           </div>
                         </div>
                         <Link href={`/products/${item.products?.slug}`} className="font-medium text-rich-black hover:text-gold transition-colors mb-1 truncate">{item.products?.name}</Link>
-                        <span className="text-neutral-500">₹{item.products?.price?.toLocaleString('en-IN')}</span>
+                        <span className="text-neutral-500">â‚¹{item.products?.price?.toLocaleString('en-IN')}</span>
                       </div>
                     ))
                   )}
@@ -793,7 +793,7 @@ function AccountContent() {
               <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="mx-2 text-neutral-400">â€º</span>
                   <span className="text-rich-black">Your Addresses</span>
                 </div>
                 <div className="flex justify-between items-center mb-8">
@@ -825,7 +825,7 @@ function AccountContent() {
                       </div>
                       <div>
                         <label className="block text-xs uppercase tracking-widest text-neutral-500 mb-2">State / Province</label>
-                        <select required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold text-[#666]">
+                        <select required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="w-full bg-white border border-border-light p-3 focus:outline-none focus:border-gold text-neutral-500">
                           <option value="" disabled>Select State</option>
                           {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
@@ -894,7 +894,7 @@ function AccountContent() {
               <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">›</span>
+                  <span className="mx-2 text-neutral-400">â€º</span>
                   <span className="text-rich-black">Login & Security</span>
                 </div>
                 <h2 className="font-serif text-3xl text-rich-black mb-8">Login & Security</h2>
@@ -1016,8 +1016,8 @@ function AccountContent() {
                           </td>
                           <td className="py-4 px-4 text-center text-gray-600">6204</td>
                           <td className="py-4 px-4 text-center">{item.quantity}</td>
-                          <td className="py-4 px-4 text-right">₹{item.price?.toLocaleString('en-IN')}</td>
-                          <td className="py-4 px-4 text-right font-medium">₹{(item.price * item.quantity).toLocaleString('en-IN')}</td>
+                          <td className="py-4 px-4 text-right">â‚¹{item.price?.toLocaleString('en-IN')}</td>
+                          <td className="py-4 px-4 text-right font-medium">â‚¹{(item.price * item.quantity).toLocaleString('en-IN')}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -1029,15 +1029,15 @@ function AccountContent() {
                   <div className="w-80">
                     <div className="flex justify-between py-2 text-sm text-gray-600">
                       <span>Subtotal</span>
-                      <span>₹{selectedOrderToPrint.subtotal?.toLocaleString('en-IN') ?? selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
+                      <span>â‚¹{selectedOrderToPrint.subtotal?.toLocaleString('en-IN') ?? selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
                     </div>
                     <div className="flex justify-between py-2 text-sm text-gray-600 border-b border-gray-200">
                       <span>Shipping &amp; Handling</span>
-                      <span>₹{selectedOrderToPrint.shipping_fee?.toLocaleString('en-IN') ?? 0}</span>
+                      <span>â‚¹{selectedOrderToPrint.shipping_fee?.toLocaleString('en-IN') ?? 0}</span>
                     </div>
                     <div className="flex justify-between py-4 text-xl font-bold text-rich-black">
                       <span>Grand Total</span>
-                      <span>₹{selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
+                      <span>â‚¹{selectedOrderToPrint.total_amount?.toLocaleString('en-IN')}</span>
                     </div>
                   </div>
                 </div>

@@ -5,6 +5,7 @@
   --color-foreground: var(--foreground);
   --color-ivory: #FAF8F5;
   --color-gold: #C7A17A;
+  --color-gold-text: #9B7955;
   --color-gold-hover: #E8D5C4;
   --color-soft-rose: #F6E8E8;
   --color-rich-black: #111111;
@@ -12,6 +13,7 @@
   --color-border-light: #EFEFEF;
   --color-success: #2F855A;
   --color-sale: #E63946;
+  --color-error: #E63946;
   --color-neutral-400: #999999;
   --color-neutral-500: #666666;
   --color-neutral-800: #333333;
@@ -22,6 +24,14 @@
   --font-cormorant: var(--font-cormorant), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-montserrat: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+@layer base {
+  *:focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+}
+
 
 :root {
   --background: #ffffff;

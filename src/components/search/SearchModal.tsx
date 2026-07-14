@@ -54,7 +54,7 @@ export default function SearchModal() {
             name: p.name,
             slug: p.slug,
             price: p.price,
-            image: p.product_images?.[0]?.url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
+            image: p.product_images?.[0]?.url || "/images/placeholder-portrait.jpg"
           })));
         }
         setIsSearching(false);
@@ -75,7 +75,7 @@ export default function SearchModal() {
           name: p.name,
           slug: p.slug,
           price: p.price,
-          image: p.product_images?.[0]?.url || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"
+          image: p.product_images?.[0]?.url || "/images/placeholder-portrait.jpg"
         })));
       }
       setIsSearching(false);

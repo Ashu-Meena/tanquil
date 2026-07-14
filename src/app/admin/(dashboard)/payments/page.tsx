@@ -130,7 +130,7 @@ export default function PaymentsPage() {
                     <td className="p-4">
                       <span className={`px-2 py-1 text-xs font-medium rounded-sm capitalize ${
                         tx.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                        tx.payment_status === 'failed' || tx.payment_status === 'refunded' ? 'bg-red-100 text-red-800' : 
+                        tx.payment_status === 'failed' || tx.payment_status === 'refunded' ? 'bg-error/10 text-error' : 
                         'bg-green-100 text-green-800'
                       }`}>
                         {tx.payment_status || 'Pending'}

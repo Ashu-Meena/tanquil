@@ -256,7 +256,7 @@ function PasteUrlSection({ onSelect, onClose }: { onSelect: (url: string) => voi
             value={url}
             onChange={e => setUrl(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleUse()}
-            placeholder="https://images.unsplash.com/..."
+            placeholder="/images/placeholder-landscape.jpg"
             className="flex-1 border border-border-light px-3 py-2 text-sm focus:outline-none focus:border-gold rounded-sm transition-colors"
             autoFocus
           />

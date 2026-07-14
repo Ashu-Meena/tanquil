@@ -95,13 +95,13 @@ export default function CheckoutPage() {
       } else {
         const currentSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
         if (data.min_order_value !== null && currentSubtotal < data.min_order_value) {
-          setDiscountMsg(`Minimum order value for this coupon is ₹${data.min_order_value}`);
+          setDiscountMsg(`Minimum order value for this coupon is â‚¹${data.min_order_value}`);
           setAppliedCoupon(null);
           setIsFreeShippingCouponApplied(false);
         } else {
           setAppliedCoupon(data);
           setIsFreeShippingCouponApplied(!!(data as any).is_free_shipping);
-          setDiscountMsg(`${data.code} applied! ✓`);
+          setDiscountMsg(`${data.code} applied! âœ“`);
         }
       }
     } catch (err) {
@@ -356,7 +356,7 @@ export default function CheckoutPage() {
                   <p>Hi ${orderName},</p>
                   <p>Thank you for your order! We've received it and will process it shortly.</p>
                   <p><strong>Order ID:</strong> #{orderNumber}</p>
-                  <p><strong>Total:</strong> ₹${total.toLocaleString()}</p>
+                  <p><strong>Total:</strong> â‚¹${total.toLocaleString()}</p>
                   <p>We will notify you once your order has been dispatched.</p>
                   <p style="margin-top: 40px; font-size: 12px; color: #666;">Tranquil Team</p>
                 </div>
@@ -376,7 +376,8 @@ export default function CheckoutPage() {
 
         setOrderCompleted(true);
         clearCart();
-        router.push(`/checkout/success?order=${encodeURIComponent(orderNumber)}`);
+        sessionStorage.setItem('recentOrderNumber', orderNumber);
+        router.push('/checkout/success');
       } else {
         // Fallback simulate backend processing delay
         await new Promise(r => setTimeout(r, 1500));
@@ -464,7 +465,7 @@ export default function CheckoutPage() {
   return (
     <div className="bg-ivory min-h-screen pt-36 pb-20">
       <div className="container mx-auto px-6 lg:px-12">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest font-medium hover:text-gold transition-colors mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm uppercase tracking-widest font-medium hover:text-gold-text transition-colors mb-8">
           <ChevronLeft className="w-4 h-4" /> Return to Shop
         </Link>
         
@@ -481,13 +482,13 @@ export default function CheckoutPage() {
                   <span className={`${index <= currentStep ? 'text-rich-black' : 'text-neutral-400'}`}>
                     {step}
                   </span>
-                  {index < steps.length - 1 && <ChevronRight className="w-4 h-4 text-[#CCCCCC]" />}
+                  {index < steps.length - 1 && <ChevronRight className="w-4 h-4 text-neutral-400" />}
                 </div>
               ))}
             </div>
             
             {formError && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-600 text-sm rounded-sm">
+              <div className="mb-6 p-4 bg-error/10 border border-error/20 text-error text-sm rounded-sm">
                 {formError}
               </div>
             )}
@@ -524,7 +525,7 @@ export default function CheckoutPage() {
                         ))}
                         <button
                           onClick={() => setShowNewAddressForm(!showNewAddressForm)}
-                          className="text-sm text-gold hover:text-rich-black transition-colors mt-4 flex items-center gap-2 font-medium"
+                          className="text-sm text-gold-text hover:text-rich-black transition-colors mt-4 flex items-center gap-2 font-medium"
                         >
                           <Plus className="w-4 h-4" /> {showNewAddressForm ? 'Cancel' : 'Add a new address'}
                         </button>
@@ -538,23 +539,23 @@ export default function CheckoutPage() {
                             >
                               <div className="mt-4 space-y-4 border border-border-light p-6 rounded-sm bg-white">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <input type="text" value={addressLabel} onChange={e => setAddressLabel(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                                  <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <input type="text" aria-label="Address Name" value={addressLabel} onChange={e => setAddressLabel(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <input type="text" aria-label="Street Address" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                  <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                                  <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-[#666]">
+                                  <input type="text" aria-label="City" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <select value={state} aria-label="State" onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-neutral-500">
                                     <option value="" disabled>Select State</option>
                                     {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                                   </select>
-                                  <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <input type="text" aria-label="PIN Code" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                                 </div>
                                 <div className="grid grid-cols-1 gap-6">
-                                  <input type="text" value={landmark} onChange={e => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <input type="text" aria-label="Landmark" value={landmark} onChange={e => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                                  <input type="tel" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <input type="tel" aria-label="Primary Phone Number" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <input type="tel" aria-label="Alternate Phone Number" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                                 </div>
                                 <button onClick={handleSaveNewAddress} className="bg-rich-black text-white px-8 py-4 text-xs uppercase tracking-widest hover:bg-gold transition-colors mt-2">
                                   Save Address
@@ -567,21 +568,21 @@ export default function CheckoutPage() {
                     ) : (
                       <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <input type="text" aria-label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <input type="text" aria-label="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                         </div>
-                        <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                        <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                        <input type="text" aria-label="Address" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                        <input type="text" aria-label="Apartment, suite, etc." value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <input type="text" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                          <select value={state} onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-[#666]">
+                          <input type="text" aria-label="City" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <select value={state} aria-label="State" onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-neutral-500">
                               <option value="" disabled>Select State</option>
                               {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                             </select>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <input type="text" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <input type="text" aria-label="PIN Code" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <input type="tel" aria-label="Phone Number" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
                         </div>
                       </>
                     )}
@@ -622,7 +623,7 @@ export default function CheckoutPage() {
                               {/* Two-column layout: note left, QR right */}
                               <div className="flex flex-col sm:flex-row gap-6 items-start">
 
-                                {/* LEFT — Important note + UTR + screenshot */}
+                                {/* LEFT â€” Important note + UTR + screenshot */}
                                 <div className="flex-1 flex flex-col gap-5">
                                   <div className="bg-[#FFF8E7] border border-[#F2D08E] text-[#B07B18] p-4 rounded-md text-xs leading-relaxed">
                                     <span className="font-bold block mb-1">Important:</span>
@@ -642,7 +643,7 @@ export default function CheckoutPage() {
                                     </div>
                                     <div>
                                       <label className="block text-[10px] font-medium text-neutral-500 mb-3 uppercase tracking-wider">Payment Screenshot</label>
-                                      <div className="relative border-2 border-dashed border-border-light rounded-md p-6 text-center hover:bg-[#F9F9F9] transition-colors group">
+                                      <div className="relative border-2 border-dashed border-border-light rounded-md p-6 text-center hover:bg-ivory transition-colors group">
                                         <input
                                           type="file"
                                           accept="image/*"
@@ -654,10 +655,10 @@ export default function CheckoutPage() {
                                             <div className="relative w-20 h-20 rounded-md overflow-hidden border border-border-light">
                                               <Image src={paymentScreenshotPreview} alt="Screenshot" fill className="object-cover" />
                                             </div>
-                                            <p className="text-xs text-[#2F855A] flex items-center gap-1 font-medium mt-1">
+                                            <p className="text-xs text-success flex items-center gap-1 font-medium mt-1">
                                               <Check className="w-3 h-3" /> Screenshot attached
                                             </p>
-                                            <p className="text-[10px] text-neutral-500 group-hover:text-gold transition-colors">Tap to change image</p>
+                                            <p className="text-[10px] text-neutral-500 group-hover:text-gold-text transition-colors">Tap to change image</p>
                                           </div>
                                         ) : (
                                           <div className="flex flex-col items-center justify-center gap-2">
@@ -673,9 +674,9 @@ export default function CheckoutPage() {
                                   </div>
                                 </div>
 
-                                {/* RIGHT — QR + payee + app buttons */}
+                                {/* RIGHT â€” QR + payee + app buttons */}
                                 <div className="flex flex-col items-center text-center shrink-0">
-                                  <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-rich-black">₹{total.toLocaleString('en-IN')}</span></p>
+                                  <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-rich-black">â‚¹{total.toLocaleString('en-IN')}</span></p>
                                     <div className="bg-white p-3 rounded-xl shadow-sm border border-border-light mb-3">
                                       <Image
                                         src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`)}`}
@@ -692,7 +693,7 @@ export default function CheckoutPage() {
                                     <button
                                       type="button"
                                       onClick={() => navigator.clipboard.writeText(process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici')}
-                                      className="text-gold hover:text-rich-black transition-colors"
+                                      className="text-gold-text hover:text-rich-black transition-colors"
                                       title="Copy UPI ID"
                                     >
                                       <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
@@ -748,12 +749,12 @@ export default function CheckoutPage() {
                             `${addressLine1}, ${city}, ${pinCode}`
                           )}
                         </div>
-                        <button onClick={() => setCurrentStep(0)} className="text-gold hover:underline uppercase tracking-widest text-xs">Edit</button>
+                        <button onClick={() => setCurrentStep(0)} className="text-gold-text hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
                       <div className="flex justify-between border-b border-border-light pb-4 mb-4">
                         <div className="text-neutral-500">Payment</div>
                         <div className="text-rich-black">UPI QR Code</div>
-                        <button onClick={() => setCurrentStep(1)} className="text-gold hover:underline uppercase tracking-widest text-xs">Edit</button>
+                        <button onClick={() => setCurrentStep(1)} className="text-gold-text hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
 
                       {/* Cart Items Summary */}
@@ -770,7 +771,7 @@ export default function CheckoutPage() {
                                 <p className="text-sm font-medium text-rich-black line-clamp-1">{item.name}</p>
                                 <p className="text-xs text-neutral-400 mt-0.5">{item.color} / {item.size}</p>
                               </div>
-                              <p className="text-sm font-medium text-rich-black font-[family-name:var(--font-montserrat)]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                              <p className="text-sm font-medium text-rich-black font-[family-name:var(--font-montserrat)]">â‚¹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                             </div>
                           ))}
                         </div>
@@ -786,7 +787,7 @@ export default function CheckoutPage() {
               {currentStep > 0 ? (
                 <button 
                   onClick={prevStep}
-                  className="text-rich-black hover:text-gold transition-colors flex items-center gap-2 text-sm uppercase tracking-widest font-medium w-full sm:w-auto justify-center"
+                  className="text-rich-black hover:text-gold-text transition-colors flex items-center gap-2 text-sm uppercase tracking-widest font-medium w-full sm:w-auto justify-center"
                 >
                   <ChevronLeft className="w-4 h-4" /> Return to {steps[currentStep - 1]}
                 </button>
@@ -837,7 +838,7 @@ export default function CheckoutPage() {
                       <div className="flex flex-col flex-1 justify-center">
                         <div className="flex justify-between items-start mb-1">
                           <h3 className="text-sm font-medium line-clamp-1 pr-2">{item.name}</h3>
-                          <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">₹{item.price.toLocaleString('en-IN')}</p>
+                          <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">â‚¹{item.price.toLocaleString('en-IN')}</p>
                         </div>
                         <p className="text-xs text-neutral-500 mb-3">{item.color} / {item.size}</p>
                         
@@ -881,35 +882,35 @@ export default function CheckoutPage() {
                     onKeyDown={e => e.key === 'Enter' && handleApplyDiscount()}
                     className="w-full bg-transparent border-b border-border-light pb-3 focus:outline-none focus:border-rich-black transition-colors text-xs tracking-widest uppercase placeholder-neutral-400"
                   />
-                  <button onClick={handleApplyDiscount} className="absolute right-0 top-0 text-[10px] uppercase tracking-widest text-rich-black hover:text-gold transition-colors pb-3 border-b border-transparent font-medium">Apply</button>
+                  <button onClick={handleApplyDiscount} className="absolute right-0 top-0 text-[10px] uppercase tracking-widest text-rich-black hover:text-gold-text transition-colors pb-3 border-b border-transparent font-medium">Apply</button>
                 </div>
-                {discountMsg && <p className={`text-[10px] uppercase tracking-widest mt-3 ${discountMsg.includes('✓') ? 'text-[#2F855A]' : 'text-sale'}`}>{discountMsg}</p>}
+                {discountMsg && <p className={`text-[10px] uppercase tracking-widest mt-3 ${discountMsg.includes('âœ“') ? 'text-success' : 'text-sale'}`}>{discountMsg}</p>}
               </div>
 
               {/* Totals */}
               <div className="space-y-3 border-t border-border-light pt-6 text-sm">
                 <div className="flex justify-between text-neutral-500">
                   <span>Subtotal</span>
-                  <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">₹{subtotal.toLocaleString('en-IN')}</span>
+                  <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">â‚¹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
                 {appliedCoupon && (
-                  <div className="flex justify-between text-[#2F855A]">
+                  <div className="flex justify-between text-success">
                     <span>Discount ({appliedCoupon.code})</span>
-                    <span className="font-medium font-[family-name:var(--font-montserrat)]">-₹{discountAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-medium font-[family-name:var(--font-montserrat)]">-â‚¹{discountAmount.toLocaleString('en-IN')}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-neutral-500">
                   <span>Shipping</span>
                   {shipping === 0 ? (
-                    <span className="text-[#2F855A] font-medium uppercase tracking-widest text-xs">Free</span>
+                    <span className="text-success font-medium uppercase tracking-widest text-xs">Free</span>
                   ) : (
-                    <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">₹{shipping.toLocaleString('en-IN')}</span>
+                    <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">â‚¹{shipping.toLocaleString('en-IN')}</span>
                   )}
                 </div>
 
                 <div className="flex justify-between items-center border-t border-border-light mt-6 pt-6">
                   <span className="font-serif text-xl">Total</span>
-                  <span className="font-serif text-2xl font-[family-name:var(--font-montserrat)]">₹{total.toLocaleString('en-IN')}</span>
+                  <span className="font-serif text-2xl font-[family-name:var(--font-montserrat)]">â‚¹{total.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>

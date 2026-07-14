@@ -85,7 +85,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
                       }`}
                     >
                       <Image 
-                        src={category.image || "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&q=80"} 
+                        src={category.image || "/images/placeholder-portrait.jpg"} 
                         alt={category.title} 
                         fill 
                         sizes="(max-width: 768px) 140px, 200px"
