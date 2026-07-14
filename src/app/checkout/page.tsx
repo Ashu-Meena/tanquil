@@ -42,8 +42,8 @@ interface Address {
   state: string;
   postal_code: string;
   country: string | null;
-  phone: string;
-  is_default: boolean;
+  phone: string | null;
+  is_default: boolean | null;
 }
 
 interface ShippingSettings {
