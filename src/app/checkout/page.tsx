@@ -389,7 +389,7 @@ export default function CheckoutPage() {
           customer_name: isLoggedIn && userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() || email : `${firstName} ${lastName}`.trim() || email,
           customer_email: isLoggedIn && userProfile ? (userProfile.email || email) : email,
           customer_phone: isLoggedIn && userProfile ? (userProfile.phone || phone) : phone,
-          shipping_address: shippingAddr,
+          shipping_address: shippingAddr as any,
           subtotal,
           shipping_fee: shipping,
           total_amount: total,
