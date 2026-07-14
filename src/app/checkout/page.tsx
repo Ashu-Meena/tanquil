@@ -198,8 +198,11 @@ export default function CheckoutPage() {
         return;
       }
       setIsLoggedIn(true);
-        if (profile) {
-          setUserProfile(profile);
+      
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+      
+      if (profile) {
+        setUserProfile(profile);
           setValue("firstName", profile.first_name || "");
           setValue("lastName", profile.last_name || "");
           setEmail(profile.email || "");
