@@ -4,11 +4,12 @@ import ProductClient from "@/components/product/ProductClient";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
   const supabase = await createClient();
   const { data: product } = await supabase
     .from("products")
     .select("name, description")
-    .eq("slug", slug)
+    .eq("slug", decodedSlug)
     .single();
 
   if (!product) {
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
   const supabase = await createClient();
 
   // 1. Fetch Product with images, variants, and category
@@ -36,7 +38,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       product_images(url, color_name),
       product_variants(color_name, color_hex, size, stock_quantity)
     `)
-    .eq("slug", slug)
+    .eq("slug", decodedSlug)
     .single();
 
   if (error || !productData) {
