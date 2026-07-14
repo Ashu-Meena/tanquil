@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Search, Heart, User, ShoppingBag, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -99,7 +100,7 @@ export default function Header() {
                   </div>
                   <div className="w-[250px] bg-ivory relative p-6 flex flex-col justify-end">
                     <div className="absolute inset-0 z-0">
-                      <img src="/images/placeholder-landscape.jpg" alt="Featured" className="w-full h-full object-cover opacity-80" />
+                      <Image src="/images/placeholder-landscape.jpg" alt="Featured" fill sizes="250px" className="object-cover opacity-80" />
                     </div>
                     <div className="relative z-10 bg-white/90 backdrop-blur-sm p-4 text-center">
                       <p className="font-serif text-lg">New Arrivals</p>

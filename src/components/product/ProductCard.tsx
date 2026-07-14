@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Heart, Eye } from "lucide-react";
 import { useWishlistStore } from "@/store/useWishlistStore";
 import { useCartStore } from "@/store/useCartStore";
@@ -20,6 +21,7 @@ interface CardProduct {
 }
 
 export default function ProductCard({ product }: { product: CardProduct }) {
+  const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [activeStep, setActiveStep] = useState<'none' | 'color' | 'size'>('none');
   const [selectedColor, setSelectedColor] = useState<{name: string, image?: string} | null>(null);
@@ -29,6 +31,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
 
   const defaultSizes = ["XS", "S", "M", "L", "XL", "FS"];
   const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : defaultSizes;
+  const images = product.images || [];
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -39,7 +42,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   const handleQuickView = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    window.location.href = `/products/${product.slug || product.id}`;
+    router.push(`/products/${product.slug || product.id}`);
   };
 
   const startQuickAdd = (e: React.MouseEvent) => {
@@ -65,7 +68,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
     
     // Determine the color to add
     let colorToAdd = "Default";
-    let imageToAdd = product.images[0] || "";
+    let imageToAdd = images[0] || "";
 
     if (product.colors && product.colors.length > 1 && selectedColor) {
       colorToAdd = selectedColor.name;
@@ -125,22 +128,26 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         </button>
 
         <Link href={`/products/${product.slug || product.id}`} className="block w-full h-full">
-          {product.images[1] && (
+          {images[1] && (
             <Image 
-              src={product.images[1]}
+              src={images[1]}
               alt={`${product.name} Alternate`}
               fill
               sizes="(max-width: 768px) 50vw, 25vw"
               className={`object-cover transition-opacity duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isHovered ? 'opacity-100' : 'opacity-0'} z-10`}
             />
           )}
-          <Image 
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className={`object-cover transition-opacity duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isHovered && product.images[1] ? 'opacity-0' : 'opacity-100'}`}
-          />
+          {images[0] ? (
+            <Image 
+              src={images[0]}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className={`object-cover transition-opacity duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isHovered && images[1] ? 'opacity-0' : 'opacity-100'}`}
+            />
+          ) : (
+            <div className="w-full h-full bg-neutral-200 flex items-center justify-center text-neutral-400 text-xs text-center">No Image</div>
+          )}
         </Link>
 
         {/* Hover Actions Panel (Desktop Only) */}

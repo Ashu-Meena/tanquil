@@ -1,36 +1,52 @@
-import Link from "next/link";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-export const metadata = { title: "Privacy Policy | Tranquil", description: "How Tranquil collects and uses your data." };
-
-export default function PrivacyPage() {
+export default function Loading() {
   return (
-    <div className="bg-white min-h-screen pt-32 pb-24">
-      <div className="container mx-auto px-6 lg:px-12 max-w-3xl">
-        <p className="text-xs text-neutral-500 uppercase tracking-widest mb-4"><Link href="/" className="hover:text-gold">Home</Link> / Privacy</p>
-        <h1 className="font-serif text-5xl text-rich-black mb-4">Privacy Policy</h1>
-        <p className="text-neutral-500 mb-12">Last updated: July 2025</p>
-        <div className="space-y-8 text-warm-gray leading-relaxed prose prose-sm max-w-none">
-          <section>
-            <h2 className="font-serif text-2xl text-rich-black mb-3">Information We Collect</h2>
-            <p>When you place an order or create an account on Tranquil, we collect your name, email address, phone number, and shipping address. We also collect payment-related information (UTR/transaction ID) for UPI verification — we do not store full card details.</p>
-          </section>
-          <section>
-            <h2 className="font-serif text-2xl text-rich-black mb-3">How We Use Your Information</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>To process and fulfill your orders</li>
-              <li>To send order confirmation and shipping updates</li>
-              <li>To improve our website and services</li>
-              <li>To send promotional emails (with your consent only)</li>
-            </ul>
-          </section>
-          <section>
-            <h2 className="font-serif text-2xl text-rich-black mb-3">Data Security</h2>
-            <p>Your data is stored securely using Supabase infrastructure with row-level security policies. We never sell or share your personal data with third parties for marketing purposes.</p>
-          </section>
-          <section>
-            <h2 className="font-serif text-2xl text-rich-black mb-3">Contact</h2>
-            <p>For privacy concerns, write to us at <a href="mailto:privacy@tranquil.co.in" className="text-gold hover:underline">privacy@tranquil.co.in</a>.</p>
-          </section>
+    <div className="bg-white min-h-screen pt-36 pb-20">
+      <div className="container mx-auto px-6 lg:px-12">
+        <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-20">
+          
+          {/* Gallery Skeleton */}
+          <div className="hidden md:flex w-full lg:w-[60%] flex-col-reverse md:flex-row gap-4">
+            <div className="flex md:flex-col gap-4 w-24 flex-shrink-0">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="w-20 h-28 md:w-full md:h-32 rounded-sm" />
+              ))}
+            </div>
+            <Skeleton className="w-full aspect-[3/4] md:h-[calc(100vh-200px)] md:aspect-auto rounded-sm" />
+          </div>
+
+          {/* Product Info Skeleton */}
+          <div className="w-full lg:w-[40%] flex flex-col pt-4">
+            <Skeleton className="h-10 w-3/4 mb-4" />
+            <Skeleton className="h-6 w-32 mb-8" />
+            
+            <Skeleton className="h-4 w-16 mb-4" />
+            <div className="flex gap-2 mb-8">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="w-8 h-8 rounded-full" />
+              ))}
+            </div>
+
+            <Skeleton className="h-4 w-16 mb-4" />
+            <div className="grid grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-2 mb-8">
+              {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="py-2 h-10 w-full rounded-sm" />
+              ))}
+            </div>
+
+            <Skeleton className="h-12 w-full mb-6" />
+            <div className="flex gap-3 mb-6">
+              <Skeleton className="flex-1 h-12 rounded-sm" />
+              <Skeleton className="w-14 h-12 rounded-sm" />
+            </div>
+            
+            <div className="border-t border-border-light pt-6 mt-2 space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/6" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

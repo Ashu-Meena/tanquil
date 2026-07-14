@@ -135,8 +135,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       slug: rp.slug,
       compare_at_price: rp.compare_at_price || undefined,
       isSale: (rp.compare_at_price ?? 0) > rp.price,
-      image: rp.product_images?.[0]?.url || "/placeholder.jpg",
-      hoverImage: rp.product_images?.[1]?.url || rp.product_images?.[0]?.url,
+      images: images,
       colors: Array.from(colorsMap.entries()).map(([name, image]) => ({ name, image })),
       sizes: Array.from(sizesSet)
     };

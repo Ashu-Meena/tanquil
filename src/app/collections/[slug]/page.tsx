@@ -1,5 +1,19 @@
 import { createClient } from "@/utils/supabase/server";
 import CollectionClient from "@/components/collection/CollectionClient";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  
+  if (slug === "all") return { title: "All Products | Tranquil", description: "Shop all products at Tranquil." };
+  if (slug === "new") return { title: "New Arrivals | Tranquil", description: "Shop the latest new arrivals at Tranquil." };
+
+  const supabase = await createClient();
+  const { data: category } = await supabase.from("categories").select("name").eq("slug", slug).single();
+  
+  const title = category?.name ? `${category.name} | Tranquil` : "Collection | Tranquil";
+  return { title, description: `Shop the latest ${category?.name || "collection"} at Tranquil.` };
+}
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
