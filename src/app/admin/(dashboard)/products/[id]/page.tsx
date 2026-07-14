@@ -2,18 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft, Save, Tag, LayoutGrid, FileText, Settings, AlignLeft, Bold, Italic, List } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { toast } from "@/store/useToastStore";
 import VariantsEditor, { ColorGroup, groupsToVariantPayloads, groupsToImagePayloads } from "@/components/admin/VariantsEditor";
 
-
-
-export default function AddProductPage() {
+export default function EditProductPage() {
   const router = useRouter();
+  const params = useParams();
+  const productId = params.id as string;
   const supabase = createClient();
+  
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
   
   const [formData, setFormData] = useState({
@@ -47,11 +49,84 @@ export default function AddProductPage() {
 
   useEffect(() => {
     fetchCategories();
-  }, []);
+    if (productId && productId !== 'new') {
+      fetchProduct();
+    } else {
+      setInitialLoading(false);
+    }
+  }, [productId]);
 
   const fetchCategories = async () => {
     const { data } = await supabase.from('categories').select('id, name');
     if (data) setCategories(data);
+  };
+
+  const fetchProduct = async () => {
+    try {
+      const { data: product, error } = await supabase
+        .from('products')
+        .select(`
+          *,
+          product_categories(category_id),
+          product_images(image_url, color_name),
+          product_variants(*)
+        `)
+        .eq('id', productId)
+        .single();
+
+      if (error) throw error;
+      if (product) {
+        setFormData({
+          name: product.name || "",
+          description: product.description || "",
+          price: product.price ? product.price.toString() : "",
+          compare_at_price: product.compare_at_price ? product.compare_at_price.toString() : "",
+          sku: product.sku || "",
+          category_ids: product.product_categories ? product.product_categories.map((c: any) => c.category_id) : [],
+          status: product.status || "active",
+          is_trending: product.is_trending || false,
+          is_featured: product.is_featured || false,
+          is_bestseller: product.is_bestseller || false,
+          brand: product.brand || "Tranquil",
+          fabric: product.fabric || "",
+          weight: product.weight ? product.weight.toString() : "",
+          tags: product.tags && Array.isArray(product.tags) ? product.tags.join(', ') : "",
+          seo_title: product.seo_title || "",
+          seo_description: product.seo_description || ""
+        });
+
+        if (product.product_variants && product.product_variants.length > 0) {
+          const groupsMap = new Map<string, ColorGroup>();
+          product.product_variants.forEach((v: any) => {
+            const key = v.color_name;
+            if (!groupsMap.has(key)) {
+              const imgs = product.product_images 
+                ? product.product_images.filter((img: any) => img.color_name === key).map((img: any) => img.image_url) 
+                : [];
+              groupsMap.set(key, {
+                id: crypto.randomUUID(),
+                color_name: key,
+                color_hex: v.color_hex || "#000000",
+                image_urls: imgs,
+                sizes: []
+              });
+            }
+            const g = groupsMap.get(key)!;
+            g.sizes.push({
+              id: v.id || crypto.randomUUID(),
+              size: v.size,
+              stock_quantity: v.stock_quantity
+            });
+          });
+          setColorGroups(Array.from(groupsMap.values()));
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("Failed to load product details");
+    } finally {
+      setInitialLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -75,7 +150,6 @@ export default function AddProductPage() {
     });
   };
 
-  // Simple Rich Text Toolbar
   const insertFormatting = (tag: string) => {
     const textarea = document.getElementById("description_field") as HTMLTextAreaElement;
     if (!textarea) return;
@@ -104,13 +178,11 @@ export default function AddProductPage() {
     
     setLoading(true);
     const slug = formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-
     const tagsArray = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
 
-    // Auto-generate Base SKU based on Product Name and unique string
     const randomHex = Math.random().toString(36).substring(2, 6).toUpperCase();
     const nameInitials = formData.name.split(' ').map(n => n[0]).join('').substring(0, 3).toUpperCase();
-    const finalBaseSku = `${nameInitials}-${randomHex}`;
+    const finalBaseSku = formData.sku || `${nameInitials}-${randomHex}`;
 
     const payload = {
       name: formData.name,
@@ -118,6 +190,7 @@ export default function AddProductPage() {
       description: formData.description,
       price: parseFloat(formData.price) || 0,
       compare_at_price: parseFloat(formData.compare_at_price) || null,
+      sku: finalBaseSku,
       status: formData.status,
       is_featured: formData.is_featured,
       is_bestseller: formData.is_bestseller,
@@ -129,40 +202,56 @@ export default function AddProductPage() {
       seo_description: formData.seo_description,
     };
 
-    const { data: product, error } = await supabase.from("products").insert([payload]).select().single();
+    try {
+      if (productId === 'new') {
+        const { data: product, error } = await supabase.from("products").insert([payload]).select().single();
+        if (error || !product) throw error;
+        
+        if (formData.category_ids.length > 0) {
+          const pcPayloads = formData.category_ids.map(id => ({ product_id: product.id, category_id: id }));
+          await supabase.from("product_categories").insert(pcPayloads);
+        }
 
-    if (error || !product) {
-      console.error("Product creation error:", error);
-      toast.error("Failed to save product. Please try again or check the logs.");
+        const imagePayloads = groupsToImagePayloads(colorGroups, product.id);
+        if (imagePayloads.length > 0) await supabase.from("product_images").insert(imagePayloads);
+
+        const variantPayloads = groupsToVariantPayloads(colorGroups, product.id, finalBaseSku);
+        await supabase.from("product_variants").insert(variantPayloads);
+        
+        toast.success("Product created successfully!");
+      } else {
+        const { error } = await supabase.from("products").update(payload).eq('id', productId);
+        if (error) throw error;
+
+        await supabase.from("product_categories").delete().eq('product_id', productId);
+        if (formData.category_ids.length > 0) {
+          const pcPayloads = formData.category_ids.map(id => ({ product_id: productId, category_id: id }));
+          await supabase.from("product_categories").insert(pcPayloads);
+        }
+
+        await supabase.from("product_images").delete().eq('product_id', productId);
+        const imagePayloads = groupsToImagePayloads(colorGroups, productId);
+        if (imagePayloads.length > 0) await supabase.from("product_images").insert(imagePayloads);
+
+        await supabase.from("product_variants").delete().eq('product_id', productId);
+        const variantPayloads = groupsToVariantPayloads(colorGroups, productId, finalBaseSku);
+        if (variantPayloads.length > 0) await supabase.from("product_variants").insert(variantPayloads);
+
+        toast.success("Product updated successfully!");
+      }
+      
+      router.push("/admin/products");
+    } catch (error: any) {
+      console.error("Save error:", error);
+      toast.error(error.message || "Failed to save product.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    if (formData.category_ids.length > 0) {
-      const pcPayloads = formData.category_ids.map(id => ({ product_id: product.id, category_id: id }));
-      await supabase.from("product_categories").insert(pcPayloads);
-    }
-
-    // Insert Images
-    const imagePayloads = groupsToImagePayloads(colorGroups, product.id);
-    if (imagePayloads.length > 0) {
-      await supabase.from("product_images").insert(imagePayloads);
-    }
-
-    // Insert Variants (1 row per color Ã— size)
-    const variantPayloads = groupsToVariantPayloads(colorGroups, product.id, finalBaseSku);
-    const { error: varError } = await supabase.from("product_variants").insert(variantPayloads);
-
-    if (varError) {
-      console.error("Product variants creation error:", varError);
-      toast.error("Product saved, but some variants failed to create. Please check the logs.");
-    } else {
-      toast.success("Product created successfully!");
-    }
-
-    setLoading(false);
-    router.push("/admin/products");
   };
+
+  if (initialLoading) {
+    return <div className="p-8 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rich-black"></div></div>;
+  }
 
   return (
     <div className="max-w-5xl mx-auto pb-20">
@@ -173,7 +262,7 @@ export default function AddProductPage() {
               <ArrowLeft className="w-5 h-5 text-rich-black" />
             </Link>
             <div>
-              <h1 className="font-serif text-2xl text-rich-black">Create Product</h1>
+              <h1 className="font-serif text-2xl text-rich-black">{productId === 'new' ? 'Create Product' : 'Edit Product'}</h1>
             </div>
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -185,16 +274,13 @@ export default function AddProductPage() {
               disabled={loading}
               className="px-4 py-2 bg-rich-black text-white text-sm font-medium uppercase tracking-widest hover:bg-gold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto"
             >
-              {loading ? "Saving..." : <><Save className="w-4 h-4" /> Save</>}
+              {loading ? "Saving..." : <><Save className="w-4 h-4" /> Save Changes</>}
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content Column */}
           <div className="lg:col-span-2 space-y-6">
-            
-            {/* Basic Info */}
             <div className="bg-white border border-border-light shadow-sm">
               <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <FileText className="w-4 h-4 text-neutral-500" />
@@ -220,8 +306,6 @@ export default function AddProductPage() {
               </div>
             </div>
 
-
-            {/* Variants & Inventory */}
             <div className="bg-white border border-border-light shadow-sm">
               <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <LayoutGrid className="w-4 h-4 text-neutral-500" />
@@ -232,7 +316,6 @@ export default function AddProductPage() {
               </div>
             </div>
 
-            {/* SEO section */}
             <div className="bg-white border border-border-light shadow-sm">
               <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <AlignLeft className="w-4 h-4 text-neutral-500" />
@@ -251,13 +334,9 @@ export default function AddProductPage() {
                 </div>
               </div>
             </div>
-
           </div>
 
-          {/* Right Sidebar Column */}
           <div className="space-y-6">
-            
-            {/* Status & Pricing */}
             <div className="bg-white border border-border-light shadow-sm">
               <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <Settings className="w-4 h-4 text-neutral-500" />
@@ -305,7 +384,6 @@ export default function AddProductPage() {
               </div>
             </div>
 
-            {/* Organization */}
             <div className="bg-white border border-border-light shadow-sm">
               <div className="p-4 border-b border-border-light flex items-center gap-2 bg-ivory">
                 <Tag className="w-4 h-4 text-neutral-500" />
@@ -330,8 +408,6 @@ export default function AddProductPage() {
                   </div>
                 </div>
                 
-
-
                 <div>
                   <label className="block text-sm font-medium text-rich-black mb-2">Brand</label>
                   <input type="text" name="brand" value={formData.brand} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="Tranquil" />
