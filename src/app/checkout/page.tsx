@@ -220,7 +220,7 @@ export default function CheckoutPage() {
       
       const { data: settings } = await supabase.from('store_settings').select('value').eq('key', 'shipping').single();
       if (settings?.value) {
-        setShippingSettings(settings.value as ShippingSettings);
+        setShippingSettings(settings.value as unknown as ShippingSettings);
       }
       
       setIsLoadingAuth(false);
