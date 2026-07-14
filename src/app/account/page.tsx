@@ -548,7 +548,7 @@ function AccountContent() {
               <div className="bg-white md:border border-border-light py-6 md:p-8 lg:p-12 md:rounded-sm md:shadow-sm -mx-6 md:mx-0">
                 <div className="px-6 md:px-0 mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">”º</span>
+                  <span className="mx-2 text-neutral-400">/</span>
                   <span className="text-rich-black">Your Orders</span>
                 </div>
                 <h2 className="px-6 md:px-0 font-serif text-2xl md:text-3xl text-rich-black mb-6 md:mb-8">Order History</h2>
@@ -755,7 +755,7 @@ function AccountContent() {
               <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">”º</span>
+                  <span className="mx-2 text-neutral-400">/</span>
                   <span className="text-rich-black">Your Wishlist</span>
                 </div>
                 <h2 className="font-serif text-3xl text-rich-black mb-8">My Wishlist</h2>
@@ -793,7 +793,7 @@ function AccountContent() {
               <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">”º</span>
+                  <span className="mx-2 text-neutral-400">/</span>
                   <span className="text-rich-black">Your Addresses</span>
                 </div>
                 <div className="flex justify-between items-center mb-8">
@@ -894,7 +894,7 @@ function AccountContent() {
               <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
                 <div className="mb-6 flex items-center text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
-                  <span className="mx-2 text-neutral-400">”º</span>
+                  <span className="mx-2 text-neutral-400">/</span>
                   <span className="text-rich-black">Login & Security</span>
                 </div>
                 <h2 className="font-serif text-3xl text-rich-black mb-8">Login & Security</h2>

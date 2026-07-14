@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 const defaultStories = [
   {
@@ -38,6 +39,7 @@ const StoryCard = ({ story }: { story: Story }) => {
     offset: ["start end", "end start"]
   });
   const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const isMobile = useIsMobile();
   
   return (
     <div 
@@ -53,7 +55,7 @@ const StoryCard = ({ story }: { story: Story }) => {
         className="w-full md:w-1/2 lg:w-3/5"
       >
         <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden group">
-          <motion.div style={{ y: y1 }} className="absolute inset-[-15%] w-[130%] h-[130%]">
+          <motion.div style={{ y: isMobile ? 0 : y1 }} className="absolute inset-[-15%] w-[130%] h-[130%]">
             <Image 
               src={story.image} 
               alt={story.title} 

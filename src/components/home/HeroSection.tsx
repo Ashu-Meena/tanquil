@@ -5,6 +5,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import Image from "next/image";
 import Link from "next/link";
 import MagneticButton from "../ui/MagneticButton";
+import { useIsMobile } from "@/hooks/useMediaQuery";
 
 interface Slide {
   id: string | number;
@@ -21,6 +22,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
     offset: ["start start", "end start"]
   });
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (!slides || slides.length === 0) return;
@@ -48,10 +50,10 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
               {/* Ken Burns effect via scale animation */}
               <motion.div
                 className="w-full h-full relative"
-                initial={{ scale: 1.1 }}
+                initial={{ scale: isMobile ? 1 : 1.1 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 6, ease: "linear" }}
-                style={{ y }}
+                style={{ y: isMobile ? 0 : y }}
               >
                 <Image
                   src={slide.image_url}
