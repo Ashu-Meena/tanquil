@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Star, MessageSquare, Loader2, User } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,13 +19,9 @@ export default function ProductReviews({ productId }: { productId: string }) {
   const [message, setMessage] = useState({ type: "", text: "" });
   
   const router = useRouter();
-  const supabase = createClient();
 
-  useEffect(() => {
-    fetchSessionAndReviews();
-  }, [productId]);
-
-  const fetchSessionAndReviews = async () => {
+  const fetchSessionAndReviews = useCallback(async () => {
+    const supabase = createClient();
     setLoading(true);
     // Get Session
     const { data: { session } } = await supabase.auth.getSession();
@@ -44,7 +40,13 @@ export default function ProductReviews({ productId }: { productId: string }) {
       
     if (data) setReviews(data);
     setLoading(false);
-  };
+  }, [productId]);
+
+  useEffect(() => {
+    fetchSessionAndReviews();
+  }, [fetchSessionAndReviews]);
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +63,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
     setSubmitting(true);
     setMessage({ type: "", text: "" });
 
+    const supabase = createClient();
     const { error } = await supabase.from("reviews").insert({
       product_id: productId,
       user_id: user.id,

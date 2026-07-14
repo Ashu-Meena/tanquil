@@ -7,6 +7,7 @@ import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, 
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
+import { toast } from "@/store/useToastStore";
 
 const INDIAN_STATES = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
@@ -148,13 +149,13 @@ function AccountContent() {
 
   const triggerPrint = (order: any) => {
     setSelectedOrderToPrint(order);
-    showFeedback("Preparing invoice for download...");
+    toast.success("Preparing invoice for download...");
     
     setTimeout(async () => {
       try {
         const printContent = document.getElementById("invoice-content");
         if (!printContent) {
-          showFeedback("Error finding invoice template.");
+          toast.error("Error finding invoice template.");
           return;
         }
 
@@ -174,7 +175,7 @@ function AccountContent() {
         pdf.save(`invoice-${invoiceName}.pdf`);
       } catch (err) {
         console.error("PDF Generation Error:", err);
-        showFeedback("Failed to download PDF.");
+        toast.error("Failed to download PDF.");
       }
     }, 500);
   };

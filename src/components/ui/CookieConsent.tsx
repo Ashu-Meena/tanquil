@@ -10,7 +10,8 @@ export default function CookieConsent() {
     // Check if consent has already been given or denied
     const consent = localStorage.getItem("tranquil_cookie_consent");
     if (!consent) {
-      setShow(true);
+      const timer = setTimeout(() => setShow(true), 100);
+      return () => clearTimeout(timer);
     }
   }, []);
 
@@ -37,7 +38,7 @@ export default function CookieConsent() {
       </button>
       <h3 className="font-serif text-lg mb-2 text-rich-black">We value your privacy</h3>
       <p className="text-sm text-neutral-500 mb-4">
-        We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.
+        We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking &quot;Accept All&quot;, you consent to our use of cookies.
       </p>
       <div className="flex gap-3">
         <button 

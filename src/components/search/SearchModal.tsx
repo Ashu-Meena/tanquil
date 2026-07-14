@@ -106,10 +106,10 @@ export default function SearchModal() {
     };
   }, [isOpen, handleKeyDown]);
 
-  // Reset query when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setQuery("");
+      const timer = setTimeout(() => setQuery(""), 200);
+      return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
