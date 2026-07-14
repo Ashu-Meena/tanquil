@@ -10,6 +10,7 @@ import { Heart, Ruler, Truck, ShieldCheck, RefreshCw, ChevronDown, ChevronUp, Sh
 import ProductCard from "@/components/product/ProductCard";
 import SizeGuideModal from "@/components/product/SizeGuideModal";
 import DOMPurify from "isomorphic-dompurify";
+import ProductReviews from "./ProductReviews";
 
 interface Color {
   name: string;
@@ -554,8 +555,15 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           </div>
         </div>
 
-        {/* Complete The Look / Related Products */}
-        {relatedProducts && relatedProducts.length > 0 && (
+      {/* Customer Reviews */}
+      <div className="container mx-auto px-6 lg:px-12 mt-24">
+        <div className="max-w-4xl mx-auto">
+          <ProductReviews productId={product.id} />
+        </div>
+      </div>
+
+      {/* Complete The Look / Related Products */}
+      {relatedProducts && relatedProducts.length > 0 && (
           <div className="container mx-auto px-6 lg:px-12 mt-32 border-t border-border-light pt-24">
             <h2 className="font-serif text-3xl lg:text-4xl text-rich-black mb-12 text-center">Complete The Look</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
