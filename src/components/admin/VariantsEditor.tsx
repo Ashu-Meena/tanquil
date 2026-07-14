@@ -19,6 +19,40 @@ export interface ColorGroup {
 
 const PRESET_SIZES = ["XS", "S", "M", "L", "XL", "XXL", "FS", "OS", "Custom"];
 
+const COMMON_COLORS: Record<string, string> = {
+  "Black": "#000000",
+  "White": "#FFFFFF",
+  "Red": "#FF0000",
+  "Blue": "#0000FF",
+  "Green": "#008000",
+  "Yellow": "#FFFF00",
+  "Navy": "#000080",
+  "Midnight Blue": "#191970",
+  "Grey": "#808080",
+  "Silver": "#C0C0C0",
+  "Gold": "#FFD700",
+  "Beige": "#F5F5DC",
+  "Brown": "#A52A2A",
+  "Pink": "#FFC0CB",
+  "Purple": "#800080",
+  "Orange": "#FFA500",
+  "Olive": "#808000",
+  "Maroon": "#800000",
+  "Charcoal": "#36454F",
+  "Ivory": "#FFFFF0",
+  "Cream": "#FFFDD0",
+  "Teal": "#008080",
+  "Mustard": "#FFDB58",
+  "Rust": "#B7410E",
+  "Burgundy": "#800020",
+  "Sage": "#9DC183",
+  "Dusty Rose": "#DCAE96",
+  "Lavender": "#E6E6FA",
+  "Peach": "#FFE5B4",
+  "Mint": "#98FF98",
+  "Coral": "#FF7F50"
+};
+
 interface VariantsEditorProps {
   groups: ColorGroup[];
   onChange: (groups: ColorGroup[]) => void;
@@ -46,6 +80,19 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
 
   const updateGroup = (gid: string, field: keyof ColorGroup, value: any) => {
     onChange(groups.map((g) => (g.id === gid ? { ...g, [field]: value } : g)));
+  };
+
+  const updateGroupFields = (gid: string, fields: Partial<ColorGroup>) => {
+    onChange(groups.map((g) => (g.id === gid ? { ...g, ...fields } : g)));
+  };
+
+  const handleColorNameChange = (gid: string, newName: string) => {
+    const match = Object.entries(COMMON_COLORS).find(([k]) => k.toLowerCase() === newName.toLowerCase());
+    if (match) {
+      updateGroupFields(gid, { color_name: newName, color_hex: match[1] });
+    } else {
+      updateGroup(gid, "color_name", newName);
+    }
   };
 
   // ── Size Row helpers ─────────────────────────────────────────────────────
@@ -126,11 +173,17 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
               />
               <input
                 type="text"
+                list="common-colors"
                 value={group.color_name}
-                onChange={(e) => updateGroup(group.id, "color_name", e.target.value)}
+                onChange={(e) => handleColorNameChange(group.id, e.target.value)}
                 placeholder="Color name (e.g. Midnight Blue)"
                 className="flex-1 border border-border-light px-3 py-1.5 text-sm focus:outline-none focus:border-gold bg-ivory focus:bg-white transition-colors rounded-sm"
               />
+              <datalist id="common-colors">
+                {Object.keys(COMMON_COLORS).map((c) => (
+                  <option key={c} value={c} />
+                ))}
+              </datalist>
               <span className="text-xs text-neutral-400 hidden sm:block shrink-0">
                 Colour {gIdx + 1}
               </span>
