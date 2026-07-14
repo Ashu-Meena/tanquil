@@ -61,7 +61,10 @@ export default function RootLayout({
         <ToastContainer />
         <CookieConsent />
       </body>
-      <AnalyticsWrapper gaId={process.env.NEXT_PUBLIC_GA_ID || "G-04SKZSZQ0E"} />
+      <AnalyticsWrapper 
+        gaId={process.env.NEXT_PUBLIC_GA_ID || "G-04SKZSZQ0E"} 
+        gtmId={process.env.NEXT_PUBLIC_GTM_ID} 
+      />
     </html>
   );
 }
