@@ -76,6 +76,7 @@ export default function ReviewsPage() {
                 className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
               />
             </div>
+          </div>
 
           {/* Table */}
           <div className="overflow-x-auto">
