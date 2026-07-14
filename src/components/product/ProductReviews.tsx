@@ -67,7 +67,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
       rating,
       title: title.trim(),
       comment: comment.trim(),
-      status: "pending"
+      status: "approved"
     });
 
     setSubmitting(false);
@@ -75,10 +75,11 @@ export default function ProductReviews({ productId }: { productId: string }) {
     if (error) {
       setMessage({ type: "error", text: "Failed to submit review. Please try again." });
     } else {
-      setMessage({ type: "success", text: "Thank you! Your review has been submitted and is pending moderation." });
+      setMessage({ type: "success", text: "Thank you! Your review has been submitted." });
       setTitle("");
       setComment("");
       setRating(5);
+      fetchSessionAndReviews();
       setTimeout(() => setShowForm(false), 3000);
     }
   };

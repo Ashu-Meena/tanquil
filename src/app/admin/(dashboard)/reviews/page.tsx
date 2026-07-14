@@ -12,7 +12,6 @@ export default function ReviewsPage() {
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>('all');
 
   useEffect(() => {
     fetchReviews();
@@ -34,11 +33,7 @@ export default function ReviewsPage() {
     setLoading(false);
   };
 
-  const updateReviewStatus = async (id: string, status: string) => {
-    const supabase = createClient();
-    await supabase.from("reviews").update({ status }).eq("id", id);
-    fetchReviews();
-  };
+
 
   const deleteReview = async (id: string) => {
     setReviewToDelete(id);
@@ -53,10 +48,9 @@ export default function ReviewsPage() {
   };
 
   const filteredReviews = reviews.filter(r => 
-    (r.title?.toLowerCase().includes(search.toLowerCase()) ||
+    r.title?.toLowerCase().includes(search.toLowerCase()) ||
     r.products?.name?.toLowerCase().includes(search.toLowerCase()) ||
-    r.profiles?.email?.toLowerCase().includes(search.toLowerCase())) &&
-    (statusFilter === 'all' || r.status === statusFilter)
+    r.profiles?.email?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -82,17 +76,6 @@ export default function ReviewsPage() {
                 className="bg-transparent border-none outline-none text-sm w-full sm:w-64 text-rich-black placeholder:text-neutral-400"
               />
             </div>
-            <select
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-              className="text-sm border border-border-light bg-white text-neutral-500 rounded-sm px-3 py-2 focus:outline-none focus:border-gold"
-            >
-              <option value="all">All Status</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
 
           {/* Table */}
           <div className="overflow-x-auto">
@@ -103,7 +86,6 @@ export default function ReviewsPage() {
                   <th className="px-6 py-4 font-medium">Product</th>
                   <th className="px-6 py-4 font-medium">Rating</th>
                   <th className="px-6 py-4 font-medium">Review</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
                   <th className="px-6 py-4 font-medium text-right">Actions</th>
                 </tr>
               </thead>
@@ -149,27 +131,8 @@ export default function ReviewsPage() {
                         <p className="font-medium text-rich-black mb-1 truncate">{review.title}</p>
                         <p className="text-neutral-500 line-clamp-2 text-xs leading-relaxed">{review.content}</p>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${
-                          review.status === 'approved' ? 'bg-green-100 text-green-800' :
-                          review.status === 'rejected' ? 'bg-error/10 text-error' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
-                          {review.status}
-                        </span>
-                      </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end">
-                          {review.status !== 'approved' && (
-                            <button onClick={() => updateReviewStatus(review.id, 'approved')} className="text-green-600 hover:bg-green-50 p-1.5 rounded-sm transition-colors" title="Approve">
-                              <Check className="w-4 h-4" />
-                            </button>
-                          )}
-                          {review.status !== 'rejected' && (
-                            <button onClick={() => updateReviewStatus(review.id, 'rejected')} className="text-orange-600 hover:bg-orange-50 p-1.5 rounded-sm transition-colors" title="Reject">
-                              <X className="w-4 h-4" />
-                            </button>
-                          )}
                           <button onClick={() => deleteReview(review.id)} className="text-error hover:bg-error/10 p-1.5 rounded-sm transition-colors ml-2" title="Delete">
                             <Trash2 className="w-4 h-4" />
                           </button>
