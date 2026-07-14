@@ -206,7 +206,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           url,
         });
       } catch {
-        // User cancelled share â€” no error needed
+        // User cancelled share — no error needed
       }
     } else {
       await navigator.clipboard.writeText(url);
@@ -304,10 +304,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                 </button>
               </div>
               <div className="text-lg md:text-xl font-medium text-rich-black mb-6 md:mb-8 flex items-center gap-3" style={{ fontFamily: 'var(--font-montserrat)' }}>
-                â‚¹{product.price.toLocaleString('en-IN')}
+                ₹{product.price.toLocaleString('en-IN')}
                 {product.compare_at_price && product.compare_at_price > product.price && (
                   <>
-                    <span className="text-neutral-400 line-through text-lg">â‚¹{product.compare_at_price.toLocaleString('en-IN')}</span>
+                    <span className="text-neutral-400 line-through text-lg">₹{product.compare_at_price.toLocaleString('en-IN')}</span>
                     <span className="bg-sale text-white text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-sm">Sale</span>
                   </>
                 )}
@@ -497,7 +497,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                     className="w-full flex justify-between items-center text-left uppercase tracking-[0.2em] text-[10px] font-medium text-rich-black"
                   >
                     Description
-                    <span className="text-lg font-light leading-none">{activeTab === "desc" ? "â€”" : "+"}</span>
+                    <span className="text-lg font-light leading-none">{activeTab === "desc" ? "—" : "+"}</span>
                   </button>
                   <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${activeTab === "desc" ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"}`}>
                     <div className="overflow-hidden">
@@ -515,7 +515,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                     className="w-full flex justify-between items-center text-left uppercase tracking-[0.2em] text-[10px] font-medium text-rich-black"
                   >
                     Details & Care
-                    <span className="text-lg font-light leading-none">{activeTab === "details" ? "â€”" : "+"}</span>
+                    <span className="text-lg font-light leading-none">{activeTab === "details" ? "—" : "+"}</span>
                   </button>
                   <div className={`grid transition-[grid-template-rows,opacity] duration-300 ease-in-out ${activeTab === "details" ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0"}`}>
                     <div className="overflow-hidden">
@@ -574,7 +574,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
           </div>
           <div>
             <h3 className="font-serif text-lg text-rich-black">{product.name}</h3>
-            <p className="text-sm font-medium text-rich-black">â‚¹{product.price.toLocaleString('en-IN')}</p>
+            <p className="text-sm font-medium text-rich-black">₹{product.price.toLocaleString('en-IN')}</p>
           </div>
         </div>
         <div className="flex items-center gap-6">

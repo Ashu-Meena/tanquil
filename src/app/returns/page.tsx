@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Exchange Policy | Tranquil",
-  description: "Tranquil exchange policy â€” no returns, exchange only within 72 hours of delivery.",
+  description: "Tranquil exchange policy — no returns, exchange only within 72 hours of delivery.",
 };
 
 export default function ReturnsPage() {
@@ -14,7 +14,7 @@ export default function ReturnsPage() {
         </p>
         <h1 className="font-serif text-5xl text-rich-black mb-4">Exchange Policy</h1>
         <p className="text-neutral-500 mb-12 text-lg">
-          We do not accept returns or cancellations. However, we offer exchanges â€” please read the policy below carefully before placing your order.
+          We do not accept returns or cancellations. However, we offer exchanges — please read the policy below carefully before placing your order.
         </p>
 
         {/* Important notice banner */}
@@ -27,7 +27,7 @@ export default function ReturnsPage() {
           {[
             {
               title: "No Returns",
-              body: "We do not accept returns under any circumstances. Please review your order carefully â€” size, color, and quantity â€” before placing it.",
+              body: "We do not accept returns under any circumstances. Please review your order carefully — size, color, and quantity — before placing it.",
             },
             {
               title: "No Cancellations",
@@ -47,7 +47,7 @@ export default function ReturnsPage() {
             },
             {
               title: "Shipping for Exchanges",
-              body: "The customer is responsible for shipping the item back to us. Once we receive and inspect the item, the exchanged product will be dispatched within 3â€“5 business days.",
+              body: "The customer is responsible for shipping the item back to us. Once we receive and inspect the item, the exchanged product will be dispatched within 3–5 business days.",
             },
           ].map((section) => (
             <div key={section.title} className="bg-white border border-border-light p-6">

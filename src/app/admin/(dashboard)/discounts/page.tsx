@@ -159,11 +159,11 @@ export default function DiscountsPage() {
                     <td className="p-4 font-medium">
                       {coupon.discount_type === 'percentage' 
                         ? `${coupon.discount_value}% OFF`
-                        : `â‚¹${coupon.discount_value} OFF`}
+                        : `₹${coupon.discount_value} OFF`}
                       {coupon.is_free_shipping && <span className="block text-[10px] text-success mt-1">+ Free Shipping</span>}
                     </td>
                     <td className="p-4 text-neutral-500 hidden md:table-cell">
-                      {coupon.min_order_value > 0 ? `Min purchase â‚¹${coupon.min_order_value}` : 'No minimum'}
+                      {coupon.min_order_value > 0 ? `Min purchase ₹${coupon.min_order_value}` : 'No minimum'}
                     </td>
                     <td className="p-4 text-neutral-500 hidden sm:table-cell">
                       {coupon.used_count} times
@@ -222,7 +222,7 @@ export default function DiscountsPage() {
                     className="w-full border border-border-light p-2.5 text-sm rounded-sm focus:outline-none focus:border-gold"
                   >
                     <option value="percentage">Percentage (%)</option>
-                    <option value="fixed">Fixed Amount (â‚¹)</option>
+                    <option value="fixed">Fixed Amount (₹)</option>
                   </select>
                 </div>
                 <div className="space-y-1">
@@ -237,7 +237,7 @@ export default function DiscountsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium text-rich-black">Minimum Purchase Amount (â‚¹)</label>
+                <label className="text-sm font-medium text-rich-black">Minimum Purchase Amount (₹)</label>
                 <input 
                   type="number" 
                   value={formData.min_order_value}

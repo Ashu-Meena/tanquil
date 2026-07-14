@@ -95,7 +95,7 @@ export default function CheckoutPage() {
       } else {
         const currentSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
         if (data.min_order_value !== null && currentSubtotal < data.min_order_value) {
-          setDiscountMsg(`Minimum order value for this coupon is â‚¹${data.min_order_value}`);
+          setDiscountMsg(`Minimum order value for this coupon is ₹${data.min_order_value}`);
           setAppliedCoupon(null);
           setIsFreeShippingCouponApplied(false);
         } else {
@@ -356,7 +356,7 @@ export default function CheckoutPage() {
                   <p>Hi ${orderName},</p>
                   <p>Thank you for your order! We've received it and will process it shortly.</p>
                   <p><strong>Order ID:</strong> #{orderNumber}</p>
-                  <p><strong>Total:</strong> â‚¹${total.toLocaleString()}</p>
+                  <p><strong>Total:</strong> ₹${total.toLocaleString()}</p>
                   <p>We will notify you once your order has been dispatched.</p>
                   <p style="margin-top: 40px; font-size: 12px; color: #666;">Tranquil Team</p>
                 </div>
@@ -623,7 +623,7 @@ export default function CheckoutPage() {
                               {/* Two-column layout: note left, QR right */}
                               <div className="flex flex-col sm:flex-row gap-6 items-start">
 
-                                {/* LEFT â€” Important note + UTR + screenshot */}
+                                {/* LEFT — Important note + UTR + screenshot */}
                                 <div className="flex-1 flex flex-col gap-5">
                                   <div className="bg-[#FFF8E7] border border-[#F2D08E] text-[#B07B18] p-4 rounded-md text-xs leading-relaxed">
                                     <span className="font-bold block mb-1">Important:</span>
@@ -674,9 +674,9 @@ export default function CheckoutPage() {
                                   </div>
                                 </div>
 
-                                {/* RIGHT â€” QR + payee + app buttons */}
+                                {/* RIGHT — QR + payee + app buttons */}
                                 <div className="flex flex-col items-center text-center shrink-0">
-                                  <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-rich-black">â‚¹{total.toLocaleString('en-IN')}</span></p>
+                                  <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-rich-black">₹{total.toLocaleString('en-IN')}</span></p>
                                     <div className="bg-white p-3 rounded-xl shadow-sm border border-border-light mb-3">
                                       <Image
                                         src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`)}`}
@@ -771,7 +771,7 @@ export default function CheckoutPage() {
                                 <p className="text-sm font-medium text-rich-black line-clamp-1">{item.name}</p>
                                 <p className="text-xs text-neutral-400 mt-0.5">{item.color} / {item.size}</p>
                               </div>
-                              <p className="text-sm font-medium text-rich-black font-[family-name:var(--font-montserrat)]">â‚¹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
+                              <p className="text-sm font-medium text-rich-black font-[family-name:var(--font-montserrat)]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                             </div>
                           ))}
                         </div>
@@ -838,7 +838,7 @@ export default function CheckoutPage() {
                       <div className="flex flex-col flex-1 justify-center">
                         <div className="flex justify-between items-start mb-1">
                           <h3 className="text-sm font-medium line-clamp-1 pr-2">{item.name}</h3>
-                          <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">â‚¹{item.price.toLocaleString('en-IN')}</p>
+                          <p className="font-medium text-sm font-[family-name:var(--font-montserrat)]">₹{item.price.toLocaleString('en-IN')}</p>
                         </div>
                         <p className="text-xs text-neutral-500 mb-3">{item.color} / {item.size}</p>
                         
@@ -891,12 +891,12 @@ export default function CheckoutPage() {
               <div className="space-y-3 border-t border-border-light pt-6 text-sm">
                 <div className="flex justify-between text-neutral-500">
                   <span>Subtotal</span>
-                  <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">â‚¹{subtotal.toLocaleString('en-IN')}</span>
+                  <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
                 {appliedCoupon && (
                   <div className="flex justify-between text-success">
                     <span>Discount ({appliedCoupon.code})</span>
-                    <span className="font-medium font-[family-name:var(--font-montserrat)]">-â‚¹{discountAmount.toLocaleString('en-IN')}</span>
+                    <span className="font-medium font-[family-name:var(--font-montserrat)]">-₹{discountAmount.toLocaleString('en-IN')}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-neutral-500">
@@ -904,13 +904,13 @@ export default function CheckoutPage() {
                   {shipping === 0 ? (
                     <span className="text-success font-medium uppercase tracking-widest text-xs">Free</span>
                   ) : (
-                    <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">â‚¹{shipping.toLocaleString('en-IN')}</span>
+                    <span className="text-rich-black font-medium font-[family-name:var(--font-montserrat)]">₹{shipping.toLocaleString('en-IN')}</span>
                   )}
                 </div>
 
                 <div className="flex justify-between items-center border-t border-border-light mt-6 pt-6">
                   <span className="font-serif text-xl">Total</span>
-                  <span className="font-serif text-2xl font-[family-name:var(--font-montserrat)]">â‚¹{total.toLocaleString('en-IN')}</span>
+                  <span className="font-serif text-2xl font-[family-name:var(--font-montserrat)]">₹{total.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>

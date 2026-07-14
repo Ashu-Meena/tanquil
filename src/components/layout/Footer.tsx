@@ -100,7 +100,7 @@ export default function Footer() {
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">Shop</h4>
-              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "shop" ? "â€”" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "shop" ? "—" : "+"}</span>
             </button>
             <ul className={`flex flex-col gap-3 text-neutral-500 text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "shop" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/collections/new" className="hover:text-white transition-colors">New Arrivals</Link></li>
@@ -117,7 +117,7 @@ export default function Footer() {
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">Categories</h4>
-              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "categories" ? "â€”" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "categories" ? "—" : "+"}</span>
             </button>
             <ul className={`flex flex-col gap-3 text-neutral-500 text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "categories" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/collections/dresses" className="hover:text-white transition-colors">Dresses</Link></li>
@@ -135,7 +135,7 @@ export default function Footer() {
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">About</h4>
-              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "about" ? "â€”" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "about" ? "—" : "+"}</span>
             </button>
             <ul className={`flex flex-col gap-3 text-neutral-500 text-[10px] uppercase tracking-widest overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "about" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <li><Link href="/about" className="hover:text-white transition-colors">Our Story</Link></li>
@@ -153,15 +153,15 @@ export default function Footer() {
               className="w-full flex justify-between items-center md:cursor-default"
             >
               <h4 className="font-medium text-[10px] uppercase tracking-[0.2em] md:mb-6 text-white">Visit Us</h4>
-              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "visit" ? "â€”" : "+"}</span>
+              <span className="text-lg font-light leading-none md:hidden text-neutral-500">{activeAccordion === "visit" ? "—" : "+"}</span>
             </button>
             <div className={`flex flex-col gap-3 text-neutral-500 text-[10px] overflow-hidden transition-all duration-300 md:h-auto md:opacity-100 md:mt-0 ${activeAccordion === "visit" ? "h-auto opacity-100 mt-4" : "h-0 opacity-0 md:h-auto md:opacity-100"}`}>
               <p className="leading-relaxed normal-case tracking-normal">
                 Kanwarram Park, Sant, Last Bungalow 3rd Lane,<br />
                 Vaibhav Nagar, Pimpri Colony,<br />
-                Pune â€“ 411017
+                Pune – 411017
               </p>
-              <p className="mt-1">Monâ€“Sun Â· 10 AM â€“ 9 PM</p>
+              <p className="mt-1">Mon–Sun · 10 AM – 9 PM</p>
               <a href="tel:+919226120292" className="hover:text-white transition-colors">+91 92261 20292</a>
               <a href="mailto:thetranquilstor@gmail.com" className="hover:text-white transition-colors normal-case tracking-normal">thetranquilstor@gmail.com</a>
               <a
@@ -170,7 +170,7 @@ export default function Footer() {
                 rel="noreferrer"
                 className="text-gold hover:text-white transition-colors border-b border-gold hover:border-white pb-0.5 w-fit"
               >
-                Get Directions â†’
+                Get Directions →
               </a>
             </div>
           </div>

@@ -12,7 +12,7 @@ export default function PrivacyPage() {
         <div className="space-y-8 text-warm-gray leading-relaxed prose prose-sm max-w-none">
           <section>
             <h2 className="font-serif text-2xl text-rich-black mb-3">Information We Collect</h2>
-            <p>When you place an order or create an account on Tranquil, we collect your name, email address, phone number, and shipping address. We also collect payment-related information (UTR/transaction ID) for UPI verification â€” we do not store full card details.</p>
+            <p>When you place an order or create an account on Tranquil, we collect your name, email address, phone number, and shipping address. We also collect payment-related information (UTR/transaction ID) for UPI verification — we do not store full card details.</p>
           </section>
           <section>
             <h2 className="font-serif text-2xl text-rich-black mb-3">How We Use Your Information</h2>

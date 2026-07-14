@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <div className="bg-white min-h-screen">
 
-      {/* Hero â€” full-width dark banner */}
+      {/* Hero — full-width dark banner */}
       <div className="bg-rich-black pt-40 pb-20 text-center px-6">
         <p className="text-xs text-neutral-500 uppercase tracking-widest mb-8">
           <Link href="/" className="hover:text-gold transition-colors">Home</Link>
@@ -48,7 +48,7 @@ export default function AboutPage() {
             Tranquil was founded by a <strong className="text-rich-black">Gen Z girl</strong> who was tired of seeing the same old boring prints and outdated designs everywhere. We realized that finding clothes that actually match the Pinterest boards in our heads shouldn&apos;t be so hard. So, we decided to make them ourselves.
           </p>
           <p>
-            At Tranquil, we design <strong className="text-rich-black">modern clothes for Gen Z girls and modern women</strong> who want to stand out, not blend in. We create the exact pieces you&apos;ve been searching for â€” from the ultimate aesthetic beachwear and dream birthday dresses to the perfect outfits for dinner dates, brunch runs, and girl&apos;s day outings â€” and yes, even your mom&apos;s chic kitty parties!
+            At Tranquil, we design <strong className="text-rich-black">modern clothes for Gen Z girls and modern women</strong> who want to stand out, not blend in. We create the exact pieces you&apos;ve been searching for — from the ultimate aesthetic beachwear and dream birthday dresses to the perfect outfits for dinner dates, brunch runs, and girl&apos;s day outings — and yes, even your mom&apos;s chic kitty parties!
           </p>
           <p>
             <strong className="text-rich-black">No boring prints. No recycled designs.</strong> Just unique, freshly designed pieces that actually belong in a modern wardrobe.
@@ -68,8 +68,8 @@ export default function AboutPage() {
         {/* Values */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
           {[
-            { icon: "âœ¦", title: "Unique Designs", body: "No boring prints. Every piece is freshly designed â€” you won't find it anywhere else." },
-            { icon: "âœ¦", title: "Made for You", body: "From beachwear to birthday looks to brunch fits â€” we've got every occasion covered." },
+            { icon: "âœ¦", title: "Unique Designs", body: "No boring prints. Every piece is freshly designed — you won't find it anywhere else." },
+            { icon: "âœ¦", title: "Made for You", body: "From beachwear to birthday looks to brunch fits — we've got every occasion covered." },
             { icon: "âœ¦", title: "Gen Z Energy", body: "Founded by a Gen Z girl, designed for the girls who set the trends, not follow them." },
           ].map((v) => (
             <div key={v.title} className="p-6 border border-border-light rounded-sm hover:border-gold transition-colors group">
@@ -83,7 +83,7 @@ export default function AboutPage() {
         {/* CTA */}
         <div className="text-center bg-ivory border border-border-light p-10">
           <p className="font-serif text-2xl text-rich-black mb-2">Ready to upgrade your wardrobe?</p>
-          <p className="text-neutral-400 text-sm mb-6">Shop the latest drops â€” new styles added regularly.</p>
+          <p className="text-neutral-400 text-sm mb-6">Shop the latest drops — new styles added regularly.</p>
           <Link
             href="/collections/all"
             className="inline-block bg-rich-black hover:bg-gold text-white px-10 py-4 uppercase tracking-widest text-xs font-medium transition-colors"

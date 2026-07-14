@@ -9,7 +9,7 @@ export default function VisitStore() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 rounded-sm overflow-hidden shadow-2xl">
-          {/* Left â€” Map */}
+          {/* Left — Map */}
           <div className="relative w-full h-[220px] lg:h-auto lg:min-h-[260px]">
             <iframe
               title="Tranquil Store Location"
@@ -24,7 +24,7 @@ export default function VisitStore() {
             />
           </div>
 
-          {/* Right â€” Store Info */}
+          {/* Right — Store Info */}
           <div className="bg-[#1A1A1A] p-6 lg:p-8 flex flex-col justify-center gap-5">
             {/* Address */}
             <div className="flex items-start gap-4">
@@ -39,7 +39,7 @@ export default function VisitStore() {
                   Kanwarram Park, Sant, Last Bungalow 3rd Lane,<br />
                   Opp. Sukhwani Citi, Near Royal World School,<br />
                   Phase 2, Vaibhav Nagar, Pimpri Colony,<br />
-                  Pune, Maharashtra â€“ 411017
+                  Pune, Maharashtra – 411017
                 </p>
                 <a
                   href="https://share.google/ZjCsuVrExC932t0MS"
@@ -64,7 +64,7 @@ export default function VisitStore() {
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-gold mb-2">Hours</p>
-                <p className="text-neutral-400 text-sm">10:00 AM â€“ 9:00 PM</p>
+                <p className="text-neutral-400 text-sm">10:00 AM – 9:00 PM</p>
                 <p className="text-neutral-400 text-xs mt-1 uppercase tracking-widest">Open All Days</p>
               </div>
             </div>

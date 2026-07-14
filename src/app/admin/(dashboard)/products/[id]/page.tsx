@@ -275,11 +275,11 @@ export default function AddProductPage() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-rich-black mb-2">Price (â‚¹)</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Price (₹)</label>
                     <input type="number" step="0.01" name="price" required value={formData.price} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="0.00" />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-rich-black mb-2">Compare-at (â‚¹)</label>
+                    <label className="block text-sm font-medium text-rich-black mb-2">Compare-at (₹)</label>
                     <input type="number" step="0.01" name="compare_at_price" value={formData.compare_at_price} onChange={handleChange} className="w-full border border-border-light p-3 text-sm focus:outline-none focus:border-gold" placeholder="0.00" />
                   </div>
                 </div>

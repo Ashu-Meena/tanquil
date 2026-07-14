@@ -26,7 +26,7 @@ export default function TermsPage() {
             },
             {
               title: "Pricing",
-              body: "All prices are in Indian Rupees (â‚¹). We reserve the right to modify prices at any time without prior notice.",
+              body: "All prices are in Indian Rupees (₹). We reserve the right to modify prices at any time without prior notice.",
             },
             {
               title: "No Returns or Cancellations",
