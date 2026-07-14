@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Package, Search, Filter, Printer, ExternalLink, MoreVertical, Check, X } from "lucide-react";
 import { toast } from "@/store/useToastStore";
 import Image from "next/image";
+import { updateOrderStatus as serverUpdateOrderStatus, updatePaymentStatus as serverUpdatePaymentStatus, updateOrderFulfillment, bulkUpdateOrderStatus } from "@/app/actions/admin";
 
 interface Order {
   id: string;
@@ -101,43 +102,59 @@ export default function OrdersPage() {
   }, [fetchOrders]);
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
-    const supabase = createClient();
-    await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
-    if (selectedOrder?.id === orderId) {
-      setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+    const result = await serverUpdateOrderStatus(orderId, newStatus);
+    if (result.success) {
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(prev => prev ? { ...prev, status: newStatus } : null);
+      }
+      toast.success("Order status updated.");
+    } else {
+      toast.error(`Failed to update status: ${result.error}`);
     }
   };
 
   const updatePaymentStatus = async (orderId: string, newStatus: string) => {
-    const supabase = createClient();
-    await supabase.from("orders").update({ payment_status: newStatus }).eq("id", orderId);
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, payment_status: newStatus } : o));
-    if (selectedOrder?.id === orderId) {
-      setSelectedOrder(prev => prev ? { ...prev, payment_status: newStatus } : null);
+    if (newStatus === "paid" && selectedOrder?.payment_method === "upi") {
+      if (!window.confirm(`SECURITY CHECK: Have you verified the exact amount (₹${selectedOrder.total_amount?.toLocaleString('en-IN')}) was received for UTR: ${selectedOrder.transaction_id || selectedOrder.utr_number} in your bank account?`)) {
+        return;
+      }
+    }
+    const result = await serverUpdatePaymentStatus(orderId, newStatus);
+    if (result.success) {
+      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, payment_status: newStatus } : o));
+      if (selectedOrder?.id === orderId) {
+        setSelectedOrder(prev => prev ? { ...prev, payment_status: newStatus } : null);
+      }
+      toast.success("Payment status updated.");
+    } else {
+      toast.error(`Failed to update payment status: ${result.error}`);
     }
   };
 
   const saveFulfillmentDetails = async () => {
     if (!selectedOrder) return;
     setUpdating(true);
-    const supabase = createClient();
 
-    await supabase.from("orders").update({ 
+    const result = await updateOrderFulfillment(selectedOrder.id, {
       notes: internalNotes,
       tracking_id: trackingId,
       courier_name: courierName,
-    }).eq("id", selectedOrder.id);
+    });
     
-    setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { 
-      ...o, notes: internalNotes, tracking_id: trackingId, courier_name: courierName
-    } : o));
-    
-    setSelectedOrder(prev => prev ? { 
-      ...prev, notes: internalNotes, tracking_id: trackingId, courier_name: courierName
-    } : null);
-    
-    toast.success("Fulfillment details saved successfully.");
+    if (result.success) {
+      setOrders(prev => prev.map(o => o.id === selectedOrder.id ? { 
+        ...o, notes: internalNotes, tracking_id: trackingId, courier_name: courierName
+      } : o));
+      
+      setSelectedOrder(prev => prev ? { 
+        ...prev, notes: internalNotes, tracking_id: trackingId, courier_name: courierName
+      } : null);
+      
+      toast.success("Fulfillment details saved successfully.");
+    } else {
+      toast.error(`Failed to save details: ${result.error}`);
+    }
     setUpdating(false);
   };
   
@@ -205,18 +222,17 @@ export default function OrdersPage() {
   const applyBulkAction = async () => {
     if (!bulkStatus || selectedOrders.length === 0) return;
     setUpdating(true);
-    const supabase = createClient();
     
-    // Update all selected orders
-    await Promise.all(selectedOrders.map(id => 
-      supabase.from("orders").update({ status: bulkStatus }).eq("id", id)
-    ));
-    
-    setOrders(prev => prev.map(o => selectedOrders.includes(o.id) ? { ...o, status: bulkStatus } : o));
-    setSelectedOrders([]);
-    setBulkStatus("");
+    const result = await bulkUpdateOrderStatus(selectedOrders, bulkStatus);
+    if (result.success) {
+      setOrders(prev => prev.map(o => selectedOrders.includes(o.id) ? { ...o, status: bulkStatus } : o));
+      setSelectedOrders([]);
+      setBulkStatus("");
+      toast.success("Orders updated successfully!");
+    } else {
+      toast.error(`Failed to update orders: ${result.error}`);
+    }
     setUpdating(false);
-    toast.success("Orders updated successfully!");
   };
 
   return (

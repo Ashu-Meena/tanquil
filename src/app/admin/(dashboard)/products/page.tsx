@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Filter } from "lucide-react";
 import Image from "next/image";
 import { toast } from "@/store/useToastStore";
+import { deleteProduct } from "@/app/actions/admin";
 
 export default function ProductsPage() {
   const supabase = createClient();
@@ -109,13 +110,13 @@ export default function ProductsPage() {
     const previousProducts = [...products];
     setProducts(products.filter(p => p.id !== id));
     
-    const { error } = await supabase.from('products').delete().eq('id', id);
+    const result = await deleteProduct(id);
     
-    if (error) {
+    if (!result.success) {
       // Revert if error
       setProducts(previousProducts);
-      console.error("Delete product error:", error);
-      toast.error(`Failed to complete operation. Please try again or check the logs.`);
+      console.error("Delete product error:", result.error);
+      toast.error(`Failed to delete product: ${result.error}`);
     } else {
       toast.success("Product deleted successfully");
     }

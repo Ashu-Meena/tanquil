@@ -2,6 +2,37 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import ProductClient from "@/components/product/ProductClient";
 
+interface ProductImage {
+  url: string;
+  color_name: string | null;
+}
+
+interface ProductVariant {
+  color_name: string | null;
+  color_hex: string | null;
+  size: string | null;
+  stock_quantity: number | null;
+}
+
+interface ProductCategory {
+  category_id: string;
+  categories: { name: string } | null;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  compare_at_price: number | null;
+  slug: string;
+  description: string | null;
+  brand: string | null;
+  fabric: string | null;
+  tags: string[] | null;
+  product_categories: ProductCategory[] | null;
+  product_images: ProductImage[] | null;
+  product_variants: ProductVariant[] | null;
+}
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
@@ -39,7 +70,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
       product_variants(color_name, color_hex, size, stock_quantity)
     `)
     .eq("slug", decodedSlug)
-    .single();
+    .single<Product>();
 
   if (error || !productData) {
     notFound();
@@ -60,7 +91,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   // 3. Format product for Client Component
   const colorImages: Record<string, string[]> = {};
-  const images = productData.product_images?.map((img: any) => {
+  const images = productData.product_images?.map((img: ProductImage) => {
     if (img.color_name) {
       if (!colorImages[img.color_name]) colorImages[img.color_name] = [];
       colorImages[img.color_name].push(img.url);
@@ -75,7 +106,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   // Extract unique colors
   const colorMap = new Map();
-  productData.product_variants?.forEach((variant: any) => {
+  productData.product_variants?.forEach((variant: ProductVariant) => {
     if (variant.color_name && variant.color_hex && !colorMap.has(variant.color_name)) {
       colorMap.set(variant.color_name, { name: variant.color_name, hex: variant.color_hex });
     }
@@ -84,7 +115,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
   // Extract unique sizes
   const sizesSet = new Set<string>();
-  productData.product_variants?.forEach((variant: any) => {
+  productData.product_variants?.forEach((variant: ProductVariant) => {
     if (variant.size) sizesSet.add(variant.size);
   });
   const sizes = Array.from(sizesSet);
@@ -108,14 +139,14 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     details: ["Dry clean only", "Handle with care"],
   };
 
-  const formattedRelated = relatedData?.map(rp => {
-    const images = rp.product_images?.map((img: any) => img.url) || [];
+  const formattedRelated = relatedData?.map((rp: any) => {
+    const images = rp.product_images?.map((img: ProductImage) => img.url) || [];
     
     const colorsMap = new Map<string, string>();
     if (rp.product_variants) {
-      rp.product_variants.forEach((v: any) => {
-        if (!colorsMap.has(v.color_name)) {
-          const matchingImg = rp.product_images?.find((img: any) => img.color_name === v.color_name);
+      rp.product_variants.forEach((v: ProductVariant) => {
+        if (v.color_name && !colorsMap.has(v.color_name)) {
+          const matchingImg = rp.product_images?.find((img: ProductImage) => img.color_name === v.color_name);
           colorsMap.set(v.color_name, matchingImg?.url || images[0]);
         }
       });
@@ -123,7 +154,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
     const sizesSet = new Set<string>();
     if (rp.product_variants) {
-      rp.product_variants.forEach((v: any) => {
+      rp.product_variants.forEach((v: ProductVariant) => {
         if (v.size) sizesSet.add(v.size);
       });
     }

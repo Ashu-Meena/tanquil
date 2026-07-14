@@ -5,6 +5,8 @@ import { createClient } from "@/utils/supabase/client";
 import { Search, Filter, Check, X, Trash2, Star, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { deleteReview } from "@/app/actions/admin";
+import { toast } from "@/store/useToastStore";
 
 export default function ReviewsPage() {
   const supabase = createClient();
@@ -41,8 +43,12 @@ export default function ReviewsPage() {
 
   const confirmDeleteReview = async () => {
     if (!reviewToDelete) return;
-    const supabase = createClient();
-    await supabase.from("reviews").delete().eq("id", reviewToDelete);
+    const result = await deleteReview(reviewToDelete);
+    if (result.success) {
+      toast.success("Review deleted successfully");
+    } else {
+      toast.error(`Failed to delete review: ${result.error}`);
+    }
     setReviewToDelete(null);
     fetchReviews();
   };

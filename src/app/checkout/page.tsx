@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -8,6 +11,61 @@ import { Lock, Wallet, ChevronLeft, ChevronRight, Check, Loader2, Plus, Trash2, 
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
+
+interface Coupon {
+  id: string;
+  code: string;
+  discount_type: 'percentage' | 'fixed';
+  discount_value: number;
+  min_order_value: number | null;
+  is_active: boolean;
+  used_count: number;
+  is_free_shipping?: boolean;
+}
+
+interface UserProfile {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  phone: string | null;
+}
+
+interface Address {
+  id: string;
+  user_id: string;
+  title: string | null;
+  name: string;
+  address_line1: string;
+  address_line2: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string | null;
+  phone: string;
+  is_default: boolean;
+}
+
+interface ShippingSettings {
+  free_shipping_threshold: number;
+  flat_rate: number;
+}
+
+const addressSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  addressLabel: z.string().optional(),
+  addressLine1: z.string().min(5, "Address must be at least 5 characters"),
+  addressLine2: z.string().optional(),
+  city: z.string().min(2, "City is required"),
+  state: z.string().min(2, "State is required"),
+  pinCode: z.string().regex(/^[1-9][0-9]{5}$/, "Valid 6-digit Indian PIN Code is required"),
+  phone: z.string().min(10, "Valid phone number is required"),
+  alternatePhone: z.string().optional(),
+  landmark: z.string().optional(),
+});
+type AddressFormData = z.infer<typeof addressSchema>;
+
 
 const INDIAN_STATES = [
   "Andaman and Nicobar Islands", "Andhra Pradesh", "Arunachal Pradesh", "Assam",
@@ -33,14 +91,23 @@ export default function CheckoutPage() {
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [discountMsg, setDiscountMsg] = useState("");
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [isFreeShippingCouponApplied, setIsFreeShippingCouponApplied] = useState(false);
   const router = useRouter();
   
   const { items: cartItems, clearCart, updateQuantity, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [paymentRef, setPaymentRef] = useState("");
-  const [addressLabel, setAddressLabel] = useState(""); // Fix: dedicated state for address name
+  
+  const { register, trigger, watch, setValue, formState: { errors: formErrors } } = useForm<AddressFormData>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: {
+      firstName: "", lastName: "", addressLine1: "", addressLine2: "", city: "", state: "", pinCode: "", phone: "", alternatePhone: "", landmark: "", addressLabel: ""
+    }
+  });
+
+  const formData = watch();
+  const { firstName, lastName, addressLine1, addressLine2, city, state, pinCode, phone, alternatePhone, landmark, addressLabel } = formData;
   
   useEffect(() => {
     setMounted(true);
@@ -99,9 +166,9 @@ export default function CheckoutPage() {
           setAppliedCoupon(null);
           setIsFreeShippingCouponApplied(false);
         } else {
-          setAppliedCoupon(data);
-          setIsFreeShippingCouponApplied(!!(data as any).is_free_shipping);
-          setDiscountMsg(`${data.code} applied! âœ“`);
+          setAppliedCoupon(data as Coupon);
+          setIsFreeShippingCouponApplied(!!(data as Coupon).is_free_shipping);
+          setDiscountMsg(`${data.code} applied! ✓`);
         }
       }
     } catch (err) {
@@ -114,24 +181,12 @@ export default function CheckoutPage() {
   };
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userProfile, setUserProfile] = useState<any>(null);
-  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string>("");
 
-  // Form states for guest checkout / new address
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [addressLine1, setAddressLine1] = useState("");
-  const [addressLine2, setAddressLine2] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [pinCode, setPinCode] = useState("");
-  const [landmark, setLandmark] = useState("");
-  const [alternatePhone, setAlternatePhone] = useState("");
-
-  const [shippingSettings, setShippingSettings] = useState({ free_shipping_threshold: 10000, flat_rate: 250 });
+  const [shippingSettings, setShippingSettings] = useState<ShippingSettings>({ free_shipping_threshold: 10000, flat_rate: 250 });
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
   const [formError, setFormError] = useState("");
 
@@ -143,14 +198,12 @@ export default function CheckoutPage() {
         return;
       }
       setIsLoggedIn(true);
-        // Fetch profile
-        const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
         if (profile) {
           setUserProfile(profile);
-          setFirstName(profile.first_name || "");
-          setLastName(profile.last_name || "");
+          setValue("firstName", profile.first_name || "");
+          setValue("lastName", profile.last_name || "");
           setEmail(profile.email || "");
-          setPhone(profile.phone || "");
+          setValue("phone", profile.phone || "");
         } else {
           setEmail(session.user.email || "");
         }
@@ -164,7 +217,7 @@ export default function CheckoutPage() {
       
       const { data: settings } = await supabase.from('store_settings').select('value').eq('key', 'shipping').single();
       if (settings?.value) {
-        setShippingSettings(settings.value as any);
+        setShippingSettings(settings.value as ShippingSettings);
       }
       
       setIsLoadingAuth(false);
@@ -173,8 +226,9 @@ export default function CheckoutPage() {
   }, []);
 
   const handleSaveNewAddress = async () => {
-    if (!addressLine1 || !city || !state || !pinCode || !phone) {
-      setFormError("Please fill in all required fields: Address Line 1, City, State, PIN Code, and Phone.");
+    const isValid = await trigger();
+    if (!isValid) {
+      setFormError("Please check the form for errors.");
       return;
     }
     
@@ -409,7 +463,7 @@ export default function CheckoutPage() {
         clearCart();
         router.push('/checkout/success');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Order placement error:", err);
       setFormError("An unexpected error occurred while placing your order. Please try again.");
     } finally {
@@ -436,16 +490,10 @@ export default function CheckoutPage() {
     if (currentStep === 0) { // Shipping
       const usingNew = !selectedAddress || showNewAddressForm || savedAddresses.length === 0;
       if (usingNew) {
-        if (!addressLine1 || !city || !state || !pinCode || !phone) {
-          setFormError("Please fill in all required address fields.");
-          return;
-        }
-        if (addressLine1.length < 5 || city.length < 2 || state.length < 2) {
-          setFormError("Please enter a valid address, city, and state.");
-          return;
-        }
-        if (!/^[1-9][0-9]{5}$/.test(pinCode)) {
-          setFormError("Please enter a valid 6-digit Indian PIN Code.");
+        const isValid = await trigger();
+        if (!isValid) {
+          const firstError = Object.values(formErrors)[0]?.message;
+          setFormError(firstError || "Please fill in all required address fields correctly.");
           return;
         }
         
@@ -563,23 +611,47 @@ export default function CheckoutPage() {
                             >
                               <div className="mt-4 space-y-4 border border-border-light p-6 rounded-sm bg-white">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <input type="text" aria-label="Address Name" value={addressLabel} onChange={e => setAddressLabel(e.target.value)} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                                  <input type="text" aria-label="Street Address" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Street Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <div className="w-full">
+                                    <input type="text" aria-label="Address Name" {...register("addressLabel")} placeholder="Address Name (e.g. Home)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.addressLabel && <p className="text-error text-xs mt-1">{formErrors.addressLabel.message}</p>}
+                                  </div>
+                                  <div className="w-full">
+                                    <input type="text" aria-label="Street Address" {...register("addressLine1")} placeholder="Street Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.addressLine1 && <p className="text-error text-xs mt-1">{formErrors.addressLine1.message}</p>}
+                                  </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                  <input type="text" aria-label="City" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                                  <select value={state} aria-label="State" onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-neutral-500">
-                                    <option value="" disabled>Select State</option>
-                                    {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
-                                  </select>
-                                  <input type="text" aria-label="PIN Code" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <div className="w-full">
+                                    <input type="text" aria-label="City" {...register("city")} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.city && <p className="text-error text-xs mt-1">{formErrors.city.message}</p>}
+                                  </div>
+                                  <div className="w-full">
+                                    <select aria-label="State" {...register("state")} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-neutral-500">
+                                      <option value="" disabled>Select State</option>
+                                      {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                                    </select>
+                                    {formErrors.state && <p className="text-error text-xs mt-1">{formErrors.state.message}</p>}
+                                  </div>
+                                  <div className="w-full">
+                                    <input type="text" aria-label="PIN Code" {...register("pinCode")} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.pinCode && <p className="text-error text-xs mt-1">{formErrors.pinCode.message}</p>}
+                                  </div>
                                 </div>
                                 <div className="grid grid-cols-1 gap-6">
-                                  <input type="text" aria-label="Landmark" value={landmark} onChange={e => setLandmark(e.target.value)} placeholder="Landmark (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <div className="w-full">
+                                    <input type="text" aria-label="Landmark" {...register("landmark")} placeholder="Landmark (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.landmark && <p className="text-error text-xs mt-1">{formErrors.landmark.message}</p>}
+                                  </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                  <input type="tel" aria-label="Primary Phone Number" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Primary Phone Number" required className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                                  <input type="tel" aria-label="Alternate Phone Number" value={alternatePhone} onChange={e => setAlternatePhone(e.target.value)} placeholder="Alternate Phone (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                  <div className="w-full">
+                                    <input type="tel" aria-label="Primary Phone Number" {...register("phone")} placeholder="Primary Phone Number" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.phone && <p className="text-error text-xs mt-1">{formErrors.phone.message}</p>}
+                                  </div>
+                                  <div className="w-full">
+                                    <input type="tel" aria-label="Alternate Phone Number" {...register("alternatePhone")} placeholder="Alternate Phone (Optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                                    {formErrors.alternatePhone && <p className="text-error text-xs mt-1">{formErrors.alternatePhone.message}</p>}
+                                  </div>
                                 </div>
                                 <button onClick={handleSaveNewAddress} className="bg-rich-black text-white px-8 py-4 text-xs uppercase tracking-widest hover:bg-gold transition-colors mt-2">
                                   Save Address
@@ -592,21 +664,45 @@ export default function CheckoutPage() {
                     ) : (
                       <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <input type="text" aria-label="First Name" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder="First Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                          <input type="text" aria-label="Last Name" value={lastName} onChange={e => setLastName(e.target.value)} placeholder="Last Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <div className="w-full">
+                            <input type="text" aria-label="First Name" {...register("firstName")} placeholder="First Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                            {formErrors.firstName && <p className="text-error text-xs mt-1">{formErrors.firstName.message}</p>}
+                          </div>
+                          <div className="w-full">
+                            <input type="text" aria-label="Last Name" {...register("lastName")} placeholder="Last Name" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                            {formErrors.lastName && <p className="text-error text-xs mt-1">{formErrors.lastName.message}</p>}
+                          </div>
                         </div>
-                        <input type="text" aria-label="Address" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} placeholder="Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                        <input type="text" aria-label="Apartment, suite, etc." value={addressLine2} onChange={e => setAddressLine2(e.target.value)} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                        <div className="w-full">
+                          <input type="text" aria-label="Address" {...register("addressLine1")} placeholder="Address" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          {formErrors.addressLine1 && <p className="text-error text-xs mt-1">{formErrors.addressLine1.message}</p>}
+                        </div>
+                        <div className="w-full">
+                          <input type="text" aria-label="Apartment, suite, etc." {...register("addressLine2")} placeholder="Apartment, suite, etc. (optional)" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          {formErrors.addressLine2 && <p className="text-error text-xs mt-1">{formErrors.addressLine2.message}</p>}
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <input type="text" aria-label="City" value={city} onChange={e => setCity(e.target.value)} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                          <select value={state} aria-label="State" onChange={e => setState(e.target.value)} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-neutral-500">
-                              <option value="" disabled>Select State</option>
-                              {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                          <div className="w-full">
+                            <input type="text" aria-label="City" {...register("city")} placeholder="City" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                            {formErrors.city && <p className="text-error text-xs mt-1">{formErrors.city.message}</p>}
+                          </div>
+                          <div className="w-full">
+                            <select aria-label="State" {...register("state")} className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm text-neutral-500">
+                                <option value="" disabled>Select State</option>
+                                {INDIAN_STATES.map(s => <option key={s} value={s}>{s}</option>)}
                             </select>
+                            {formErrors.state && <p className="text-error text-xs mt-1">{formErrors.state.message}</p>}
+                          </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <input type="text" aria-label="PIN Code" value={pinCode} onChange={e => setPinCode(e.target.value)} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
-                          <input type="tel" aria-label="Phone Number" value={phone} onChange={e => setPhone(e.target.value)} placeholder="Phone" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                          <div className="w-full">
+                            <input type="text" aria-label="PIN Code" {...register("pinCode")} placeholder="PIN Code" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                            {formErrors.pinCode && <p className="text-error text-xs mt-1">{formErrors.pinCode.message}</p>}
+                          </div>
+                          <div className="w-full">
+                            <input type="tel" aria-label="Phone Number" {...register("phone")} placeholder="Phone" className="w-full bg-transparent border-b border-border-light py-3 focus:outline-none focus:border-rich-black transition-colors text-sm placeholder-neutral-400" />
+                            {formErrors.phone && <p className="text-error text-xs mt-1">{formErrors.phone.message}</p>}
+                          </div>
                         </div>
                       </>
                     )}

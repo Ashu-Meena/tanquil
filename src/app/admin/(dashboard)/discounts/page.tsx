@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Tag, Settings2, Trash2, Loader2, Save } from "lucide-react";
 import { toast } from "@/store/useToastStore";
+import { deleteCoupon } from "@/app/actions/admin";
 
 interface Coupon {
   id: string;
@@ -84,10 +85,15 @@ export default function DiscountsPage() {
     fetchCoupons();
   };
 
-  const deleteCoupon = async (id: string) => {
+  const handleDeleteCoupon = async (id: string) => {
     if (confirm("Are you sure you want to delete this coupon?")) {
-      await supabase.from('coupons').delete().eq('id', id);
-      fetchCoupons();
+      const result = await deleteCoupon(id);
+      if (result.success) {
+        fetchCoupons();
+        toast.success("Coupon deleted successfully");
+      } else {
+        toast.error(`Failed to delete coupon: ${result.error}`);
+      }
     }
   };
 
@@ -176,7 +182,7 @@ export default function DiscountsPage() {
                         Edit
                       </button>
                       <button 
-                        onClick={() => deleteCoupon(coupon.id)}
+                        onClick={() => handleDeleteCoupon(coupon.id)}
                         className="text-neutral-500 hover:text-error transition-colors"
                       >
                         <Trash2 className="w-4 h-4 inline" />

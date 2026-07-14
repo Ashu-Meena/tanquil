@@ -7,6 +7,7 @@ import { Plus, Search, MoreHorizontal, Edit, Trash2, Tag, Image as ImageIcon } f
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { deleteCategory as deleteCategoryAction } from "@/app/actions/admin";
 
 export default function CategoriesPage() {
   const supabase = createClient();
@@ -32,8 +33,12 @@ export default function CategoriesPage() {
 
   const deleteCategory = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
-      await supabase.from("categories").delete().eq("id", id);
-      fetchCategories();
+      const result = await deleteCategoryAction(id);
+      if (result.success) {
+        fetchCategories();
+      } else {
+        alert(result.error || "Failed to delete category");
+      }
     }
   };
 
