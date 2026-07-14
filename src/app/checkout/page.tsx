@@ -240,14 +240,38 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
-    if (paymentMethod === 'upi' && (!transactionId || !paymentScreenshot)) {
-      setFormError("Please enter Transaction ID and upload screenshot.");
-      return;
+    let finalTransactionId = transactionId.trim();
+
+    if (paymentMethod === 'upi') {
+      if (!finalTransactionId || !paymentScreenshot) {
+        setFormError("Please enter Transaction ID and upload screenshot.");
+        return;
+      }
+
+      if (!/^\d{12,16}$/.test(finalTransactionId)) {
+        setFormError("Transaction ID must be between 12 and 16 numeric digits.");
+        return;
+      }
     }
     
     setIsSubmitting(true);
     try {
       if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        if (paymentMethod === 'upi') {
+          const { data: existingOrder, error: checkError } = await supabase
+            .from('orders')
+            .select('id')
+            .eq('transaction_id', finalTransactionId)
+            .maybeSingle();
+            
+          if (checkError) throw checkError;
+          if (existingOrder) {
+            setFormError("This Transaction ID has already been submitted.");
+            setIsSubmitting(false);
+            return;
+          }
+        }
+
         let screenshotUrl = "";
         
         if (paymentScreenshot) {
@@ -313,7 +337,7 @@ export default function CheckoutPage() {
           shipping_fee: shipping,
           total_amount: total,
           payment_method: paymentMethod,
-          transaction_id: transactionId,
+          transaction_id: finalTransactionId,
           screenshot_url: screenshotUrl,
           status: 'pending_verification',
           payment_status: 'pending'
