@@ -269,7 +269,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
               </div>
             ) : (
               <div className={viewMode === "grid"
-                ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12"
+                ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12"
                 : "flex flex-col gap-6"
               }>
                 {visible.map((product) => (

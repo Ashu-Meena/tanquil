@@ -50,7 +50,8 @@ const COMMON_COLORS: Record<string, string> = {
   "Lavender": "#E6E6FA",
   "Peach": "#FFE5B4",
   "Mint": "#98FF98",
-  "Coral": "#FF7F50"
+  "Coral": "#FF7F50",
+  "Wine": "#722F37"
 };
 
 interface VariantsEditorProps {
@@ -86,14 +87,56 @@ export default function VariantsEditor({ groups, onChange }: VariantsEditorProps
     onChange(groups.map((g) => (g.id === gid ? { ...g, ...fields } : g)));
   };
 
+  const resolveColorNameToHex = (name: string): string | null => {
+    if (!name) return null;
+    const cleanName = name.trim();
+    const presetMatch = Object.entries(COMMON_COLORS).find(([k]) => k.toLowerCase() === cleanName.toLowerCase());
+    if (presetMatch) return presetMatch[1].toLowerCase();
+
+    if (typeof document !== 'undefined') {
+      const ctx = document.createElement('canvas').getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#123456';
+        ctx.fillStyle = cleanName.toLowerCase().replace(/\s+/g, '');
+        if (ctx.fillStyle !== '#123456' || cleanName.toLowerCase() === '#123456') {
+          return ctx.fillStyle;
+        }
+      }
+    }
+
+    const sortedColors = Object.entries(COMMON_COLORS).sort((a, b) => b[0].length - a[0].length);
+    const partialMatch = sortedColors.find(([k]) => cleanName.toLowerCase().includes(k.toLowerCase()));
+    if (partialMatch) return partialMatch[1].toLowerCase();
+
+    return null;
+  };
+
   const handleColorNameChange = (gid: string, newBaseName: string, currentCustomTitle: string) => {
-    const match = Object.entries(COMMON_COLORS).find(([k]) => k.toLowerCase() === newBaseName.toLowerCase());
     const finalName = currentCustomTitle ? `${newBaseName}||${currentCustomTitle}` : newBaseName;
-    if (match) {
-      // Keep any existing secondary color intact
-      const group = groups.find((g) => g.id === gid);
-      const hexParts = (group?.color_hex || "").split(",");
-      const newHex = hexParts.length > 1 ? `${match[1]},${hexParts[1]}` : match[1];
+    
+    const parts = newBaseName.split(/\s*(?:[/;&,]| and )\s*/i);
+    const hex1 = resolveColorNameToHex(parts[0]);
+    const hex2 = parts.length > 1 ? resolveColorNameToHex(parts[1]) : null;
+
+    const group = groups.find((g) => g.id === gid);
+    const currentHexParts = (group?.color_hex || "").split(",");
+    
+    let finalPrimary = hex1 || currentHexParts[0] || "#000000";
+    let finalSecondary = currentHexParts.length > 1 ? currentHexParts[1] : "";
+    
+    if (hex2) {
+      finalSecondary = hex2;
+    } else if (parts.length === 1 && currentHexParts.length > 1) {
+      // If the user removed the delimiter, they probably only want one color now
+      // (Unless they manually added a secondary color in the picker. We'll be safe and remove it 
+      // ONLY if they are actively typing and reduced it to 1 part. Actually, let's just clear it 
+      // if they don't have a delimiter in the name, to keep name and swatches synced).
+      finalSecondary = "";
+    }
+
+    const newHex = finalSecondary ? `${finalPrimary},${finalSecondary}` : finalPrimary;
+
+    if (hex1 || hex2 || parts.length === 1) { // Apply if we found a match, or if we need to clear secondary
       updateGroupFields(gid, { color_name: finalName, color_hex: newHex });
     } else {
       updateGroup(gid, "color_name", finalName);

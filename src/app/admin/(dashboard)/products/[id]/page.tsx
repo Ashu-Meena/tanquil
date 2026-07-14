@@ -68,7 +68,7 @@ export default function EditProductPage() {
         .select(`
           *,
           product_categories(category_id),
-          product_images(image_url, color_name),
+          product_images(url, color_name),
           product_variants(*)
         `)
         .eq('id', productId)
@@ -101,7 +101,7 @@ export default function EditProductPage() {
             const key = v.color_name;
             if (!groupsMap.has(key)) {
               const imgs = product.product_images 
-                ? product.product_images.filter((img: any) => img.color_name === key).map((img: any) => img.image_url) 
+                ? product.product_images.filter((img: any) => img.color_name === key).map((img: any) => img.url) 
                 : [];
               groupsMap.set(key, {
                 id: crypto.randomUUID(),
