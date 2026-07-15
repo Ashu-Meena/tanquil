@@ -55,6 +55,11 @@ function AccountContent() {
   const [orders, setOrders] = useState<any[]>([]);
   const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({});
   
+  // Wishlist to Cart Modal State
+  const [wishlistModalItem, setWishlistModalItem] = useState<any>(null);
+  const [wishlistModalColor, setWishlistModalColor] = useState<string>('');
+  const [wishlistModalSize, setWishlistModalSize] = useState<string>('');
+
   const toggleOrderExpand = (id: string) => {
     setExpandedOrders(prev => ({ ...prev, [id]: !prev[id] }));
   };
@@ -126,11 +131,28 @@ function AccountContent() {
         setAddresses(userAddresses);
       }
 
-      // Fetch wishlist
-      const { data: userWishlist } = await supabase.from('wishlist').select('id, product_id, products(*)').eq('user_id', session.user.id).order('created_at', { ascending: false });
+      // Fetch wishlist and merge with local
+      const localItems = useWishlistStore.getState().items;
+      const { data: userWishlist } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
+      
       if (userWishlist) {
-        setWishlist(userWishlist);
-        useWishlistStore.getState().setItems(userWishlist.map((w: any) => w.product_id));
+        const dbItemIds = userWishlist.map((w: any) => String(w.product_id));
+        const toUpload = localItems.filter(id => !dbItemIds.includes(String(id)));
+        
+        if (toUpload.length > 0) {
+          // Upload local items to DB
+          await supabase.from('wishlist').insert(toUpload.map(id => ({ user_id: session.user.id, product_id: id })));
+          
+          // Refetch to get the full joined data
+          const { data: mergedWishlist } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
+          if (mergedWishlist) {
+            setWishlist(mergedWishlist);
+            useWishlistStore.getState().setItems(mergedWishlist.map((w: any) => String(w.product_id)));
+          }
+        } else {
+          setWishlist(userWishlist);
+          useWishlistStore.getState().setItems(dbItemIds);
+        }
       }
 
       // Fetch invoice settings
@@ -289,16 +311,41 @@ function AccountContent() {
 
   const handleMoveToCart = async (wishlistItem: any) => {
     const product = wishlistItem.products;
+    const variants = product?.product_variants || [];
+    
+    if (variants.length > 0) {
+      setWishlistModalItem(wishlistItem);
+      setWishlistModalColor(variants[0].color_name || 'Standard');
+      setWishlistModalSize(variants[0].size || 'M');
+    } else {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0] || 'https://via.placeholder.com/400x500',
+        quantity: 1,
+        color: "Standard",
+        size: "M",
+      });
+      await handleRemoveFromWishlist(wishlistItem.id, product.id);
+      openCart();
+    }
+  };
+
+  const handleConfirmMoveToCart = async () => {
+    if (!wishlistModalItem) return;
+    const product = wishlistModalItem.products;
     addToCart({
       id: product.id,
       name: product.name,
       price: product.price,
       image: product.images?.[0] || 'https://via.placeholder.com/400x500',
       quantity: 1,
-      color: "Standard",
-      size: "M", // Defaulting for now
+      color: wishlistModalColor || "Standard",
+      size: wishlistModalSize || "M",
     });
-    await handleRemoveFromWishlist(wishlistItem.id, product.id);
+    await handleRemoveFromWishlist(wishlistModalItem.id, product.id);
+    setWishlistModalItem(null);
     openCart();
   };
 
@@ -1065,7 +1112,73 @@ function AccountContent() {
                 </div>
               </div>
               </div>
+              </div>
             )}
+            
+            {/* Wishlist to Cart Modal */}
+            {wishlistModalItem && (
+              <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                <div className="bg-ivory w-full max-w-md p-6 relative rounded-sm shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                  <button onClick={() => setWishlistModalItem(null)} className="absolute top-4 right-4 text-neutral-400 hover:text-rich-black transition-colors">
+                    <X className="w-5 h-5" />
+                  </button>
+                  <h3 className="font-serif text-2xl text-rich-black mb-1">Move to Cart</h3>
+                  <p className="text-sm text-neutral-500 mb-6">Select options for {wishlistModalItem.products?.name}</p>
+                  
+                  {(() => {
+                    const variants = wishlistModalItem.products?.product_variants || [];
+                    const colors = Array.from(new Set(variants.map((v: any) => v.color_name).filter(Boolean))) as string[];
+                    const sizes = Array.from(new Set(variants.map((v: any) => v.size).filter(Boolean))) as string[];
+                    
+                    return (
+                      <div className="space-y-6">
+                        {colors.length > 0 && (
+                          <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Color</label>
+                            <div className="flex flex-wrap gap-2">
+                              {colors.map((color) => {
+                                const baseColorName = color.split("||")[0];
+                                return (
+                                  <button
+                                    key={color}
+                                    onClick={() => setWishlistModalColor(color)}
+                                    className={`px-3 py-2 text-xs border transition-colors ${wishlistModalColor === color ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black'}`}
+                                  >
+                                    {baseColorName}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {sizes.length > 0 && (
+                          <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-neutral-500 mb-2">Size</label>
+                            <div className="flex flex-wrap gap-2">
+                              {sizes.map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() => setWishlistModalSize(size)}
+                                  className={`w-12 h-12 flex items-center justify-center border text-xs transition-colors ${wishlistModalSize === size ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black'}`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        <button onClick={handleConfirmMoveToCart} className="w-full bg-rich-black text-white py-3 mt-4 text-xs uppercase tracking-widest font-medium hover:bg-gold transition-colors">
+                          Confirm & Add
+                        </button>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            )}
+            
           </main>
         </div>
       </div>

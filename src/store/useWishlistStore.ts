@@ -20,71 +20,63 @@ export const useWishlistStore = create<WishlistStore>()(
     (set, get) => ({
       items: [],
       setItems: (items: string[]) => set({ items }),
-      addItem: (productId: string) => {
+      addItem: async (productId: string) => {
         set((state) => {
           if (!state.items.includes(productId)) {
             return { items: [...state.items, productId] };
           }
           return state;
         });
-        get().syncToSupabase();
+        
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            // Check if already in db
+            const { data } = await supabase.from('wishlist').select('id').eq('user_id', session.user.id).eq('product_id', productId).maybeSingle();
+            if (!data) {
+              await supabase.from('wishlist').insert({ user_id: session.user.id, product_id: productId });
+            }
+          }
+        } catch (e) {
+          console.error(e);
+        }
       },
-      removeItem: (productId: string) => {
+      removeItem: async (productId: string) => {
         set((state) => ({
           items: state.items.filter((id) => id !== productId),
         }));
-        get().syncToSupabase();
-      },
-      toggleItem: (productId: string) => {
-        set((state) => {
-          if (state.items.includes(productId)) {
-            return { items: state.items.filter((id) => id !== productId) };
-          }
-          return { items: [...state.items, productId] };
-        });
-        get().syncToSupabase();
-      },
-      hasItem: (productId: string) => get().items.includes(productId),
-      clearWishlist: () => {
-        set({ items: [] });
-        get().syncToSupabase();
-      },
-      syncToSupabase: async () => {
+        
         try {
           const { data: { session } } = await supabase.auth.getSession();
-          if (!session) return; // Only sync if logged in
-
-          const state = get();
-          
-          // Current DB wishlist
-          const { data: dbWishlist } = await supabase
-            .from('wishlist')
-            .select('product_id')
-            .eq('user_id', session.user.id);
-            
-          const dbItemIds = dbWishlist?.map(w => w.product_id) || [];
-          
-          // Items to add to DB (in local state but not in DB)
-          const itemsToAdd = state.items.filter(id => !dbItemIds.includes(id));
-          
-          // Items to remove from DB (in DB but not in local state)
-          const itemsToRemove = dbItemIds.filter(id => !state.items.includes(id));
-          
-          if (itemsToAdd.length > 0) {
-            await supabase.from('wishlist').insert(
-              itemsToAdd.map(productId => ({ user_id: session.user.id, product_id: productId }))
-            );
+          if (session) {
+            await supabase.from('wishlist').delete().eq('user_id', session.user.id).eq('product_id', productId);
           }
-          
-          if (itemsToRemove.length > 0) {
-            await supabase.from('wishlist')
-              .delete()
-              .eq('user_id', session.user.id)
-              .in('product_id', itemsToRemove);
-          }
-        } catch (err) {
-          console.error("Wishlist sync failed:", err);
+        } catch (e) {
+          console.error(e);
         }
+      },
+      toggleItem: async (productId: string) => {
+        const state = get();
+        if (state.items.includes(productId)) {
+          await get().removeItem(productId);
+        } else {
+          await get().addItem(productId);
+        }
+      },
+      hasItem: (productId: string) => get().items.includes(productId),
+      clearWishlist: async () => {
+        set({ items: [] });
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            await supabase.from('wishlist').delete().eq('user_id', session.user.id);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      },
+      syncToSupabase: async () => {
+        // Deprecated: We now sync per action. Kept for interface compatibility.
       },
     }),
     {
