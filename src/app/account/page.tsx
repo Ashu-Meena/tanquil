@@ -150,9 +150,8 @@ function AccountContent() {
           // Upload local items to DB individually so one bad ID (e.g. deleted product) doesn't break others
           for (const id of toUpload) {
             const { error: insertError } = await supabase.from('wishlist').insert({ user_id: session.user.id, product_id: id });
-            if (insertError) {
+            if (insertError && insertError.code !== '23505') {
                console.warn(`Notice: Could not sync wishlist item ${id}.`, insertError);
-               setDebugError(`Failed to insert item ${id}. Error: ${JSON.stringify(insertError)}`);
             }
           }
           
@@ -857,7 +856,6 @@ function AccountContent() {
                   <span className="text-rich-black">Your Wishlist</span>
                 </div>
                 <h2 className="font-serif text-2xl md:text-3xl text-rich-black mb-6 md:mb-8">My Wishlist</h2>
-                {debugError && <div className="p-4 bg-red-100 text-red-700 mb-4">{debugError}</div>}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
                   {wishlist.length === 0 ? (
                     <div className="col-span-2 md:col-span-3 text-center py-12 border border-dashed border-border-light">
