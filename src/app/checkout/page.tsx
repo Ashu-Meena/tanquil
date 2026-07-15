@@ -548,10 +548,10 @@ export default function CheckoutPage() {
         </Link>
       </header>
 
-      <div className="bg-white min-h-screen pt-24 sm:pt-32 pb-20 font-[family-name:var(--font-montserrat)]">
+      <div className="bg-white min-h-screen pt-16 sm:pt-24 pb-12 sm:pb-20 font-[family-name:var(--font-montserrat)]">
         
         {/* MOBILE HEADER ACCORDION */}
-        <div className="lg:hidden bg-[#FAFAFA] border-b border-border-light mb-8 sticky top-16 z-40">
+        <div className="lg:hidden bg-[#FAFAFA] border-b border-border-light mb-6 sm:mb-8 sticky top-16 z-40">
         <button 
           onClick={() => setShowMobileSummary(!showMobileSummary)}
           className="w-full px-6 py-4 flex items-center justify-between text-rich-black"
@@ -609,35 +609,35 @@ export default function CheckoutPage() {
         </AnimatePresence>
       </div>
 
-      <div className="container mx-auto px-6 lg:px-12 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-12 max-w-7xl">
         
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-24">
           
           {/* Left: Checkout Form */}
           <div className="flex-1 lg:max-w-3xl">
-            <div className="flex items-center justify-between mb-8">
-              <h1 className="font-serif text-3xl sm:text-4xl text-rich-black">Checkout</h1>
+            <div className="flex items-center justify-between mb-6 sm:mb-8">
+              <h1 className="font-serif text-2xl sm:text-4xl text-rich-black">Checkout</h1>
               <Link href="/" className="hidden sm:inline-flex items-center gap-2 text-[10px] uppercase tracking-widest font-medium text-neutral-500 hover:text-gold-text transition-colors">
                 <ChevronLeft className="w-3 h-3" /> Return to Shop
               </Link>
             </div>
             
             {/* Redesigned Step Indicator */}
-            <div className="flex items-center justify-between sm:justify-start sm:gap-6 mb-12 border-b border-border-light pb-4 overflow-x-auto no-scrollbar">
+            <div className="flex items-center justify-between sm:justify-start sm:gap-6 mb-8 sm:mb-12 border-b border-border-light pb-4 overflow-x-auto no-scrollbar">
               {steps.map((step, index) => {
                 const isActive = index === currentStep;
                 const isPast = index < currentStep;
                 return (
-                  <div key={step} className="flex items-center gap-2 sm:gap-4 shrink-0">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-medium transition-colors ${isActive ? 'bg-rich-black text-white' : isPast ? 'bg-gold-text text-white' : 'bg-[#F5F5F5] text-neutral-400'}`}>
-                        {isPast ? <Check className="w-3 h-3 sm:w-4 sm:h-4" /> : index + 1}
+                  <div key={step} className="flex items-center gap-1.5 sm:gap-4 shrink-0">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[9px] sm:text-xs font-medium transition-colors ${isActive ? 'bg-rich-black text-white' : isPast ? 'bg-gold-text text-white' : 'bg-[#F5F5F5] text-neutral-400'}`}>
+                        {isPast ? <Check className="w-2.5 h-2.5 sm:w-4 sm:h-4" /> : index + 1}
                       </div>
-                      <span className={`text-[10px] sm:text-xs uppercase tracking-widest font-medium transition-colors ${isActive ? 'text-rich-black' : isPast ? 'text-gold-text' : 'text-neutral-400'}`}>
+                      <span className={`text-[9px] sm:text-xs uppercase tracking-widest font-medium transition-colors ${isActive ? 'text-rich-black' : isPast ? 'text-gold-text' : 'text-neutral-400'}`}>
                         {step}
                       </span>
                     </div>
-                    {index < steps.length - 1 && <div className="w-4 sm:w-8 h-[1px] bg-border-light mx-2 sm:mx-0" />}
+                    {index < steps.length - 1 && <div className="w-3 sm:w-8 h-[1px] bg-border-light mx-1 sm:mx-0" />}
                   </div>
                 );
               })}
@@ -665,7 +665,7 @@ export default function CheckoutPage() {
                         {savedAddresses.map(addr => (
                           <div 
                             key={addr.id} 
-                            className={`border p-6 cursor-pointer transition-colors rounded-sm ${selectedAddress === addr.id ? 'border-gold bg-ivory' : 'border-border-light bg-white hover:border-[#CCCCCC]'}`} 
+                            className={`border p-4 sm:p-6 cursor-pointer transition-colors rounded-xl shadow-sm ${selectedAddress === addr.id ? 'border-gold bg-ivory' : 'border-border-light bg-white hover:border-gold/30'}`} 
                             onClick={() => setSelectedAddress(addr.id)}
                           >
                             <div className="flex justify-between items-start mb-2">
@@ -693,14 +693,14 @@ export default function CheckoutPage() {
                               exit={{ height: 0, opacity: 0 }}
                               className="overflow-hidden"
                             >
-                              <div className="mt-4 space-y-6 border border-border-light p-6 sm:p-8 rounded-2xl bg-white shadow-sm">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div className="mt-4 space-y-4 sm:space-y-6 border border-border-light p-5 sm:p-8 rounded-2xl bg-white shadow-sm">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                                   <div className="w-full">
-                                    <input type="text" aria-label="Address Name" {...register("addressLabel")} placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-border-light rounded-lg px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
+                                    <input type="text" aria-label="Address Name" {...register("addressLabel")} placeholder="Address Name (e.g. Home)" className="w-full bg-white border border-border-light rounded-lg px-4 py-3 sm:py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
                                     {formErrors.addressLabel && <motion.p initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} className="text-error text-[10px] mt-1.5 flex items-center gap-1 font-medium"><AlertCircle className="w-3 h-3" /> {formErrors.addressLabel.message}</motion.p>}
                                   </div>
                                   <div className="w-full">
-                                    <input type="text" aria-label="Street Address" {...register("addressLine1")} placeholder="Street Address" className="w-full bg-white border border-border-light rounded-lg px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
+                                    <input type="text" aria-label="Street Address" {...register("addressLine1")} placeholder="Street Address" className="w-full bg-white border border-border-light rounded-lg px-4 py-3 sm:py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
                                     {formErrors.addressLine1 && <motion.p initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} className="text-error text-[10px] mt-1.5 flex items-center gap-1 font-medium"><AlertCircle className="w-3 h-3" /> {formErrors.addressLine1.message}</motion.p>}
                                   </div>
                                 </div>
@@ -747,14 +747,14 @@ export default function CheckoutPage() {
                         </AnimatePresence>
                       </div>
                     ) : (
-                      <div className="space-y-6 bg-white p-6 sm:p-8 rounded-2xl border border-border-light shadow-sm">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-4 sm:space-y-6 bg-white p-5 sm:p-8 rounded-2xl border border-border-light shadow-sm">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                           <div className="w-full">
-                            <input type="text" aria-label="First Name" {...register("firstName")} placeholder="First Name" className="w-full bg-white border border-border-light rounded-lg px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
+                            <input type="text" aria-label="First Name" {...register("firstName")} placeholder="First Name" className="w-full bg-white border border-border-light rounded-lg px-4 py-3 sm:py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
                             {formErrors.firstName && <motion.p initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} className="text-error text-[10px] mt-1.5 flex items-center gap-1 font-medium"><AlertCircle className="w-3 h-3" /> {formErrors.firstName.message}</motion.p>}
                           </div>
                           <div className="w-full">
-                            <input type="text" aria-label="Last Name" {...register("lastName")} placeholder="Last Name" className="w-full bg-white border border-border-light rounded-lg px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
+                            <input type="text" aria-label="Last Name" {...register("lastName")} placeholder="Last Name" className="w-full bg-white border border-border-light rounded-lg px-4 py-3 sm:py-3.5 focus:outline-none focus:ring-2 focus:ring-gold/20 focus:border-gold transition-all text-sm placeholder-neutral-400 shadow-sm" />
                             {formErrors.lastName && <motion.p initial={{opacity:0, height:0}} animate={{opacity:1, height:'auto'}} className="text-error text-[10px] mt-1.5 flex items-center gap-1 font-medium"><AlertCircle className="w-3 h-3" /> {formErrors.lastName.message}</motion.p>}
                           </div>
                         </div>
@@ -825,8 +825,8 @@ export default function CheckoutPage() {
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="p-6 sm:p-8 bg-[#FAFAFA]">
-                              <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                            <div className="p-5 sm:p-8 bg-[#FAFAFA]">
+                              <div className="flex flex-col lg:flex-row gap-6 lg:gap-12">
 
                                 {/* LEFT — QR + payee + app buttons */}
                                 <div className="flex flex-col items-center justify-center shrink-0 lg:w-64">
