@@ -848,15 +848,15 @@ function AccountContent() {
             )}
 
             {activeTab === "wishlist" && (
-              <div className="bg-white border border-border-light p-8 lg:p-12 rounded-sm shadow-sm">
-                <div className="mb-6 flex items-center text-sm font-medium">
+              <div className="bg-white border border-border-light p-4 sm:p-8 lg:p-12 rounded-sm shadow-sm">
+                <div className="mb-4 sm:mb-6 flex items-center text-xs sm:text-sm font-medium">
                   <button onClick={() => setActiveTab("home")} className="text-gold hover:underline">Your Account</button>
                   <span className="mx-2 text-neutral-400">/</span>
                   <span className="text-rich-black">Your Wishlist</span>
                 </div>
-                <h2 className="font-serif text-3xl text-rich-black mb-8">My Wishlist</h2>
+                <h2 className="font-serif text-2xl md:text-3xl text-rich-black mb-6 md:mb-8">My Wishlist</h2>
                 {debugError && <div className="p-4 bg-red-100 text-red-700 mb-4">{debugError}</div>}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
                   {wishlist.length === 0 ? (
                     <div className="col-span-2 md:col-span-3 text-center py-12 border border-dashed border-border-light">
                       <Heart className="w-12 h-12 text-border-light mx-auto mb-4" />
@@ -865,20 +865,27 @@ function AccountContent() {
                     </div>
                   ) : (
                     wishlist.map(item => (
-                      <div key={item.id} className="group flex flex-col">
-                        <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-4">
+                      <div key={item.id} className="group flex flex-col h-full">
+                        <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-3 sm:mb-4">
                           <Image src={item.products?.product_images?.[0]?.url || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill className="object-cover" />
-                          <button onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
+                          <button onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
                             <Trash2 className="w-4 h-4" />
                           </button>
-                          <div className="absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20">
+                          
+                          {/* Desktop Hover Action */}
+                          <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20">
                             <button onClick={() => handleMoveToCart(item)} className="w-full bg-white/90 backdrop-blur-md text-rich-black hover:bg-gold hover:text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors">
                               Move to Cart
                             </button>
                           </div>
                         </div>
-                        <Link href={`/products/${item.products?.slug}`} className="font-medium text-rich-black hover:text-gold transition-colors mb-1 truncate">{item.products?.name}</Link>
-                        <span className="text-neutral-500">₹{item.products?.price?.toLocaleString('en-IN')}</span>
+                        <Link href={`/products/${item.products?.slug}`} className="font-medium text-xs sm:text-sm md:text-base text-rich-black hover:text-gold transition-colors mb-1 line-clamp-2 leading-snug">{item.products?.name}</Link>
+                        <span className="text-[11px] sm:text-xs md:text-sm text-neutral-500 mb-3">₹{item.products?.price?.toLocaleString('en-IN')}</span>
+                        
+                        {/* Mobile Action Button (always visible) */}
+                        <button onClick={() => handleMoveToCart(item)} className="mt-auto md:hidden w-full bg-ivory border border-border-light text-rich-black py-2.5 text-[10px] uppercase tracking-widest font-medium hover:bg-rich-black hover:text-white transition-colors">
+                          Move to Cart
+                        </button>
                       </div>
                     ))
                   )}
