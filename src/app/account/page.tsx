@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, Trash2, FileDown, MessageCircle, ChevronDown, ChevronUp, Info, Star } from "lucide-react";
+import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, Trash2, FileDown, MessageCircle, ChevronDown, ChevronUp, Info, Star, X } from "lucide-react";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
