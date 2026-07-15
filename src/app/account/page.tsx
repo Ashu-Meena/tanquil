@@ -59,6 +59,8 @@ function AccountContent() {
   const [wishlistModalItem, setWishlistModalItem] = useState<any>(null);
   const [wishlistModalColor, setWishlistModalColor] = useState<string>('');
   const [wishlistModalSize, setWishlistModalSize] = useState<string>('');
+  const [wishlistModalMeasurements, setWishlistModalMeasurements] = useState({ bust: "", waist: "", hips: "", length: "" });
+  const [wishlistModalError, setWishlistModalError] = useState("");
 
   const toggleOrderExpand = (id: string) => {
     setExpandedOrders(prev => ({ ...prev, [id]: !prev[id] }));
@@ -337,12 +339,14 @@ function AccountContent() {
       setWishlistModalItem(wishlistItem);
       setWishlistModalColor(variants[0].color_name || 'Standard');
       setWishlistModalSize(variants[0].size || 'M');
+      setWishlistModalMeasurements({ bust: "", waist: "", hips: "", length: "" });
+      setWishlistModalError("");
     } else {
       addToCart({
         id: product.id,
         name: product.name,
         price: product.price,
-        image: product.images?.[0] || 'https://via.placeholder.com/400x500',
+        image: product.product_images?.[0]?.url || product.images?.[0] || 'https://via.placeholder.com/400x500',
         quantity: 1,
         color: "Standard",
         size: "M",
@@ -354,15 +358,32 @@ function AccountContent() {
 
   const handleConfirmMoveToCart = async () => {
     if (!wishlistModalItem) return;
+    
+    if (wishlistModalSize === "Custom") {
+      if (!wishlistModalMeasurements.bust || !wishlistModalMeasurements.waist || !wishlistModalMeasurements.hips || !wishlistModalMeasurements.length) {
+        setWishlistModalError("Please provide all measurements for a custom fit.");
+        return;
+      }
+    }
+    
     const product = wishlistModalItem.products;
+    
+    const finalSize = wishlistModalSize === "Custom" 
+      ? `Custom (Bust: ${wishlistModalMeasurements.bust}, Waist: ${wishlistModalMeasurements.waist}, Hips: ${wishlistModalMeasurements.hips}, Length: ${wishlistModalMeasurements.length})` 
+      : (wishlistModalSize || "M");
+
+    const nameParts = (wishlistModalColor || "Standard").split("||");
+    const baseColorName = nameParts[0];
+    const customProductTitle = nameParts.length > 1 ? nameParts[1] : product.name;
+
     addToCart({
       id: product.id,
-      name: product.name,
+      name: customProductTitle,
       price: product.price,
-      image: product.images?.[0] || 'https://via.placeholder.com/400x500',
+      image: product.product_images?.[0]?.url || product.images?.[0] || 'https://via.placeholder.com/400x500',
       quantity: 1,
-      color: wishlistModalColor || "Standard",
-      size: wishlistModalSize || "M",
+      color: baseColorName,
+      size: finalSize,
     });
     await handleRemoveFromWishlist(wishlistModalItem.id, product.id);
     setWishlistModalItem(null);
@@ -1148,7 +1169,11 @@ function AccountContent() {
                   {(() => {
                     const variants = wishlistModalItem.products?.product_variants || [];
                     const colors = Array.from(new Set(variants.map((v: any) => v.color_name).filter(Boolean))) as string[];
-                    const sizes = Array.from(new Set(variants.map((v: any) => v.size).filter(Boolean))) as string[];
+                    const sizesRaw = wishlistModalColor 
+                      ? variants.filter((v: any) => v.color_name === wishlistModalColor).map((v: any) => v.size)
+                      : variants.map((v: any) => v.size);
+                    const sizes = Array.from(new Set(sizesRaw.filter(Boolean))) as string[];
+                    if (sizes.length > 0 && !sizes.includes("Custom")) sizes.push("Custom");
                     
                     return (
                       <div className="space-y-6">
@@ -1161,7 +1186,13 @@ function AccountContent() {
                                 return (
                                   <button
                                     key={color}
-                                    onClick={() => setWishlistModalColor(color)}
+                                    onClick={() => {
+                                      setWishlistModalColor(color);
+                                      const newSizes = variants.filter((v: any) => v.color_name === color).map((v: any) => v.size);
+                                      if (newSizes.length > 0 && !newSizes.includes(wishlistModalSize) && wishlistModalSize !== "Custom") {
+                                        setWishlistModalSize(newSizes[0]);
+                                      }
+                                    }}
                                     className={`px-3 py-2 text-xs border transition-colors ${wishlistModalColor === color ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black'}`}
                                   >
                                     {baseColorName}
@@ -1179,13 +1210,41 @@ function AccountContent() {
                               {sizes.map((size) => (
                                 <button
                                   key={size}
-                                  onClick={() => setWishlistModalSize(size)}
-                                  className={`w-12 h-12 flex items-center justify-center border text-xs transition-colors ${wishlistModalSize === size ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black'}`}
+                                  onClick={() => {
+                                    setWishlistModalSize(size);
+                                    setWishlistModalError("");
+                                  }}
+                                  className={`w-12 h-12 flex items-center justify-center border text-xs transition-colors ${wishlistModalSize === size ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black'} ${size === 'Custom' ? 'w-auto px-4' : ''}`}
                                 >
                                   {size}
                                 </button>
                               ))}
                             </div>
+                          </div>
+                        )}
+
+                        {wishlistModalSize === "Custom" && (
+                          <div className="space-y-4 pt-4 border-t border-border-light">
+                            <h4 className="text-xs uppercase tracking-widest text-rich-black">Custom Measurements (inches)</h4>
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-[10px] uppercase text-neutral-500 mb-1">Bust</label>
+                                <input type="text" value={wishlistModalMeasurements.bust} onChange={e => { setWishlistModalMeasurements({...wishlistModalMeasurements, bust: e.target.value}); setWishlistModalError(""); }} className="w-full border border-border-light p-2 text-sm focus:border-gold focus:outline-none bg-white" placeholder="e.g. 34" />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] uppercase text-neutral-500 mb-1">Waist</label>
+                                <input type="text" value={wishlistModalMeasurements.waist} onChange={e => { setWishlistModalMeasurements({...wishlistModalMeasurements, waist: e.target.value}); setWishlistModalError(""); }} className="w-full border border-border-light p-2 text-sm focus:border-gold focus:outline-none bg-white" placeholder="e.g. 28" />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] uppercase text-neutral-500 mb-1">Hips</label>
+                                <input type="text" value={wishlistModalMeasurements.hips} onChange={e => { setWishlistModalMeasurements({...wishlistModalMeasurements, hips: e.target.value}); setWishlistModalError(""); }} className="w-full border border-border-light p-2 text-sm focus:border-gold focus:outline-none bg-white" placeholder="e.g. 38" />
+                              </div>
+                              <div>
+                                <label className="block text-[10px] uppercase text-neutral-500 mb-1">Length</label>
+                                <input type="text" value={wishlistModalMeasurements.length} onChange={e => { setWishlistModalMeasurements({...wishlistModalMeasurements, length: e.target.value}); setWishlistModalError(""); }} className="w-full border border-border-light p-2 text-sm focus:border-gold focus:outline-none bg-white" placeholder="e.g. 40" />
+                              </div>
+                            </div>
+                            {wishlistModalError && <p className="text-red-500 text-xs">{wishlistModalError}</p>}
                           </div>
                         )}
                         
