@@ -17,7 +17,7 @@ export default function MobileBottomNav() {
     setMounted(true);
   }, []);
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/checkout')) return null;
+  if (pathname.startsWith('/admin')) return null;
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
