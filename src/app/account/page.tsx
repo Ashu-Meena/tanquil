@@ -1173,7 +1173,13 @@ function AccountContent() {
                       ? variants.filter((v: any) => v.color_name === wishlistModalColor && (v.stock_quantity > 0)).map((v: any) => v.size)
                       : variants.filter((v: any) => v.stock_quantity > 0).map((v: any) => v.size);
                     const sizes = Array.from(new Set(sizesRaw.filter(Boolean))) as string[];
-                    if (sizes.length > 0 && !sizes.includes("Custom")) sizes.push("Custom");
+                    
+                    const productSizes = wishlistModalItem.products?.sizes || [];
+                    const hasCustomAllowed = productSizes.includes("Custom") || variants.some((v: any) => v.size === "Custom");
+                    
+                    if (sizes.length > 0 && !sizes.includes("Custom") && hasCustomAllowed) {
+                      sizes.push("Custom");
+                    }
                     
                     return (
                       <div className="space-y-6">
