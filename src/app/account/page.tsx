@@ -1170,8 +1170,8 @@ function AccountContent() {
                     const variants = wishlistModalItem.products?.product_variants || [];
                     const colors = Array.from(new Set(variants.map((v: any) => v.color_name).filter(Boolean))) as string[];
                     const sizesRaw = wishlistModalColor 
-                      ? variants.filter((v: any) => v.color_name === wishlistModalColor).map((v: any) => v.size)
-                      : variants.map((v: any) => v.size);
+                      ? variants.filter((v: any) => v.color_name === wishlistModalColor && (v.stock_quantity > 0)).map((v: any) => v.size)
+                      : variants.filter((v: any) => v.stock_quantity > 0).map((v: any) => v.size);
                     const sizes = Array.from(new Set(sizesRaw.filter(Boolean))) as string[];
                     if (sizes.length > 0 && !sizes.includes("Custom")) sizes.push("Custom");
                     
@@ -1188,7 +1188,7 @@ function AccountContent() {
                                     key={color}
                                     onClick={() => {
                                       setWishlistModalColor(color);
-                                      const newSizes = variants.filter((v: any) => v.color_name === color).map((v: any) => v.size);
+                                      const newSizes = variants.filter((v: any) => v.color_name === color && (v.stock_quantity > 0)).map((v: any) => v.size);
                                       if (newSizes.length > 0 && !newSizes.includes(wishlistModalSize) && wishlistModalSize !== "Custom") {
                                         setWishlistModalSize(newSizes[0]);
                                       }
