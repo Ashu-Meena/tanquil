@@ -124,6 +124,7 @@ export default function SearchModal() {
             exit={{ opacity: 0 }}
             onClick={closeSearch}
             className="fixed inset-0 bg-black/20 z-[95]"
+            aria-hidden="true"
           />
 
           {/* Modal */}

@@ -176,10 +176,31 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     };
   }) || [];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": formattedProduct.name,
+    "image": formattedProduct.images[0],
+    "description": formattedProduct.description,
+    "sku": formattedProduct.id,
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "INR",
+      "price": formattedProduct.price,
+      "availability": formattedProduct.variants.reduce((acc, v) => acc + v.stock_quantity, 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+    }
+  };
+
   return (
-    <ProductClient 
-      product={formattedProduct} 
-      relatedProducts={formattedRelated} 
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ProductClient 
+        product={formattedProduct} 
+        relatedProducts={formattedRelated} 
+      />
+    </>
   );
 }

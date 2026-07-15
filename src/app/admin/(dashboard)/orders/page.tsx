@@ -6,6 +6,7 @@ import { Package, Search, Filter, Printer, ExternalLink, MoreVertical, Check, X 
 import { toast } from "@/store/useToastStore";
 import Image from "next/image";
 import { updateOrderStatus as serverUpdateOrderStatus, updatePaymentStatus as serverUpdatePaymentStatus, updateOrderFulfillment, bulkUpdateOrderStatus } from "@/app/actions/admin";
+import { OrderRow } from "./OrderRow";
 
 interface Order {
   id: string;
@@ -317,49 +318,14 @@ export default function OrdersPage() {
                 filteredOrders.map((order) => {
                   const statusDef = STATUS_OPTIONS.find(s => s.value === order.status) ?? STATUS_OPTIONS[0];
                   return (
-                    <tr key={order.id} className={`border-b border-border-light hover:bg-ivory transition-colors ${selectedOrders.includes(order.id) ? 'bg-ivory' : ''}`}>
-                      <td className="px-6 py-4">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedOrders.includes(order.id)}
-                          onChange={() => toggleSelectOrder(order.id)}
-                          className="w-4 h-4 rounded border-gray-300 text-gold focus:ring-gold"
-                        />
-                      </td>
-                      <td className="px-6 py-4 cursor-pointer" onClick={() => openModal(order)}>
-                        <div className="flex items-center gap-2 font-medium text-rich-black">
-                          <Package className="w-4 h-4 text-gold" />
-                          #{order.order_number || order.id.slice(0, 8).toUpperCase()}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-neutral-500 cursor-pointer hidden md:table-cell" onClick={() => openModal(order)}>
-                        {order.created_at ? new Date(order.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
-                      </td>
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-rich-black">{order.customer_name}</p>
-                        <p className="text-xs text-neutral-500">{order.customer_email}</p>
-                      </td>
-                      <td className="px-6 py-4 font-medium text-rich-black hidden md:table-cell">₹{order.total_amount?.toLocaleString('en-IN')}</td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${
-                          order.payment_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 
-                          order.payment_status === 'failed' || order.payment_status === 'refunded' ? 'bg-error/10 text-error' : 
-                          'bg-green-100 text-green-800'
-                        }`}>
-                          {order.payment_status || 'pending'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-block px-2 py-1 rounded-sm text-[11px] font-medium tracking-widest uppercase ${statusDef.color}`}>
-                          {statusDef.label}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button className="text-neutral-400 hover:text-rich-black transition-colors p-2">
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
+                    <OrderRow
+                      key={order.id}
+                      order={order}
+                      isSelected={selectedOrders.includes(order.id)}
+                      onToggleSelect={toggleSelectOrder}
+                      onOpenModal={openModal}
+                      statusDef={statusDef}
+                    />
                   )
                 })
               )}

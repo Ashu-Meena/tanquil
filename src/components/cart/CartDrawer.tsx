@@ -123,7 +123,7 @@ export default function CartDrawer() {
             {/* Free Shipping Progress */}
             <div className="px-6 py-4 bg-white border-b border-border-light">
               {remaining > 0 ? (
-                <p className="text-xs text-center mb-3 text-neutral-500 tracking-wide uppercase">
+                <p className="text-xs text-center mb-3 text-neutral-600 tracking-wide uppercase">
                   You&apos;re <span className="font-bold text-rich-black">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
                 </p>
               ) : (

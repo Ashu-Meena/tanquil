@@ -61,6 +61,7 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
                   fill
                   className="object-cover object-center opacity-70"
                   priority={index === 0}
+                  fetchPriority={index === 0 ? "high" : "auto"}
                 />
               </motion.div>
             </motion.div>
