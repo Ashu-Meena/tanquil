@@ -540,10 +540,18 @@ export default function CheckoutPage() {
   const prevStep = () => { setFormError(""); setCurrentStep(prev => Math.max(prev - 1, 0)); };
 
   return (
-    <div className="bg-white min-h-screen pt-28 pb-20 font-[family-name:var(--font-montserrat)]">
-      
-      {/* MOBILE HEADER ACCORDION */}
-      <div className="lg:hidden bg-[#FAFAFA] border-y border-border-light mb-8 sticky top-[72px] z-20">
+    <>
+      {/* CHECKOUT BRAND HEADER */}
+      <header className="fixed top-0 left-0 right-0 h-16 sm:h-20 bg-white border-b border-border-light z-50 flex items-center justify-center">
+        <Link href="/" className="font-serif text-2xl sm:text-3xl tracking-wide text-rich-black hover:opacity-80 transition-opacity">
+          Tranquil
+        </Link>
+      </header>
+
+      <div className="bg-white min-h-screen pt-24 sm:pt-32 pb-20 font-[family-name:var(--font-montserrat)]">
+        
+        {/* MOBILE HEADER ACCORDION */}
+        <div className="lg:hidden bg-[#FAFAFA] border-b border-border-light mb-8 sticky top-16 z-40">
         <button 
           onClick={() => setShowMobileSummary(!showMobileSummary)}
           className="w-full px-6 py-4 flex items-center justify-between text-rich-black"
@@ -1118,5 +1126,6 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
