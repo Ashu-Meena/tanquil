@@ -1112,7 +1112,6 @@ function AccountContent() {
                 </div>
               </div>
               </div>
-              </div>
             )}
             
             {/* Wishlist to Cart Modal */}
