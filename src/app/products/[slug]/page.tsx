@@ -132,7 +132,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     colorImages,
     colors,
     sizes,
-    variants: productData.product_variants || [],
+    variants: (productData.product_variants || []).map((v: ProductVariant) => ({
+      color_name: v.color_name || '',
+      size: v.size || '',
+      stock_quantity: v.stock_quantity || 0,
+    })),
     brand: productData.brand || undefined,
     fabric: productData.fabric || undefined,
     tags: productData.tags || undefined,

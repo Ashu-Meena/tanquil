@@ -33,14 +33,15 @@ export default function DiscountsPage() {
     is_free_shipping: false
   });
 
-  useEffect(() => { fetchCoupons(); }, [fetchCoupons]);
-
   const fetchCoupons = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
     if (data) setCoupons(data as Coupon[]);
     setLoading(false);
-  }, [supabase]);;
+  }, [supabase]);
+
+
+  useEffect(() => { fetchCoupons(); }, [fetchCoupons]);;
 
   const handleSave = async () => {
     if (!formData.code || formData.discount_value === undefined) return;

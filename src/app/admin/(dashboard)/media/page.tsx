@@ -36,8 +36,6 @@ export default function MediaLibraryPage() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const bucketName = "public-assets";
 
-  useEffect(() => { fetchFiles(); }, [fetchFiles]);
-
   const fetchFiles = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
@@ -54,7 +52,10 @@ export default function MediaLibraryPage() {
       setFiles(validFiles);
     }
     setLoading(false);
-  }, [supabase]);;
+  }, [supabase]);
+
+
+  useEffect(() => { fetchFiles(); }, [fetchFiles]);;
 
   const videoFiles = files.filter((f) => isVideoFile(f.name));
   const imageFiles = files.filter((f) => isImageFile(f.name));

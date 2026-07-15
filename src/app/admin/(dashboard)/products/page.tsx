@@ -19,8 +19,6 @@ export default function ProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [bulkStatus, setBulkStatus] = useState("");
 
-  useEffect(() => { fetchProducts(); }, [fetchProducts]);
-
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -60,7 +58,10 @@ export default function ProductsPage() {
       setProducts(formattedData);
     }
     setLoading(false);
-  }, [supabase]);;
+  }, [supabase]);
+
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);;
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 

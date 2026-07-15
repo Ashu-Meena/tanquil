@@ -13,8 +13,6 @@ export default function InventoryPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const supabase = createClient();
 
-  useEffect(() => { fetchInventory(); }, [fetchInventory]);
-
   const fetchInventory = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -27,7 +25,10 @@ export default function InventoryPage() {
       
     if (data) setVariants(data);
     setLoading(false);
-  }, [supabase]);;
+  }, [supabase]);
+
+
+  useEffect(() => { fetchInventory(); }, [fetchInventory]);;
 
   const updateStock = async (id: string, newStock: number) => {
     setSavingId(id);

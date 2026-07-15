@@ -23,8 +23,6 @@ export default function CustomersPage() {
   const [rawOrdersCount, setRawOrdersCount] = useState(0);
   const [sortDir, setSortDir] = useState<'asc'|'desc'>('desc');
 
-  useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
-
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
     
@@ -69,7 +67,10 @@ export default function CustomersPage() {
 
     setCustomers(customerData);
     setLoading(false);
-  }, [supabase]);;
+  }, [supabase]);
+
+
+  useEffect(() => { fetchCustomers(); }, [fetchCustomers]);;
 
   const filteredCustomers = customers
     .filter(c => 

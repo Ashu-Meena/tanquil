@@ -53,7 +53,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
       .eq("status", "approved")
       .order("created_at", { ascending: false });
       
-    if (data) setReviews(data);
+    if (data) setReviews(data as Review[]);
     setLoading(false);
   }, [productId]);
 
