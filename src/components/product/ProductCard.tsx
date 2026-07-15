@@ -92,6 +92,11 @@ export default function ProductCard({ product }: { product: CardProduct }) {
     openCart();
   };
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const isWished = mounted ? isWishlisted(String(product.id)) : false;
+
   return (
     <div 
       className="group flex flex-col"
@@ -112,10 +117,10 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         {/* Wishlist Button */}
         <button
           onClick={handleWishlist}
-          title={isWishlisted(String(product.id)) ? "Remove from Wishlist" : "Add to Wishlist"}
-          className={`absolute top-3 right-3 z-20 min-w-[44px] min-h-[44px] backdrop-blur-sm rounded-full flex items-center justify-center transition-all opacity-100 duration-300 transform translate-y-0 ${isWishlisted(String(product.id)) ? 'bg-sale text-white' : 'bg-white/80 text-rich-black hover:text-sale hover:bg-white'}`}
+          title={isWished ? "Remove from Wishlist" : "Add to Wishlist"}
+          className={`absolute top-3 right-3 z-20 min-w-[44px] min-h-[44px] backdrop-blur-sm rounded-full flex items-center justify-center transition-all opacity-100 duration-300 transform translate-y-0 ${isWished ? 'bg-sale text-white' : 'bg-white/80 text-rich-black hover:text-sale hover:bg-white'}`}
         >
-          <Heart className={`w-4 h-4 ${isWishlisted(String(product.id)) ? 'fill-current' : ''}`} />
+          <Heart className={`w-4 h-4 ${isWished ? 'fill-current' : ''}`} />
         </button>
 
         {/* Quick View Button (Desktop Only) */}

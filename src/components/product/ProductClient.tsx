@@ -99,6 +99,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   const { addItem, openCart } = useCartStore();
   const { hasItem: isWishlisted, toggleItem: toggleWishlist } = useWishlistStore();
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isWished = mounted ? isWishlisted(product.id) : false;
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -480,10 +484,10 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                   </button>
                   <button
                     onClick={handleWishlist}
-                    title={isWishlisted(product.id) ? "Remove from Wishlist" : "Add to Wishlist"}
-                    className={`w-12 md:w-14 border flex items-center justify-center transition-colors ${isWishlisted(product.id) ? 'border-sale bg-sale text-white' : 'border-border-light hover:border-sale text-rich-black hover:text-sale'}`}
+                    title={isWished ? "Remove from Wishlist" : "Add to Wishlist"}
+                    className={`w-12 md:w-14 border flex items-center justify-center transition-colors ${isWished ? 'border-sale bg-sale text-white' : 'border-border-light hover:border-sale text-rich-black hover:text-sale'}`}
                   >
-                    <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isWishlisted(product.id) ? 'fill-current' : ''}`} />
+                    <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isWished ? 'fill-current' : ''}`} />
                   </button>
                 </div>
                 <a 
