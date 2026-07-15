@@ -551,7 +551,7 @@ export default function CheckoutPage() {
       <div className="bg-white min-h-screen pt-16 sm:pt-24 pb-12 sm:pb-20 font-[family-name:var(--font-montserrat)]">
         
         {/* MOBILE HEADER ACCORDION */}
-        <div className="lg:hidden bg-[#FAFAFA] border-b border-border-light mb-6 sm:mb-8 sticky top-16 z-40">
+        <div className="lg:hidden bg-white border-b border-border-light mb-6 sm:mb-8 sticky top-16 z-40">
         <button 
           onClick={() => setShowMobileSummary(!showMobileSummary)}
           className="w-full px-6 py-4 flex items-center justify-between text-rich-black"
@@ -630,22 +630,23 @@ export default function CheckoutPage() {
                 return (
                   <div key={step} className="flex items-center gap-1.5 sm:gap-4 shrink-0">
                     <div className="flex items-center gap-1.5 sm:gap-2">
-                      <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[9px] sm:text-xs font-medium transition-colors ${isActive ? 'bg-rich-black text-white' : isPast ? 'bg-gold-text text-white' : 'bg-[#F5F5F5] text-neutral-400'}`}>
-                        {isPast ? <Check className="w-2.5 h-2.5 sm:w-4 sm:h-4" /> : index + 1}
+                      <div className={`w-4 h-4 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[9px] sm:text-xs font-medium transition-colors ${isActive ? 'bg-rich-black text-white' : isPast ? 'bg-gold-text text-white' : 'bg-[#EFEFEF] text-neutral-400'}`}>
+                        {isPast ? <Check className="w-2.5 h-2.5 sm:w-4 sm:h-4" strokeWidth={3} /> : index + 1}
                       </div>
-                      <span className={`text-[9px] sm:text-xs uppercase tracking-widest font-medium transition-colors ${isActive ? 'text-rich-black' : isPast ? 'text-gold-text' : 'text-neutral-400'}`}>
+                      <span className={`text-[9px] sm:text-xs uppercase tracking-widest font-semibold transition-colors ${isActive ? 'text-rich-black' : isPast ? 'text-gold-text' : 'text-neutral-400'}`}>
                         {step}
                       </span>
                     </div>
-                    {index < steps.length - 1 && <div className="w-3 sm:w-8 h-[1px] bg-border-light mx-1 sm:mx-0" />}
+                    {index < steps.length - 1 && <div className="w-6 sm:w-12 h-[1px] bg-border-light mx-1 sm:mx-0" />}
                   </div>
                 );
               })}
             </div>
             
             {formError && (
-              <div className="mb-6 p-4 bg-error/10 border border-error/20 text-error text-sm rounded-sm">
-                {formError}
+              <div className="mb-6 p-4 bg-[#FEF2F2] border border-[#F87171] text-[#991B1B] text-sm rounded-xl flex items-start gap-3 shadow-sm">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <p>{formError}</p>
               </div>
             )}
 
@@ -1007,7 +1008,7 @@ export default function CheckoutPage() {
                 <button 
                   onClick={handlePlaceOrder}
                   disabled={isSubmitting}
-                  className="bg-gold hover:bg-rich-black text-white px-8 py-4 uppercase tracking-widest text-sm font-medium transition-colors w-full sm:w-auto flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="bg-rich-black hover:bg-neutral-800 text-white px-8 py-4 uppercase tracking-widest text-sm font-medium transition-colors w-full sm:w-auto flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} 
                   {isSubmitting ? "Processing..." : "Place Order"}
