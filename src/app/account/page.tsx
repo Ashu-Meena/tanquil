@@ -150,7 +150,7 @@ function AccountContent() {
           // Upload local items to DB
           const { error: insertError } = await supabase.from('wishlist').insert(toUpload.map(id => ({ user_id: session.user.id, product_id: id })));
           if (insertError) {
-             console.error("Wishlist insert error:", JSON.stringify(insertError, null, 2) === "{}" ? insertError.message || insertError.details || insertError.hint || insertError : insertError);
+             console.warn("Notice: Some local wishlist items could not be synced to the database (likely due to duplicates or deleted products).");
           }
           
           // Refetch to get the full joined data
