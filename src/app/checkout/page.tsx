@@ -802,14 +802,23 @@ export default function CheckoutPage() {
                                 <div className="flex flex-col items-center text-center shrink-0">
                                   <p className="text-sm font-medium mb-3">Scan to pay <span className="font-[family-name:var(--font-montserrat)] font-bold text-rich-black">₹{total.toLocaleString('en-IN')}</span></p>
                                     <div className="bg-white p-3 rounded-xl shadow-sm border border-border-light mb-3">
-                                      <Image
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`)}`}
-                                      alt="UPI QR Code"
-                                      width={180}
-                                      height={180}
-                                      className="rounded-lg"
-                                      unoptimized
-                                    />
+                                      {(() => {
+                                        const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici';
+                                        const storeName = encodeURIComponent(process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil');
+                                        const ref = encodeURIComponent(paymentRef || `ORD-${Date.now().toString().slice(-6)}`);
+                                        const upiString = `upi://pay?pa=${upiId}&pn=${storeName}&am=${total}&cu=INR&tn=${ref}&tr=${ref}`;
+                                        
+                                        return (
+                                          <Image
+                                            src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiString)}`}
+                                            alt="UPI QR Code"
+                                            width={180}
+                                            height={180}
+                                            className="rounded-lg"
+                                            unoptimized
+                                          />
+                                        );
+                                      })()}
                                   </div>
                                   <p className="text-sm font-semibold text-rich-black">Gehna Vinod Motwani</p>
                                   <p className="text-xs text-neutral-500 mt-1 flex items-center justify-center gap-2 mb-3">
@@ -824,20 +833,34 @@ export default function CheckoutPage() {
                                     </button>
                                   </p>
                                   <p className="text-xs text-neutral-500 mb-4">Open any UPI app and scan to pay securely.</p>
-                                  <div className="w-full flex flex-col gap-2">
-                                    <a href={`phonepe://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-[#5E328A] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#4d2972] transition-colors shadow-sm lg:hidden">
-                                      Pay using PhonePe
-                                    </a>
-                                    <a href={`paytmmp://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-[#002970] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#001d52] transition-colors shadow-sm lg:hidden">
-                                      Pay using Paytm
-                                    </a>
-                                    <a href={`tez://upi/pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-white border border-border-light text-rich-black py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-ivory transition-colors shadow-sm lg:hidden">
-                                      Pay using Google Pay
-                                    </a>
-                                    <a href={`upi://pay?pa=${process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici'}&pn=${process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil'}&am=${total}&cu=INR&tn=${paymentRef}`} className="w-full bg-rich-black text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-neutral-800 transition-colors shadow-sm lg:hidden">
-                                      Other UPI Apps
-                                    </a>
-                                  </div>
+                                  
+                                  {(() => {
+                                    const upiId = process.env.NEXT_PUBLIC_UPI_ID || 'thetranquilstor@okicici';
+                                    const storeName = encodeURIComponent(process.env.NEXT_PUBLIC_STORE_NAME || 'Tranquil');
+                                    const ref = encodeURIComponent(paymentRef || `ORD-${Date.now().toString().slice(-6)}`);
+                                    
+                                    const phonepe = `phonepe://pay?pa=${upiId}&pn=${storeName}&am=${total}&cu=INR&tn=${ref}&tr=${ref}`;
+                                    const paytm = `paytmmp://pay?pa=${upiId}&pn=${storeName}&am=${total}&cu=INR&tn=${ref}&tr=${ref}`;
+                                    const gpay = `tez://upi/pay?pa=${upiId}&pn=${storeName}&am=${total}&cu=INR&tn=${ref}&tr=${ref}`;
+                                    const upi = `upi://pay?pa=${upiId}&pn=${storeName}&am=${total}&cu=INR&tn=${ref}&tr=${ref}`;
+                                    
+                                    return (
+                                      <div className="w-full flex flex-col gap-2">
+                                        <a href={phonepe} className="w-full bg-[#5E328A] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#4d2972] transition-colors shadow-sm lg:hidden">
+                                          Pay using PhonePe
+                                        </a>
+                                        <a href={paytm} className="w-full bg-[#002970] text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-[#001d52] transition-colors shadow-sm lg:hidden">
+                                          Pay using Paytm
+                                        </a>
+                                        <a href={gpay} className="w-full bg-white border border-border-light text-rich-black py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-ivory transition-colors shadow-sm lg:hidden">
+                                          Pay using Google Pay
+                                        </a>
+                                        <a href={upi} className="w-full bg-rich-black text-white py-2.5 rounded-md flex items-center justify-center text-xs font-medium hover:bg-neutral-800 transition-colors shadow-sm lg:hidden">
+                                          Other UPI Apps
+                                        </a>
+                                      </div>
+                                    );
+                                  })()}
                                 </div>
 
                               </div>{/* end flex row */}
