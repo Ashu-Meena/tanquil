@@ -144,7 +144,7 @@ function AccountContent() {
         const actualUserWishlist = userWishlist || [];
         const dbItemIds = actualUserWishlist.map((w: any) => String(w.product_id));
         const localItems = useWishlistStore.getState().items;
-        const toUpload = localItems.filter(id => !dbItemIds.includes(String(id)));
+        const toUpload = localItems.filter(id => id && String(id) !== "undefined" && String(id) !== "null" && !dbItemIds.includes(String(id)));
         
         if (toUpload.length > 0) {
           // Upload local items to DB
@@ -157,13 +157,12 @@ function AccountContent() {
           const { data: mergedWishlist, error: fetchError } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
           if (fetchError) console.error("Wishlist refetch error:", fetchError);
           
-          if (mergedWishlist && !insertError) {
+          if (mergedWishlist) {
             setWishlist(mergedWishlist);
             useWishlistStore.getState().setItems(mergedWishlist.map((w: any) => String(w.product_id)));
-          } else if (insertError) {
-             console.error("Wishlist insert error:", insertError);
-             const { data: fallbackProducts, error: fallbackErr } = await supabase.from('products').select('*, product_images(url), product_variants(*)').in('id', toUpload);
-             if (fallbackErr) setDebugError("Fallback err: " + JSON.stringify(fallbackErr));
+          } else {
+             // Fallback if fetch completely failed
+             const { data: fallbackProducts } = await supabase.from('products').select('*, product_images(url), product_variants(*)').in('id', toUpload);
              const fallbackWishlist = (fallbackProducts || []).map((p: any) => ({
                 id: p.id, // fake wishlist ID
                 product_id: p.id,
