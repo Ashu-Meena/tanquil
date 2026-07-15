@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import ProductCard from "@/components/product/ProductCard";
-import { SlidersHorizontal, ChevronDown, LayoutGrid, List, X } from "lucide-react";
+import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Product {
@@ -51,13 +51,13 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
   const collectionName = slug === 'all' ? 'All Edits' : slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
   const [sortBy, setSortBy] = useState("featured");
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
   const [activeCategories, setActiveCategories] = useState<string[]>([]);
   const [activeSizes, setActiveSizes] = useState<string[]>([]);
   const [activePrices, setActivePrices] = useState<string[]>([]);
   const [activeColors, setActiveColors] = useState<string[]>([]);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
   const toggleCategory = (cat: string) => {
@@ -219,37 +219,26 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
   );
 
   return (
-    <div className="bg-white min-h-screen pt-32">
-      {/* Banner */}
-      <div className="relative w-full h-[40vh] md:h-[50vh] bg-ivory">
-        <Image 
-          src="/images/collection-hero.jpg" 
-          alt="Collection Banner"
-          fill
-          className="object-cover opacity-80"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/30 flex items-center justify-center text-center px-6">
-          <div className="max-w-2xl">
-            <h1 className="font-serif text-4xl md:text-6xl text-white mb-4 tracking-wide">
-              {collectionName}
-            </h1>
-            <p className="text-white/90 text-sm md:text-base font-light tracking-widest uppercase">
-              Discover our latest curation of statement pieces designed for elegance.
-            </p>
-          </div>
-        </div>
+    <div className="bg-white min-h-screen pt-24 md:pt-32">
+      {/* Minimalist Hero Banner */}
+      <div className="relative w-full py-20 md:py-32 bg-ivory flex flex-col items-center justify-center text-center px-6">
+        <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-rich-black mb-4 tracking-wide uppercase">
+          {collectionName}
+        </h1>
+        <p className="text-neutral-500 text-xs md:text-sm font-light tracking-[0.2em] uppercase max-w-xl mx-auto">
+          Discover our latest curation of statement pieces designed for elegance.
+        </p>
       </div>
 
       <div className="container mx-auto px-6 lg:px-12 py-12">
         {/* Toolbar */}
         <div className="flex flex-col md:flex-row justify-between items-center border-b border-border-light pb-6 mb-8 gap-4 text-sm uppercase tracking-widest font-medium text-rich-black">
           <button
-            onClick={() => setIsMobileFilterOpen(true)}
+            onClick={() => setIsFilterOpen(true)}
             className="flex items-center gap-2 hover:text-gold transition-colors"
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filter By
+            Filter
             {hasActiveFilters && (
               <span className="bg-gold text-white text-[10px] px-1.5 py-0.5 rounded-full normal-case font-bold">
                 {activeCategories.length + activeSizes.length + activePrices.length + activeColors.length}
@@ -293,32 +282,12 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
               </AnimatePresence>
             </div>
 
-            {/* View Toggle */}
-            <div className="hidden md:flex items-center gap-2 border-l border-border-light pl-6 text-neutral-500">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`hover:text-rich-black transition-colors ${viewMode === 'grid' ? 'text-rich-black' : ''}`}
-              >
-                <LayoutGrid className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`hover:text-rich-black transition-colors ${viewMode === 'list' ? 'text-rich-black' : ''}`}
-              >
-                <List className="w-5 h-5" />
-              </button>
-            </div>
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12">
-          {/* Sidebar Filters (Desktop) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0">
-            {renderFilterSidebar()}
-          </aside>
-
           {/* Product Grid */}
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             {sorted.length === 0 ? (
               <div className="text-center py-20">
                 <p className="text-neutral-500 mb-4">No products match your filters.</p>
@@ -327,10 +296,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
                 </button>
               </div>
             ) : (
-              <div className={viewMode === "grid"
-                ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12"
-                : "flex flex-col gap-6"
-              }>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12">
                 {visible.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -352,37 +318,37 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
         </div>
       </div>
 
-      {/* Mobile Filter Drawer */}
+      {/* Filter Drawer (Mobile & Desktop) */}
       <AnimatePresence>
-        {isMobileFilterOpen && (
+        {isFilterOpen && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsMobileFilterOpen(false)}
-              className="fixed inset-0 bg-black/50 z-[70]"
+              onClick={() => setIsFilterOpen(false)}
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[70]"
             />
             <motion.div
-              initial={{ x: "-100%" }}
+              initial={{ x: "100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "tween", duration: 0.35, ease: "circOut" }}
-              className="fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-white z-[80] flex flex-col overflow-y-auto"
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.4, ease: [0.25, 1, 0.5, 1] }}
+              className="fixed top-0 right-0 h-full w-[85vw] max-w-md bg-white z-[80] flex flex-col overflow-y-auto shadow-2xl"
             >
-              <div className="flex justify-between items-center p-6 border-b border-border-light sticky top-0 bg-white">
-                <h2 className="font-serif text-xl">Filters</h2>
-                <button onClick={() => setIsMobileFilterOpen(false)}>
-                  <X className="w-5 h-5" />
+              <div className="flex justify-between items-center p-6 lg:p-8 border-b border-border-light sticky top-0 bg-white z-10">
+                <h2 className="font-serif text-2xl tracking-wide">Filters</h2>
+                <button onClick={() => setIsFilterOpen(false)} className="hover:rotate-90 transition-transform duration-300">
+                  <X className="w-6 h-6" />
                 </button>
               </div>
-              <div className="p-6">
+              <div className="p-6 lg:p-8">
                 {renderFilterSidebar()}
               </div>
-              <div className="p-6 border-t border-border-light mt-auto sticky bottom-0 bg-white">
+              <div className="p-6 lg:p-8 border-t border-border-light mt-auto sticky bottom-0 bg-white z-10">
                 <button
-                  onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full bg-rich-black text-white py-4 uppercase tracking-widest text-sm font-medium hover:bg-gold transition-colors"
+                  onClick={() => setIsFilterOpen(false)}
+                  className="w-full bg-rich-black text-white py-4 uppercase tracking-widest text-sm font-medium hover:bg-neutral-800 transition-colors"
                 >
                   View {sorted.length} Results
                 </button>

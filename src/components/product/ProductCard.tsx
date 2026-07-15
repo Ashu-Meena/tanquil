@@ -107,7 +107,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         setSelectedColor(null);
       }}
     >
-      <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-ivory mb-4">
+      <div className="relative aspect-[3/4] md:aspect-[2/3] overflow-hidden bg-ivory mb-4">
         {/* Badges */}
         <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
           {product.isNew && <span className="bg-white text-rich-black text-[10px] uppercase tracking-widest px-2 py-1">New In</span>}
@@ -198,7 +198,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
             ) : (
               <button
                 onClick={startQuickAdd}
-                className="w-full bg-rich-black hover:bg-gold text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-rich-black hover:bg-neutral-800 text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors flex items-center justify-center gap-2"
               >
                 Quick Add to Cart
               </button>
