@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 
-export default function AnalyticsWrapper({ gaId, gtmId }: { gaId?: string, gtmId?: string }) {
+export default function AnalyticsWrapper({ gaId, gtmId, nonce }: { gaId?: string, gtmId?: string, nonce?: string }) {
   const [consentGranted, setConsentGranted] = useState(false);
 
   useEffect(() => {
@@ -26,8 +26,8 @@ export default function AnalyticsWrapper({ gaId, gtmId }: { gaId?: string, gtmId
 
   return (
     <>
-      {gaId && <GoogleAnalytics gaId={gaId} />}
-      {gtmId && <GoogleTagManager gtmId={gtmId} />}
+      {gaId && <GoogleAnalytics gaId={gaId} nonce={nonce} />}
+      {gtmId && <GoogleTagManager gtmId={gtmId} nonce={nonce} />}
     </>
   );
 }

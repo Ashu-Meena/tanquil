@@ -38,11 +38,15 @@ export const metadata: Metadata = {
   description: "Premium luxury fashion and statement clothing designed to make you unforgettable.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { headers } = await import("next/headers");
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce") || undefined;
+
   return (
     <html
       lang="en"
@@ -64,6 +68,7 @@ export default function RootLayout({
       <AnalyticsWrapper 
         gaId={process.env.NEXT_PUBLIC_GA_ID || "G-04SKZSZQ0E"} 
         gtmId={process.env.NEXT_PUBLIC_GTM_ID || "GTM-TFQH67M7"} 
+        nonce={nonce}
       />
     </html>
   );
