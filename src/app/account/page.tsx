@@ -149,7 +149,9 @@ function AccountContent() {
         if (toUpload.length > 0) {
           // Upload local items to DB
           const { error: insertError } = await supabase.from('wishlist').insert(toUpload.map(id => ({ user_id: session.user.id, product_id: id })));
-          if (insertError) console.error("Wishlist insert error:", insertError);
+          if (insertError) {
+             console.error("Wishlist insert error:", JSON.stringify(insertError, null, 2) === "{}" ? insertError.message || insertError.details || insertError.hint || insertError : insertError);
+          }
           
           // Refetch to get the full joined data
           const { data: mergedWishlist, error: fetchError } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
