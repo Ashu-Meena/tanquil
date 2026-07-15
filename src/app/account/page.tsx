@@ -147,10 +147,12 @@ function AccountContent() {
         const toUpload = localItems.filter(id => id && String(id) !== "undefined" && String(id) !== "null" && !dbItemIds.includes(String(id)));
         
         if (toUpload.length > 0) {
-          // Upload local items to DB
-          const { error: insertError } = await supabase.from('wishlist').insert(toUpload.map(id => ({ user_id: session.user.id, product_id: id })));
-          if (insertError) {
-             console.warn("Notice: Some local wishlist items could not be synced to the database (likely due to duplicates or deleted products).");
+          // Upload local items to DB individually so one bad ID (e.g. deleted product) doesn't break others
+          for (const id of toUpload) {
+            const { error: insertError } = await supabase.from('wishlist').insert({ user_id: session.user.id, product_id: id });
+            if (insertError) {
+               console.warn(`Notice: Could not sync wishlist item ${id} (likely deleted product).`, insertError);
+            }
           }
           
           // Refetch to get the full joined data
