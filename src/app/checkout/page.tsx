@@ -904,25 +904,7 @@ export default function CheckoutPage() {
                         <button onClick={() => setCurrentStep(1)} className="text-gold-text hover:underline uppercase tracking-widest text-xs">Edit</button>
                       </div>
 
-                      {/* Cart Items Summary */}
-                      <div className="pt-2">
-                        <p className="text-xs uppercase tracking-widest text-neutral-400 mb-4 font-medium">Items in your order ({cartItems.reduce((s, i) => s + i.quantity, 0)})</p>
-                        <div className="space-y-4">
-                          {cartItems.map(item => (
-                            <div key={`${item.id}-${item.color}-${item.size}`} className="flex gap-4 items-center">
-                              <div className="relative w-14 h-20 bg-ivory flex-shrink-0 rounded-sm overflow-hidden border border-border-light">
-                                <Image src={item.image} alt={item.name} fill className="object-cover" />
-                                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-neutral-500 text-white text-[9px] flex items-center justify-center rounded-full">{item.quantity}</span>
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-rich-black line-clamp-1">{item.name}</p>
-                                <p className="text-xs text-neutral-400 mt-0.5">{item.color} / {item.size}</p>
-                              </div>
-                              <p className="text-sm font-medium text-rich-black font-[family-name:var(--font-montserrat)]">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                      {/* Cart Items Summary Removed for Cleaner UI */}
                     </div>
                   </motion.div>
                 )}
@@ -989,29 +971,35 @@ export default function CheckoutPage() {
                         </div>
                         <p className="text-xs text-neutral-500 mb-3">{item.color} / {item.size}</p>
                         
-                        <div className="flex items-center justify-between mt-auto">
-                          <div className="flex items-center border border-border-light bg-white rounded-sm h-7">
-                            <button 
-                              onClick={() => updateQuantity(item.id, item.color, item.size, Math.max(1, item.quantity - 1))} 
-                              className="w-7 h-full flex items-center justify-center text-neutral-500 hover:text-rich-black hover:bg-[#F5F5F5] transition-colors"
+                        {currentStep === 0 ? (
+                          <div className="flex items-center justify-between mt-auto">
+                            <div className="flex items-center border border-border-light bg-white rounded-sm h-7">
+                              <button 
+                                onClick={() => updateQuantity(item.id, item.color, item.size, Math.max(1, item.quantity - 1))} 
+                                className="w-7 h-full flex items-center justify-center text-neutral-500 hover:text-rich-black hover:bg-[#F5F5F5] transition-colors"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="w-6 text-center text-xs text-rich-black font-medium">{item.quantity}</span>
+                              <button 
+                                onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} 
+                                className="w-7 h-full flex items-center justify-center text-neutral-500 hover:text-rich-black hover:bg-[#F5F5F5] transition-colors"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <button
+                              onClick={() => removeItem(item.id, item.color, item.size)}
+                              className="text-neutral-400 hover:text-sale transition-colors text-[10px] uppercase tracking-widest border-b border-transparent hover:border-sale pb-0.5"
                             >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <span className="w-6 text-center text-xs text-rich-black font-medium">{item.quantity}</span>
-                            <button 
-                              onClick={() => updateQuantity(item.id, item.color, item.size, item.quantity + 1)} 
-                              className="w-7 h-full flex items-center justify-center text-neutral-500 hover:text-rich-black hover:bg-[#F5F5F5] transition-colors"
-                            >
-                              <Plus className="w-3 h-3" />
+                              Remove
                             </button>
                           </div>
-                          <button
-                            onClick={() => removeItem(item.id, item.color, item.size)}
-                            className="text-neutral-400 hover:text-sale transition-colors text-[10px] uppercase tracking-widest border-b border-transparent hover:border-sale pb-0.5"
-                          >
-                            Remove
-                          </button>
-                        </div>
+                        ) : (
+                          <div className="mt-auto pt-2">
+                            <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-medium">Qty: {item.quantity}</p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))
