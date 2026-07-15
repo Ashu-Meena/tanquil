@@ -97,6 +97,7 @@ function AccountContent() {
     name: "", address_line1: "", address_line2: "", city: "", state: "", postal_code: "", country: "", phone: "", landmark: "", alternate_phone: ""
   });
   const [isSubmittingAddress, setIsSubmittingAddress] = useState(false);
+  const [debugError, setDebugError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAccountData() {
@@ -131,12 +132,16 @@ function AccountContent() {
         setAddresses(userAddresses);
       }
 
-      // Fetch wishlist and merge with local
-      const localItems = useWishlistStore.getState().items;
-      const { data: userWishlist } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
+      // Fetch wishlist
+      const { data: userWishlist, error: fetchErr } = await supabase.from('wishlist').select('id, product_id, products(*, product_images(url), product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
       
-      if (userWishlist) {
-        const dbItemIds = userWishlist.map((w: any) => String(w.product_id));
+      if (fetchErr) setDebugError(JSON.stringify(fetchErr));
+
+      if (userWishlist || fetchErr) {
+        // Even if there's an error, we should try to show local items
+        const actualUserWishlist = userWishlist || [];
+        const dbItemIds = actualUserWishlist.map((w: any) => String(w.product_id));
+        const localItems = useWishlistStore.getState().items;
         const toUpload = localItems.filter(id => !dbItemIds.includes(String(id)));
         
         if (toUpload.length > 0) {
@@ -152,12 +157,21 @@ function AccountContent() {
             setWishlist(mergedWishlist);
             useWishlistStore.getState().setItems(mergedWishlist.map((w: any) => String(w.product_id)));
           } else if (insertError) {
-             // If insert failed (e.g. RLS), at least keep the local state alive, but we can't easily fetch products for them.
-             setWishlist(userWishlist); 
+             console.error("Wishlist insert error:", insertError);
+             const { data: fallbackProducts, error: fallbackErr } = await supabase.from('products').select('*, product_images(url), product_variants(*)').in('id', toUpload);
+             if (fallbackErr) setDebugError("Fallback err: " + JSON.stringify(fallbackErr));
+             const fallbackWishlist = (fallbackProducts || []).map((p: any) => ({
+                id: p.id, // fake wishlist ID
+                product_id: p.id,
+                products: p
+             }));
+             setWishlist([...actualUserWishlist, ...fallbackWishlist]); 
           }
         } else {
-          setWishlist(userWishlist);
-          useWishlistStore.getState().setItems(dbItemIds);
+          setWishlist(actualUserWishlist);
+          if (!fetchErr) {
+            useWishlistStore.getState().setItems(dbItemIds);
+          }
         }
       }
 
@@ -818,6 +832,7 @@ function AccountContent() {
                   <span className="text-rich-black">Your Wishlist</span>
                 </div>
                 <h2 className="font-serif text-3xl text-rich-black mb-8">My Wishlist</h2>
+                {debugError && <div className="p-4 bg-red-100 text-red-700 mb-4">{debugError}</div>}
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                   {wishlist.length === 0 ? (
                     <div className="col-span-2 md:col-span-3 text-center py-12 border border-dashed border-border-light">
@@ -829,7 +844,7 @@ function AccountContent() {
                     wishlist.map(item => (
                       <div key={item.id} className="group flex flex-col">
                         <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-4">
-                          <Image src={item.products?.images?.[0] || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill className="object-cover" />
+                          <Image src={item.products?.product_images?.[0]?.url || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill className="object-cover" />
                           <button onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
                             <Trash2 className="w-4 h-4" />
                           </button>
