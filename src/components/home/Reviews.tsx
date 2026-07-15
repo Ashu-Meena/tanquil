@@ -81,7 +81,7 @@ export default function Reviews({ reviews: initialReviews }: { reviews?: Review[
               </div>
               
               <p className="text-rich-black font-serif text-lg leading-relaxed mb-8 italic flex-grow">
-                "{review.text}"
+                &quot;{review.text}&quot;
               </p>
               
               <div className="flex flex-col items-center justify-center gap-4 mt-auto">

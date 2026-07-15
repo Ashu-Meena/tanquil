@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Search, Mail, Phone, Calendar, ArrowUpDown, Loader2 } from "lucide-react";
 
@@ -23,11 +23,9 @@ export default function CustomersPage() {
   const [rawOrdersCount, setRawOrdersCount] = useState(0);
   const [sortDir, setSortDir] = useState<'asc'|'desc'>('desc');
 
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
+  useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     setLoading(true);
     
     // 1. Fetch all profiles
@@ -71,7 +69,7 @@ export default function CustomersPage() {
 
     setCustomers(customerData);
     setLoading(false);
-  };
+  }, [supabase]);;
 
   const filteredCustomers = customers
     .filter(c => 

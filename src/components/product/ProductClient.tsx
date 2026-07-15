@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
 import { useWishlistStore } from "@/store/useWishlistStore";
-import { Heart, Ruler, Truck, ShieldCheck, RefreshCw, ChevronDown, ChevronUp, Share2, MessageCircle } from "lucide-react";
+import { Heart, Truck, ShieldCheck, RefreshCw, Share2, MessageCircle } from "lucide-react";
 import ProductCard from "@/components/product/ProductCard";
 import SizeGuideModal from "@/components/product/SizeGuideModal";
 import DOMPurify from "isomorphic-dompurify";
@@ -27,7 +27,7 @@ interface ProductDetails {
   colorImages?: Record<string, string[]>;
   colors: Color[];
   sizes: string[];
-  variants?: any[];
+  variants?: { color_name: string; size: string; stock_quantity: number }[];
   details: string[];
   brand?: string;
   tags?: string[];
@@ -53,11 +53,12 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   }, [selectedColor.name, product.colorImages, product.images]);
 
   const [selectedImage, setSelectedImage] = useState(activeImages[0] || product.images[0]);
+  const [prevActiveImages, setPrevActiveImages] = useState(activeImages);
 
-  // Keep selected image in sync with color changes
-  useEffect(() => {
+  if (activeImages !== prevActiveImages) {
+    setPrevActiveImages(activeImages);
     setSelectedImage(activeImages[0] || product.images[0]);
-  }, [activeImages, product.images]);
+  }
   
   const availableSizesForColor = useMemo(() => {
     if (!product.variants || product.variants.length === 0) {
@@ -74,12 +75,14 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
   }, [product.variants, product.sizes, selectedColor.name]);
 
   const [selectedSize, setSelectedSize] = useState(availableSizesForColor[0] || "");
+  const [prevAvailableSizes, setPrevAvailableSizes] = useState(availableSizesForColor);
 
-  useEffect(() => {
+  if (availableSizesForColor !== prevAvailableSizes) {
+    setPrevAvailableSizes(availableSizesForColor);
     if (availableSizesForColor.length > 0 && !availableSizesForColor.includes(selectedSize)) {
       setSelectedSize(availableSizesForColor[0]);
     }
-  }, [selectedColor.name, availableSizesForColor, selectedSize]);
+  }
 
   const handleColorSelect = (color: Color) => {
     setSelectedColor(color);
@@ -151,14 +154,16 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
     return currentVariant ? currentVariant.stock_quantity : 0;
   })();
 
-  // Sync quantity if it exceeds max available
-  useEffect(() => {
+  const [prevMaxQuantity, setPrevMaxQuantity] = useState(maxQuantity);
+
+  if (maxQuantity !== prevMaxQuantity) {
+    setPrevMaxQuantity(maxQuantity);
     if (quantity > maxQuantity && maxQuantity > 0) {
       setQuantity(maxQuantity);
     } else if (quantity > maxQuantity && maxQuantity === 0) {
-      setQuantity(1); // Keep at 1 visually but disable buttons
+      setQuantity(1);
     }
-  }, [maxQuantity, quantity]);
+  }
 
   const getFinalSizeString = () => {
     if (selectedSize === "Custom") {

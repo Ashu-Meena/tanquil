@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
-import MagneticButton from "../ui/MagneticButton";
+
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 

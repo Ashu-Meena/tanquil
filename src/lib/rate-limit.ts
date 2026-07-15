@@ -49,7 +49,7 @@ export function checkExponentialBackoff(ip: string, account: string) {
   ipInfo.expiresAt = now + RATE_LIMIT_CONFIG.AUTH_DECAY_MS;
   accountInfo.expiresAt = now + RATE_LIMIT_CONFIG.AUTH_DECAY_MS;
   
-  let maxBlockedUntil = Math.max(ipInfo.blockedUntil, accountInfo.blockedUntil);
+  const maxBlockedUntil = Math.max(ipInfo.blockedUntil, accountInfo.blockedUntil);
   if (now < maxBlockedUntil) {
     return { success: false, retryAfterMs: maxBlockedUntil - now };
   }

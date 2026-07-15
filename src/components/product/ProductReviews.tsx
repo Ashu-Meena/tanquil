@@ -5,11 +5,27 @@ import { createClient } from "@/utils/supabase/client";
 import { Star, MessageSquare, Loader2, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+interface Review {
+  id: string;
+  product_id: string;
+  user_id: string;
+  rating: number;
+  title: string;
+  comment: string;
+  status: string;
+  created_at: string;
+  profiles: {
+    first_name: string;
+    last_name: string;
+  };
+}
+
 export default function ProductReviews({ productId }: { productId: string }) {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   
   // Form State
@@ -22,7 +38,6 @@ export default function ProductReviews({ productId }: { productId: string }) {
 
   const fetchSessionAndReviews = useCallback(async () => {
     const supabase = createClient();
-    setLoading(true);
     // Get Session
     const { data: { session } } = await supabase.auth.getSession();
     setUser(session?.user || null);
@@ -43,6 +58,7 @@ export default function ProductReviews({ productId }: { productId: string }) {
   }, [productId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchSessionAndReviews();
   }, [fetchSessionAndReviews]);
 

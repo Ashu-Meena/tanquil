@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Tag, Settings2, Trash2, Loader2, Save } from "lucide-react";
 import { toast } from "@/store/useToastStore";
@@ -33,16 +33,14 @@ export default function DiscountsPage() {
     is_free_shipping: false
   });
 
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
+  useEffect(() => { fetchCoupons(); }, [fetchCoupons]);
 
-  const fetchCoupons = async () => {
+  const fetchCoupons = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
     if (data) setCoupons(data as Coupon[]);
     setLoading(false);
-  };
+  }, [supabase]);;
 
   const handleSave = async () => {
     if (!formData.code || formData.discount_value === undefined) return;

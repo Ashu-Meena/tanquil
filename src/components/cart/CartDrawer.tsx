@@ -19,8 +19,7 @@ export default function CartDrawer() {
   const [mounted, setMounted] = useState(false);
   const [shippingThreshold, setShippingThreshold] = useState(10000); // Default to 10000
 
-  // Do not render on admin paths
-  if (pathname.startsWith('/admin')) return null;
+  // Early return logic moved below hooks
 
   const fetchShippingSettings = async () => {
     const { data } = await supabase
@@ -84,6 +83,8 @@ export default function CartDrawer() {
     router.push("/checkout");
   };
 
+  if (pathname.startsWith('/admin')) return null;
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -123,11 +124,11 @@ export default function CartDrawer() {
             <div className="px-6 py-4 bg-white border-b border-border-light">
               {remaining > 0 ? (
                 <p className="text-xs text-center mb-3 text-neutral-500 tracking-wide uppercase">
-                  You're <span className="font-bold text-rich-black">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
+                  You&apos;re <span className="font-bold text-rich-black">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
                 </p>
               ) : (
                 <p className="text-xs text-center mb-3 text-gold tracking-widest uppercase font-medium">
-                  You've unlocked Free Shipping
+                  You&apos;ve unlocked Free Shipping
                 </p>
               )}
               <div className="w-full h-[2px] bg-[#F5F5F5] rounded-full overflow-hidden">

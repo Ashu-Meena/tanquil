@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Search, Save, AlertTriangle } from "lucide-react";
 import Image from "next/image";
@@ -13,11 +13,9 @@ export default function InventoryPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchInventory();
-  }, []);
+  useEffect(() => { fetchInventory(); }, [fetchInventory]);
 
-  const fetchInventory = async () => {
+  const fetchInventory = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("product_variants")
@@ -29,7 +27,7 @@ export default function InventoryPage() {
       
     if (data) setVariants(data);
     setLoading(false);
-  };
+  }, [supabase]);;
 
   const updateStock = async (id: string, newStock: number) => {
     setSavingId(id);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Filter } from "lucide-react";
@@ -19,11 +19,9 @@ export default function ProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [bulkStatus, setBulkStatus] = useState("");
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("products")
@@ -62,7 +60,7 @@ export default function ProductsPage() {
       setProducts(formattedData);
     }
     setLoading(false);
-  };
+  }, [supabase]);;
 
   const filteredProducts = products.filter(p => 
     p.name.toLowerCase().includes(search.toLowerCase()) || 

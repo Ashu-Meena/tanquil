@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { Plus, Search, MoreHorizontal, Edit, Trash2, Tag, Image as ImageIcon } from "lucide-react";
@@ -11,25 +11,24 @@ import { deleteCategory as deleteCategoryAction } from "@/app/actions/admin";
 
 export default function CategoriesPage() {
   const supabase = createClient();
-  const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null);
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("categories")
       .select("*")
       .order("display_order", { ascending: true });
     
     if (data) setCategories(data);
     setLoading(false);
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const deleteCategory = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this category?")) {

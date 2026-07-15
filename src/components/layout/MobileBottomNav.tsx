@@ -13,6 +13,7 @@ export default function MobileBottomNav() {
   const openCart = useCartStore((state) => state.openCart);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

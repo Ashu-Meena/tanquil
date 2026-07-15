@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } , useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { Copy, Trash2, UploadCloud, Search, Check, ImageIcon, Video, AlertTriangle, Film } from "lucide-react";
 import { toast } from "@/store/useToastStore";
@@ -36,11 +36,9 @@ export default function MediaLibraryPage() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const bucketName = "public-assets";
 
-  useEffect(() => {
-    fetchFiles();
-  }, []);
+  useEffect(() => { fetchFiles(); }, [fetchFiles]);
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
       .storage
@@ -56,7 +54,7 @@ export default function MediaLibraryPage() {
       setFiles(validFiles);
     }
     setLoading(false);
-  };
+  }, [supabase]);;
 
   const videoFiles = files.filter((f) => isVideoFile(f.name));
   const imageFiles = files.filter((f) => isImageFile(f.name));
