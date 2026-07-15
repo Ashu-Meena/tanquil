@@ -151,12 +151,13 @@ function AccountContent() {
           for (const id of toUpload) {
             const { error: insertError } = await supabase.from('wishlist').insert({ user_id: session.user.id, product_id: id });
             if (insertError) {
-               console.warn(`Notice: Could not sync wishlist item ${id} (likely deleted product).`, insertError);
+               console.warn(`Notice: Could not sync wishlist item ${id}.`, insertError);
+               setDebugError(`Failed to insert item ${id}. Error: ${JSON.stringify(insertError)}`);
             }
           }
           
           // Refetch to get the full joined data
-          const { data: mergedWishlist, error: fetchError } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
+          const { data: mergedWishlist, error: fetchError } = await supabase.from('wishlist').select('id, product_id, products(*, product_images(url), product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
           if (fetchError) console.error("Wishlist refetch error:", fetchError);
           
           if (mergedWishlist) {
