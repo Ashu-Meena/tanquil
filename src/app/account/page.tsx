@@ -141,13 +141,19 @@ function AccountContent() {
         
         if (toUpload.length > 0) {
           // Upload local items to DB
-          await supabase.from('wishlist').insert(toUpload.map(id => ({ user_id: session.user.id, product_id: id })));
+          const { error: insertError } = await supabase.from('wishlist').insert(toUpload.map(id => ({ user_id: session.user.id, product_id: id })));
+          if (insertError) console.error("Wishlist insert error:", insertError);
           
           // Refetch to get the full joined data
-          const { data: mergedWishlist } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
-          if (mergedWishlist) {
+          const { data: mergedWishlist, error: fetchError } = await supabase.from('wishlist').select('id, product_id, products(*, product_variants(*))').eq('user_id', session.user.id).order('created_at', { ascending: false });
+          if (fetchError) console.error("Wishlist refetch error:", fetchError);
+          
+          if (mergedWishlist && !insertError) {
             setWishlist(mergedWishlist);
             useWishlistStore.getState().setItems(mergedWishlist.map((w: any) => String(w.product_id)));
+          } else if (insertError) {
+             // If insert failed (e.g. RLS), at least keep the local state alive, but we can't easily fetch products for them.
+             setWishlist(userWishlist); 
           }
         } else {
           setWishlist(userWishlist);
