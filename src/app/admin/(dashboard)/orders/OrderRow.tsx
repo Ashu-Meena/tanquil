@@ -38,6 +38,11 @@ export const OrderRow = React.memo(function OrderRow({
       <td className="px-6 py-4">
         <p className="font-medium text-rich-black">{order.customer_name}</p>
         <p className="text-xs text-neutral-500">{order.customer_email}</p>
+        {order.shipping_address && (
+          <p className="text-[10px] text-neutral-400 mt-1 max-w-[200px] truncate" title={`${order.shipping_address.address}, ${order.shipping_address.city}, ${order.shipping_address.state} - ${order.shipping_address.pin}`}>
+            {order.shipping_address.address}, {order.shipping_address.city}, {order.shipping_address.state}
+          </p>
+        )}
       </td>
       <td className="px-6 py-4 font-medium text-rich-black hidden md:table-cell">₹{order.total_amount?.toLocaleString('en-IN')}</td>
       <td className="px-6 py-4">

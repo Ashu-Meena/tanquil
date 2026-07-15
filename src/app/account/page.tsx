@@ -7,6 +7,7 @@ import { User, Package, Heart, MapPin, LogOut, Truck, RefreshCw, Plus, Loader2, 
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
 import { useCartStore } from "@/store/useCartStore";
+import { useWishlistStore } from "@/store/useWishlistStore";
 import { toast } from "@/store/useToastStore";
 
 const INDIAN_STATES = [
@@ -126,9 +127,10 @@ function AccountContent() {
       }
 
       // Fetch wishlist
-      const { data: userWishlist } = await supabase.from('wishlist').select('id, products(*)').eq('user_id', session.user.id).order('created_at', { ascending: false });
+      const { data: userWishlist } = await supabase.from('wishlist').select('id, product_id, products(*)').eq('user_id', session.user.id).order('created_at', { ascending: false });
       if (userWishlist) {
         setWishlist(userWishlist);
+        useWishlistStore.getState().setItems(userWishlist.map((w: any) => w.product_id));
       }
 
       // Fetch invoice settings
@@ -274,10 +276,13 @@ function AccountContent() {
     showFeedback('Default address updated.');
   };
 
-  const handleRemoveFromWishlist = async (id: string) => {
+  const handleRemoveFromWishlist = async (id: string, productId?: string) => {
     const { error } = await supabase.from('wishlist').delete().eq('id', id);
     if (!error) {
       setWishlist(wishlist.filter(w => w.id !== id));
+      if (productId) {
+        useWishlistStore.getState().removeItem(productId);
+      }
       showFeedback('Removed from wishlist.');
     }
   };
@@ -293,7 +298,7 @@ function AccountContent() {
       color: "Standard",
       size: "M", // Defaulting for now
     });
-    await handleRemoveFromWishlist(wishlistItem.id);
+    await handleRemoveFromWishlist(wishlistItem.id, product.id);
     openCart();
   };
 
@@ -772,7 +777,7 @@ function AccountContent() {
                       <div key={item.id} className="group flex flex-col">
                         <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-4">
                           <Image src={item.products?.images?.[0] || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill className="object-cover" />
-                          <button onClick={() => handleRemoveFromWishlist(item.id)} className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
+                          <button onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
                             <Trash2 className="w-4 h-4" />
                           </button>
                           <div className="absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20">

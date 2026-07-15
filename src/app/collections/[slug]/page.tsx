@@ -25,16 +25,29 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     .select("*, product_categories!inner(category_id, categories(name, slug)), product_images(url, color_name), product_variants(color_name, size)")
     .eq("status", "active");
 
-  // If not "all", "new" etc, filter by slug
-  if (slug !== "all" && slug !== "new") {
+  // If not "all", "new", "sale", "bestsellers" etc, filter by slug
+  if (slug !== "all" && slug !== "new" && slug !== "sale" && slug !== "bestsellers") {
     // Check if the slug maps to a real category
     const { data: catData } = await supabase.from("categories").select("id").eq("slug", slug).single();
     if (catData) {
       query = query.eq("product_categories.category_id", catData.id);
+    } else {
+      // If it's an invalid slug, return no products instead of all products
+      query = query.eq("id", "00000000-0000-0000-0000-000000000000"); 
     }
+  } else if (slug === "new") {
+    query = query.eq("is_featured", true);
+  } else if (slug === "sale") {
+    // We filter sale products after fetching because compare_at_price > price requires it 
+    // unless we use a raw query, but for now we fetch all active and filter later
+  } else if (slug === "bestsellers") {
+    query = query.eq("is_bestseller", true);
   }
 
-  const { data: products } = await query;
+  let { data: products } = await query;
+  if (slug === "sale" && products) {
+    products = products.filter((p: any) => p.compare_at_price > p.price);
+  }
 
   const mappedProducts = products?.map((p: any) => {
     const images = p.product_images?.map((img: any) => img.url) || [];

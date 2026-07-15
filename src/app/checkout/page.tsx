@@ -385,6 +385,7 @@ export default function CheckoutPage() {
         // 2. Insert Order
         const { error } = await supabase.from('orders').insert({
           id: orderId,
+          user_id: isLoggedIn && userProfile ? userProfile.id : null,
           order_number: orderNumber,
           customer_name: isLoggedIn && userProfile ? `${userProfile.first_name || ''} ${userProfile.last_name || ''}`.trim() || email : `${firstName} ${lastName}`.trim() || email,
           customer_email: isLoggedIn && userProfile ? (userProfile.email || email) : email,

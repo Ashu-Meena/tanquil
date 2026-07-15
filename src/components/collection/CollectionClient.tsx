@@ -14,7 +14,8 @@ interface Product {
   isNew?: boolean;
   isSale?: boolean;
   category: string;
-  size?: string; // Simplification for now
+  sizes?: string[];
+  colors?: { name: string, image: string }[];
 }
 
 const SORT_OPTIONS = [
@@ -23,6 +24,26 @@ const SORT_OPTIONS = [
   { label: "Price: High to Low", value: "price_desc" },
   { label: "Newest First", value: "newest" },
 ];
+
+const PRICE_RANGES = [
+  { id: "under-5k", label: "Under ₹5,000", min: 0, max: 4999 },
+  { id: "5k-10k", label: "₹5,000 – ₹10,000", min: 5000, max: 10000 },
+  { id: "over-10k", label: "Over ₹10,000", min: 10001, max: Infinity },
+];
+
+const getColorStyle = (name: string) => {
+  const n = name.toLowerCase();
+  if (n.includes('black')) return 'bg-black';
+  if (n.includes('white')) return 'bg-white border border-border-light';
+  if (n.includes('red') || n.includes('crimson') || n.includes('ruby') || n.includes('whine') || n.includes('burgundy')) return 'bg-red-700';
+  if (n.includes('blue') || n.includes('navy')) return 'bg-blue-700';
+  if (n.includes('green') || n.includes('emerald') || n.includes('olive')) return 'bg-green-700';
+  if (n.includes('pink')) return 'bg-pink-400';
+  if (n.includes('orange') || n.includes('rust')) return 'bg-orange-500';
+  if (n.includes('yellow') || n.includes('gold') || n.includes('champagne')) return 'bg-[#FFD700]';
+  if (n.includes('purple')) return 'bg-purple-600';
+  return 'bg-gray-400';
+};
 
 const PAGE_SIZE = 12;
 
@@ -33,6 +54,8 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [activeCategories, setActiveCategories] = useState<string[]>([]);
   const [activeSizes, setActiveSizes] = useState<string[]>([]);
+  const [activePrices, setActivePrices] = useState<string[]>([]);
+  const [activeColors, setActiveColors] = useState<string[]>([]);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -47,9 +70,21 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
     setVisibleCount(PAGE_SIZE);
   };
 
+  const togglePrice = (id: string) => {
+    setActivePrices(prev => prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]);
+    setVisibleCount(PAGE_SIZE);
+  };
+
+  const toggleColor = (color: string) => {
+    setActiveColors(prev => prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]);
+    setVisibleCount(PAGE_SIZE);
+  };
+
   const clearFilters = () => {
     setActiveCategories([]);
     setActiveSizes([]);
+    setActivePrices([]);
+    setActiveColors([]);
     setVisibleCount(PAGE_SIZE);
   };
 
@@ -59,8 +94,18 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
     filtered = filtered.filter(p => activeCategories.includes(p.category));
   }
   if (activeSizes.length > 0) {
-    // In a real app with proper variants table, filter by joined sizes. Here we skip size filtering if not provided.
-    filtered = filtered.filter(p => activeSizes.includes(p.size || ""));
+    filtered = filtered.filter(p => p.sizes?.some(s => activeSizes.includes(s)));
+  }
+  if (activePrices.length > 0) {
+    filtered = filtered.filter(p => {
+      return activePrices.some(id => {
+        const range = PRICE_RANGES.find(r => r.id === id);
+        return range ? (p.price >= range.min && p.price <= range.max) : false;
+      });
+    });
+  }
+  if (activeColors.length > 0) {
+    filtered = filtered.filter(p => p.colors?.some(c => activeColors.includes(c.name)));
   }
 
   // Apply sort
@@ -73,10 +118,12 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
 
   const visible = sorted.slice(0, visibleCount);
   const hasMore = visibleCount < sorted.length;
-  const hasActiveFilters = activeCategories.length > 0 || activeSizes.length > 0;
+  const hasActiveFilters = activeCategories.length > 0 || activeSizes.length > 0 || activePrices.length > 0 || activeColors.length > 0;
 
-  // Extract unique categories from products
+  // Extract unique categories, sizes, and colors from products
   const availableCategories = Array.from(new Set(initialProducts.map(p => p.category)));
+  const availableSizes = Array.from(new Set(initialProducts.flatMap(p => p.sizes || [])));
+  const availableColors = Array.from(new Set(initialProducts.flatMap(p => p.colors?.map(c => c.name) || [])));
 
   const renderFilterSidebar = () => (
     <div className="space-y-10">
@@ -115,47 +162,59 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
       <div>
         <h3 className="font-serif text-xl mb-4 border-b border-border-light pb-2">Price</h3>
         <ul className="space-y-3 text-neutral-500">
-          <li><label className="flex items-center gap-3 cursor-pointer hover:text-rich-black"><input type="checkbox" className="accent-gold" /> Under ₹5,000</label></li>
-          <li><label className="flex items-center gap-3 cursor-pointer hover:text-rich-black"><input type="checkbox" className="accent-gold" /> ₹5,000 – ₹10,000</label></li>
-          <li><label className="flex items-center gap-3 cursor-pointer hover:text-rich-black"><input type="checkbox" className="accent-gold" /> Over ₹10,000</label></li>
+          {PRICE_RANGES.map(range => (
+            <li key={range.id}>
+              <label className="flex items-center gap-3 cursor-pointer hover:text-rich-black">
+                <input
+                  type="checkbox"
+                  checked={activePrices.includes(range.id)}
+                  onChange={() => togglePrice(range.id)}
+                  className="accent-gold"
+                />
+                {range.label}
+              </label>
+            </li>
+          ))}
         </ul>
       </div>
 
       {/* Size Filter */}
-      <div>
-        <h3 className="font-serif text-xl mb-4 border-b border-border-light pb-2">Size</h3>
-        <div className="grid grid-cols-4 gap-2">
-          {['XS', 'S', 'M', 'L', 'XL'].map(size => (
-            <button
-              key={size}
-              onClick={() => toggleSize(size)}
-              className={`border py-2 text-xs uppercase tracking-widest transition-colors ${activeSizes.includes(size) ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black text-rich-black'}`}
-            >
-              {size}
-            </button>
-          ))}
+      {availableSizes.length > 0 && (
+        <div>
+          <h3 className="font-serif text-xl mb-4 border-b border-border-light pb-2">Size</h3>
+          <div className="grid grid-cols-4 gap-2">
+            {['XS', 'S', 'M', 'L', 'XL', 'Custom'].filter(s => availableSizes.includes(s)).map(size => (
+              <button
+                key={size}
+                onClick={() => toggleSize(size)}
+                className={`border py-2 text-xs uppercase tracking-widest transition-colors ${activeSizes.includes(size) ? 'border-rich-black bg-rich-black text-white' : 'border-border-light hover:border-rich-black text-rich-black'}`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Color Filter */}
-      <div>
-        <h3 className="font-serif text-xl mb-4 border-b border-border-light pb-2">Color</h3>
-        <div className="flex flex-wrap gap-3">
-          {[
-            { color: "bg-black", label: "Black" },
-            { color: "bg-white border border-border-light", label: "White" },
-            { color: "bg-gold", label: "Champagne" },
-            { color: "bg-red-800", label: "Burgundy" },
-            { color: "bg-blue-900", label: "Navy" },
-          ].map(({ color, label }) => (
-            <button
-              key={label}
-              title={label}
-              className={`w-8 h-8 rounded-full ${color} ring-1 ring-offset-2 ring-transparent hover:ring-rich-black transition-all`}
-            />
-          ))}
+      {availableColors.length > 0 && (
+        <div>
+          <h3 className="font-serif text-xl mb-4 border-b border-border-light pb-2">Color</h3>
+          <div className="flex flex-wrap gap-3">
+            {availableColors.map(color => {
+              const bgClass = getColorStyle(color);
+              return (
+                <button
+                  key={color}
+                  title={color}
+                  onClick={() => toggleColor(color)}
+                  className={`w-8 h-8 rounded-full ${bgClass} ring-1 ring-offset-2 transition-all ${activeColors.includes(color) ? 'ring-rich-black scale-110' : 'ring-transparent hover:ring-rich-black/50'}`}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 
@@ -193,7 +252,7 @@ export default function CollectionClient({ slug, initialProducts }: { slug: stri
             Filter By
             {hasActiveFilters && (
               <span className="bg-gold text-white text-[10px] px-1.5 py-0.5 rounded-full normal-case font-bold">
-                {activeCategories.length + activeSizes.length}
+                {activeCategories.length + activeSizes.length + activePrices.length + activeColors.length}
               </span>
             )}
           </button>
