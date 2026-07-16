@@ -213,17 +213,16 @@ export default function ProductCard({ product }: { product: CardProduct }) {
         </div>
       </div>
       
-      {/* Product Details */}
       <div className="flex flex-col text-left mt-3 md:mt-4 px-1">
         <Link href={`/products/${product.slug || product.id}`} className="group-hover:text-gold transition-colors">
-          <h3 className="font-serif text-sm md:text-base leading-snug line-clamp-2 mb-1">{product.name}</h3>
+          <h3 className="font-serif text-xs sm:text-sm md:text-base leading-snug line-clamp-2 mb-1">{product.name}</h3>
         </Link>
         <div className="flex items-center gap-2">
-          <p className="font-medium text-sm md:text-base whitespace-nowrap mt-[2px]" style={{ fontFamily: 'var(--font-montserrat)' }}>
+          <p className="font-medium text-xs sm:text-sm md:text-base whitespace-nowrap mt-[2px]" style={{ fontFamily: 'var(--font-montserrat)' }}>
             ₹{product.price.toLocaleString('en-IN')}
           </p>
           {product.isSale && (
-            <span className="font-sans text-[11px] md:text-[12px] text-neutral-400 line-through tracking-wider mt-[2px]">
+            <span className="font-sans text-[10px] md:text-[12px] text-neutral-400 line-through tracking-wider mt-[2px]">
               ₹{(product.price * 1.2).toLocaleString('en-IN')}
             </span>
           )}

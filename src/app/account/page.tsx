@@ -721,7 +721,7 @@ function AccountContent() {
                                   </p>
                                 </div>
                               ) : (
-                                <div className="relative pb-8 pt-2">
+                                <div className="relative pb-8 pt-2 overflow-x-auto no-scrollbar">
                                     {/* The Background Bar */}
                                     <div className="absolute top-[14px] md:top-[15px] left-0 w-full h-[2px] bg-border-light"></div>
                                     
@@ -737,7 +737,7 @@ function AccountContent() {
                                     ></div>
                                     
                                     {/* The Nodes */}
-                                    <div className="relative flex justify-between z-10">
+                                    <div className="relative flex justify-between z-10 min-w-[280px]">
                                       {["Pending", "Confirmed", "Shipped", "Delivered"].map((status, idx) => {
                                         const currentStepIndex = (
                                           order.status === 'pending_verification' ? 0 :

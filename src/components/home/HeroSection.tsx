@@ -81,10 +81,10 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="max-w-4xl px-4"
               >
-                <h1 className="font-serif text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white mb-4 lg:mb-6 leading-tight tracking-wide">
+                <h1 className="font-serif text-3xl sm:text-4xl md:text-6xl lg:text-8xl text-white mb-4 lg:mb-6 leading-tight tracking-wide">
                   {slide.title}
                 </h1>
-                <p className="font-serif italic text-lg md:text-2xl text-white/90 mb-8 lg:mb-10">
+                <p className="font-serif italic text-base sm:text-lg md:text-2xl text-white/90 mb-8 lg:mb-10">
                   {slide.subtitle}
                 </p>
               </motion.div>
