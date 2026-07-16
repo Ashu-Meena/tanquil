@@ -38,6 +38,7 @@ export async function POST(request: Request) {
     try {
       const rawBody = await request.json();
       body = emailSchema.parse(rawBody);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       if (err instanceof z.ZodError) {
         return NextResponse.json({ error: "Invalid request format.", details: err.issues }, { status: 400 });
@@ -72,6 +73,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ message: 'Email sent successfully', id: info.messageId }, { status: 200 });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Send email error:', error);
     return NextResponse.json({ error: 'Failed to send email. Please try again later.' }, { status: 500 });

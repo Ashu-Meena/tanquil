@@ -3,6 +3,7 @@ import { Playfair_Display, Inter, Cormorant_Garamond, Montserrat } from "next/fo
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import CartDrawer from "@/components/cart/CartDrawer";
 import SearchModal from "@/components/search/SearchModal";

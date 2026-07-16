@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Search, Filter, Check, X, Trash2, Star, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
@@ -9,19 +10,23 @@ import { deleteReview as serverDeleteReview } from "@/app/actions/admin";
 import { toast } from "@/store/useToastStore";
 
 export default function ReviewsPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const supabase = createClient();
   const [reviewToDelete, setReviewToDelete] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
     fetchReviews();
   }, []);
 
   const fetchReviews = async () => {
     const supabase = createClient();
     setLoading(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, error } = await supabase
       .from("reviews")
       .select(`

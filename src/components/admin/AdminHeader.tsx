@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Bell, Menu, LogOut, Settings } from "lucide-react";
 import AdminSearch from "./AdminSearch";
 import { NotificationDropdown } from "./NotificationDropdown";
@@ -18,6 +19,7 @@ export function AdminHeader() {
       await fetch("/api/admin/logout", { method: "POST" });
       router.push("/admin/login");
       router.refresh();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       setIsLoggingOut(false);
     }

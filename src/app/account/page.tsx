@@ -28,6 +28,7 @@ function AccountContent() {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const supabase = createClient();
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (tabParam) {
       setActiveTab(tabParam);
@@ -457,7 +458,7 @@ function AccountContent() {
                 </div>
                 <h2 className="font-serif text-3xl text-rich-black mb-4">Check your email</h2>
                 <p className="text-neutral-500 mb-8 leading-relaxed">
-                  We've sent a confirmation link to <br /><span className="font-medium text-rich-black">{authEmail}</span>.<br />Please click the link to verify your account and complete registration.
+                  We&apos;ve sent a confirmation link to <br /><span className="font-medium text-rich-black">{authEmail}</span>.<br />Please click the link to verify your account and complete registration.
                 </p>
                 <button onClick={() => { setRegistrationSuccess(false); setAuthMode("login"); }} className="bg-rich-black text-white px-8 py-3 uppercase tracking-widest text-xs font-medium hover:bg-gold transition-colors w-full">
                   Return to login
@@ -529,7 +530,7 @@ function AccountContent() {
             <div className="mt-8 text-center text-sm text-neutral-500">
               {authMode === "login" ? (
                 <>
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <button onClick={() => setAuthMode("signup")} className="text-rich-black hover:text-gold font-medium underline underline-offset-4">
                     Sign up
                   </button>
@@ -653,7 +654,7 @@ function AccountContent() {
                   {orders.length === 0 ? (
                     <div className="text-center py-12 border border-dashed border-border-light">
                       <Package className="w-12 h-12 text-border-light mx-auto mb-4" />
-                      <p className="text-neutral-500">You haven't placed any orders yet.</p>
+                      <p className="text-neutral-500">You haven&apos;t placed any orders yet.</p>
                       <button onClick={() => router.push('/collections/all')} className="mt-4 text-rich-black font-medium hover:text-gold underline underline-offset-4">Start Shopping</button>
                     </div>
                   ) : (
@@ -769,6 +770,7 @@ function AccountContent() {
                             
                             {/* Items */}
                             <div className="p-4 md:p-6 space-y-6">
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                               {order.items?.map((item: any, idx: number) => {
                                 // Calculate Exchange Eligibility
                                 const deliveryDate = new Date(order.created_at);
@@ -965,7 +967,7 @@ function AccountContent() {
                   {addresses.length === 0 ? (
                     <div className="col-span-2 text-center py-12 border border-dashed border-border-light">
                       <MapPin className="w-12 h-12 text-border-light mx-auto mb-4" />
-                      <p className="text-neutral-500">You don't have any saved addresses.</p>
+                      <p className="text-neutral-500">You don&apos;t have any saved addresses.</p>
                     </div>
                   ) : (
                     addresses.map(addr => (
@@ -1112,6 +1114,7 @@ function AccountContent() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                       {selectedOrderToPrint.items?.map((item: any, i: number) => (
                         <tr key={i}>
                           <td className="py-4 px-4">

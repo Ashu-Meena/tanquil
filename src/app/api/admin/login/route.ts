@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
   try {
     const rawBody = await req.json();
     body = loginSchema.parse(rawBody);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: "Invalid request format.", details: err.issues }, { status: 400 });

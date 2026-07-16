@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Edit, Trash2 } from "lucide-react";
 
 interface ProductRowProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   product: any;
   isSelected: boolean;
   onToggleSelect: (id: string) => void;

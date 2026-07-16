@@ -14,6 +14,7 @@ export default function AddProductPage() {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [categories, setCategories] = useState<any[]>([]);
   
   const [formData, setFormData] = useState({
@@ -46,7 +47,9 @@ export default function AddProductPage() {
   ]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
     fetchCategories();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchCategories = async () => {

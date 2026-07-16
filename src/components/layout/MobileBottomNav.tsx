@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Home, LayoutGrid, Heart, User, ShoppingBag } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 

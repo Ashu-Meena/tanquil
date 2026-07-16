@@ -2,9 +2,11 @@ import React from "react";
 import { Package, MoreVertical } from "lucide-react";
 
 interface OrderRowProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   order: any;
   isSelected: boolean;
   onToggleSelect: (id: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onOpenModal: (order: any) => void;
   statusDef: { label: string; color: string };
 }

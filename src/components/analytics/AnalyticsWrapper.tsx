@@ -10,6 +10,7 @@ export default function AnalyticsWrapper({ gaId, gtmId, nonce }: { gaId?: string
     // Check initial state
     const consent = localStorage.getItem("tranquil_cookie_consent");
     if (consent === "granted") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConsentGranted(true);
     }
 

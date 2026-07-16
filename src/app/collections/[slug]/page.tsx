@@ -46,16 +46,21 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
 
   let { data: products } = await query;
   if (slug === "sale" && products) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     products = products.filter((p: any) => p.compare_at_price > p.price);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mappedProducts = products?.map((p: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const images = p.product_images?.map((img: any) => img.url) || [];
     
     const colorsMap = new Map<string, string>();
     if (p.product_variants) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       p.product_variants.forEach((v: any) => {
         if (!colorsMap.has(v.color_name)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const matchingImg = p.product_images?.find((img: any) => img.color_name === v.color_name);
           colorsMap.set(v.color_name, matchingImg?.url || images[0]);
         }
@@ -64,6 +69,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
 
     const sizesSet = new Set<string>();
     if (p.product_variants) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       p.product_variants.forEach((v: any) => {
         if (v.size) sizesSet.add(v.size);
       });

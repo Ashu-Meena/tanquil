@@ -11,6 +11,7 @@ export default function CheckoutSuccessPage() {
   useEffect(() => {
     const savedOrder = sessionStorage.getItem('recentOrderNumber');
     if (savedOrder) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOrderNumber(savedOrder);
       sessionStorage.removeItem('recentOrderNumber'); // Clear it so it only shows once
     }

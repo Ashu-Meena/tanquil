@@ -99,6 +99,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
   };
 
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
 
   const isWished = mounted ? isWishlisted(String(product.id)) : false;

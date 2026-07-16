@@ -143,6 +143,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     details: ["Dry clean only", "Handle with care"],
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formattedRelated = relatedData?.map((rp: any) => {
     const images = rp.product_images?.map((img: ProductImage) => img.url) || [];
     

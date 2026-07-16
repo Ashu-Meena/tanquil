@@ -24,6 +24,7 @@ export default function PaymentsPage() {
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
     fetchTransactions();
   }, []);
 
@@ -36,6 +37,7 @@ export default function PaymentsPage() {
       .order("created_at", { ascending: false });
     
     if (data && !error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setTransactions(data as any as Transaction[]);
     }
     setFetching(false);

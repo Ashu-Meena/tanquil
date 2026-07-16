@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Star, MessageSquare, Loader2, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 

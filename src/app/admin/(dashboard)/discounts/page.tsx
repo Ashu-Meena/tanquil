@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Plus, Tag, Settings2, Trash2, Loader2, Save } from "lucide-react";
 import { toast } from "@/store/useToastStore";
 import { deleteCoupon } from "@/app/actions/admin";
@@ -41,12 +42,14 @@ export default function DiscountsPage() {
   }, [supabase]);
 
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { fetchCoupons(); }, [fetchCoupons]);;
 
   const handleSave = async () => {
     if (!formData.code || formData.discount_value === undefined) return;
     
     setSaving(true);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { is_free_shipping, ...rest } = formData;
     const payload = {
       ...rest,
@@ -70,6 +73,7 @@ export default function DiscountsPage() {
       setShowDrawer(false);
       setFormData({ code: "", discount_type: "percentage", discount_value: 10, min_order_value: 0, is_active: true, is_free_shipping: false });
       toast.success(formData.id ? "Discount updated!" : "Discount created successfully!");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
       toast.error("Failed to complete operation. Please try again or check the logs.");

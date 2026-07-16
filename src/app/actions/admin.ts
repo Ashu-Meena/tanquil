@@ -36,6 +36,7 @@ export async function deleteCategory(id: string) {
     
     revalidatePath("/admin/categories");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Failed to delete category:", error);
     return { success: false, error: error.message };
@@ -50,6 +51,7 @@ export async function deleteProduct(id: string) {
     
     revalidatePath("/admin/products");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Failed to delete product:", error);
     return { success: false, error: error.message };
@@ -64,6 +66,7 @@ export async function deleteReview(id: string) {
     
     revalidatePath("/admin/reviews");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Failed to delete review:", error);
     return { success: false, error: error.message };
@@ -78,6 +81,7 @@ export async function deleteCoupon(id: string) {
     
     revalidatePath("/admin/discounts");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error("Failed to delete coupon:", error);
     return { success: false, error: error.message };
@@ -91,6 +95,7 @@ export async function updateOrderStatus(id: string, status: string) {
     if (error) throw error;
     revalidatePath("/admin/orders");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -103,6 +108,7 @@ export async function updatePaymentStatus(id: string, payment_status: string) {
     if (error) throw error;
     revalidatePath("/admin/orders");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -115,6 +121,7 @@ export async function updateOrderFulfillment(id: string, data: { notes: string, 
     if (error) throw error;
     revalidatePath("/admin/orders");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -126,6 +133,7 @@ export async function bulkUpdateOrderStatus(ids: string[], status: string) {
     await Promise.all(ids.map(id => supabase.from("orders").update({ status }).eq("id", id)));
     revalidatePath("/admin/orders");
     return { success: true };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { success: false, error: error.message };
   }

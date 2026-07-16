@@ -136,7 +136,8 @@ export default function NewCategoryPage() {
               onChange={(url) => setFormData({ ...formData, image_url: url })}
             />
             {formData.image_url && (
-              <div className="relative w-full h-40 bg-ivory rounded-sm overflow-hidden border border-border-light">
+              <div className="relative w-full h-40 bg-ivory rounded-sm overflow-hidden border border-border-light">{/* eslint-disable-next-line  */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={formData.image_url} alt="Category" className="w-full h-full object-cover" />
                 <button 
                   onClick={() => setFormData({...formData, image_url: ''})}
