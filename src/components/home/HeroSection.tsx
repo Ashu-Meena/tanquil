@@ -55,21 +55,22 @@ export default function HeroSection({ slides }: { slides: Slide[] }) {
                 transition={{ duration: 6, ease: "linear" }}
                 style={{ y: isMobile ? 0 : y }}
               >
-                <Image
-                  src={slide.image_url}
-                  alt={slide.title || "Luxury Fashion"}
-                  fill
-                  className="object-cover object-center opacity-70"
-                  priority={index === 0}
-                  fetchPriority={index === 0 ? "high" : "auto"}
-                />
+                  <Image
+                    src={slide.image_url}
+                    alt={slide.title || "Luxury Fashion"}
+                    fill
+                    sizes="100vw"
+                    className="object-cover object-center opacity-70"
+                    priority={index === 0}
+                    fetchPriority={index === 0 ? "high" : "auto"}
+                  />
               </motion.div>
             </motion.div>
           )
         ))}
       </AnimatePresence>
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10 pt-24 md:pt-32 pb-24">
         <AnimatePresence mode="wait">
           {slides.map((slide, index) => (
             index === currentSlide && (

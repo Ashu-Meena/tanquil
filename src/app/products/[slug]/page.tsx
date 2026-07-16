@@ -87,7 +87,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     `)
     .eq("product_categories.category_id", productData.product_categories?.[0]?.category_id || "")
     .neq("id", productData.id)
-    .limit(4);
+    .limit(12);
 
   // 3. Format product for Client Component
   const colorImages: Record<string, string[]> = {};

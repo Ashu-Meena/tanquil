@@ -51,6 +51,7 @@ export default async function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${cormorantGaramond.variable} ${montserrat.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">

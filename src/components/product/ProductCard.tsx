@@ -138,7 +138,7 @@ export default function ProductCard({ product }: { product: CardProduct }) {
           <Eye className="w-4 h-4" />
         </button>
 
-        <Link href={`/products/${product.slug || product.id}`} className="block w-full h-full">
+        <Link href={`/products/${product.slug || product.id}`} className="block relative w-full h-full">
           {images[1] && (
             <Image 
               src={images[1]}

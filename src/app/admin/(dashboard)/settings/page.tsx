@@ -23,6 +23,7 @@ export default function SettingsPage() {
   });
   
   const [announcements, setAnnouncements] = useState<string[]>([""]);
+  const [isMarquee, setIsMarquee] = useState(false);
 
   const [invoiceInfo, setInvoiceInfo] = useState({
     companyName: "Tranquil",
@@ -52,8 +53,13 @@ export default function SettingsPage() {
       }
       
       const ann = data.find(s => s.key === 'announcement');
-      if ((ann?.value as any)?.messages && Array.isArray((ann?.value as any).messages)) {
-        setAnnouncements((ann?.value as any).messages);
+      if (ann?.value as any) {
+        if ((ann.value as any).messages && Array.isArray((ann.value as any).messages)) {
+          setAnnouncements((ann.value as any).messages);
+        }
+        if ((ann.value as any).isMarquee !== undefined) {
+          setIsMarquee((ann.value as any).isMarquee);
+        }
       }
 
       const inv = data.find(s => s.key === 'invoice_settings');
@@ -79,7 +85,10 @@ export default function SettingsPage() {
     // Save Announcements
     await supabase.from('store_settings').upsert({
       key: 'announcement',
-      value: { messages: announcements.filter(m => m.trim() !== '') },
+      value: { 
+        messages: announcements.filter(m => m.trim() !== ''),
+        isMarquee: isMarquee
+      },
       description: 'Announcement Bar Messages'
     });
 
@@ -185,6 +194,22 @@ export default function SettingsPage() {
         
         <p className="text-sm text-neutral-500">These messages will rotate at the very top of your storefront.</p>
         
+        <div className="flex items-center justify-between mt-4 mb-6 bg-neutral-50 p-4 rounded-sm border border-border-light">
+          <div>
+            <h3 className="text-sm font-medium text-rich-black mb-1">Continuous Marquee Effect</h3>
+            <p className="text-xs text-neutral-500">Make the announcements scroll continuously instead of fading one by one.</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              className="sr-only peer" 
+              checked={isMarquee}
+              onChange={() => setIsMarquee(!isMarquee)}
+            />
+            <div className="w-11 h-6 bg-neutral-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold"></div>
+          </label>
+        </div>
+
         <div className="space-y-3">
           {announcements.map((msg, idx) => (
             <div key={idx} className="flex items-center gap-2">

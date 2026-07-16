@@ -264,7 +264,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               >
                 {activeImages.map((img, i) => (
                   <div key={i} className="relative w-screen aspect-[4/5] flex-shrink-0 snap-center bg-ivory">
-                    <Image src={img} alt={`${product.name} ${i}`} fill className="object-cover" priority={i === 0} />
+                    <Image src={img} alt={`${product.name} ${i}`} fill sizes="100vw" className="object-cover" priority={i === 0} />
                   </div>
                 ))}
               </div>
@@ -292,7 +292,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
                     onClick={() => setSelectedImage(img)}
                     className={`relative w-20 h-28 md:w-full md:h-32 flex-shrink-0 border transition-all ${selectedImage === img ? 'border-rich-black opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   >
-                    <Image src={img} alt={`Thumbnail ${i}`} fill className="object-cover" />
+                    <Image src={img} alt={`Thumbnail ${i}`} fill sizes="96px" className="object-cover" />
                   </button>
                 ))}
               </div>
@@ -575,7 +575,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       {relatedProducts && relatedProducts.length > 0 && (
           <div className="container mx-auto px-6 lg:px-12 mt-32 border-t border-border-light pt-24">
             <h2 className="font-serif text-3xl lg:text-4xl text-rich-black mb-12 text-center">Complete The Look</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 lg:gap-6 pb-10">
               {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
               {relatedProducts.map((relProduct: any) => (
                 <ProductCard key={relProduct.id} product={relProduct} />
@@ -605,7 +605,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
       <div className={`hidden md:flex fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-border-light p-4 z-50 items-center justify-between px-6 lg:px-12 transform transition-transform duration-500 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] ${showStickyBar ? 'translate-y-0' : 'translate-y-full'}`}>
         <div className="flex items-center gap-6">
           <div className="w-12 h-16 relative bg-ivory">
-            <Image src={activeImages[0] || product.images[0]} alt={product.name} fill className="object-cover" />
+            <Image src={activeImages[0] || product.images[0]} alt={product.name} fill sizes="48px" className="object-cover" />
           </div>
           <div>
             <h3 className="font-serif text-lg text-rich-black">

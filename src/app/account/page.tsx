@@ -670,7 +670,7 @@ function AccountContent() {
                             <div className="flex gap-4 items-center w-full pr-4">
                               <div className="w-16 h-16 bg-ivory relative flex-shrink-0 rounded-sm overflow-hidden border border-border-light">
                                 {order.items?.[0]?.image_url || order.items?.[0]?.image || order.items?.[0]?.product?.product_images?.[0]?.url ? (
-                                  <Image src={order.items[0].image_url || order.items[0].image || order.items[0].product?.product_images?.[0]?.url} alt="Product" fill className="object-cover" />
+                                  <Image src={order.items[0].image_url || order.items[0].image || order.items[0].product?.product_images?.[0]?.url} alt="Product" fill sizes="64px" className="object-cover" />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center text-[10px] uppercase text-neutral-400">No Img</div>
                                 )}
@@ -782,7 +782,7 @@ function AccountContent() {
                                   <div className="flex gap-4 sm:w-full">
                                     <div className="relative w-20 h-28 md:w-24 md:h-32 bg-ivory flex-shrink-0">
                                       {item.image_url || item.image || item.product?.product_images?.[0]?.url ? (
-                                        <Image src={item.image_url || item.image || item.product?.product_images?.[0]?.url} alt={item.product_name || item.name || 'Product Image'} fill className="object-cover" />
+                                        <Image src={item.image_url || item.image || item.product?.product_images?.[0]?.url} alt={item.product_name || item.name || 'Product Image'} fill sizes="(max-width: 768px) 80px, 96px" className="object-cover" />
                                       ) : (
                                         <div className="w-full h-full flex items-center justify-center text-neutral-400 text-xs uppercase tracking-widest text-center px-2">No Image</div>
                                       )}
@@ -867,7 +867,7 @@ function AccountContent() {
                     wishlist.map(item => (
                       <div key={item.id} className="group flex flex-col h-full">
                         <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-3 sm:mb-4">
-                          <Image src={item.products?.product_images?.[0]?.url || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill className="object-cover" />
+                          <Image src={item.products?.product_images?.[0]?.url || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill sizes="(max-width: 768px) 50vw, 33vw" priority={true} className="object-cover" />
                           <button onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
                             <Trash2 className="w-4 h-4" />
                           </button>
