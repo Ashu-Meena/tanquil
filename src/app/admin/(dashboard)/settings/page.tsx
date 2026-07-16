@@ -53,7 +53,7 @@ export default function SettingsPage() {
       }
       
       const ann = data.find(s => s.key === 'announcement');
-      if (ann?.value as any) {
+      if (ann && ann.value as any) {
         if ((ann.value as any).messages && Array.isArray((ann.value as any).messages)) {
           setAnnouncements((ann.value as any).messages);
         }
