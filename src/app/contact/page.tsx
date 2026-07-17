@@ -122,15 +122,15 @@ export default function ContactPage() {
       {/* Full-width Map */}
       <div className="w-full h-[420px] lg:h-[500px] relative bg-neutral-100">
         <iframe
-          title="The Tranquil Store — Google Maps"
-          src="https://maps.google.com/maps?q=18.6298,73.8567&hl=en&z=15&output=embed"
+          title="The Tranquil Store — Location Map"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=75.7873%2C26.9124%2C75.7973%2C26.9224&layer=mapnik&marker=26.9170%2C75.7920"
           width="100%"
           height="100%"
           style={{ border: 0 }}
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          className="absolute inset-0 w-full h-full"
+          className="absolute inset-0 w-full h-full filter grayscale contrast-125 opacity-90"
         />
         {/* Overlay badge */}
         <a
