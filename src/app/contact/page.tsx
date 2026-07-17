@@ -123,7 +123,7 @@ export default function ContactPage() {
       <div className="w-full h-[420px] lg:h-[500px] relative bg-neutral-100">
         <iframe
           title="The Tranquil Store — Google Maps"
-          src="https://maps.google.com/maps?q=26.9170,75.7920&hl=en&z=16&output=embed"
+          src="https://share.google/IY38rV9D3Xw64AvTG"
           width="100%"
           height="100%"
           style={{ border: 0 }}
