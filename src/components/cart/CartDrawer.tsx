@@ -125,23 +125,33 @@ export default function CartDrawer() {
             </div>
 
             {/* Free Shipping Progress */}
-            <div className="px-6 py-4 bg-white border-b border-border-light">
+            <div className="px-6 py-5 bg-white border-b border-border-light relative overflow-hidden">
               {remaining > 0 ? (
-                <p className="text-xs text-center mb-3 text-neutral-600 tracking-wide uppercase">
-                  You&apos;re <span className="font-bold text-rich-black">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
+                <p className="text-[10px] text-center mb-4 text-neutral-500 tracking-widest uppercase">
+                  You&apos;re <span className="font-medium text-rich-black">₹{remaining.toLocaleString('en-IN')}</span> away from Free Shipping
                 </p>
               ) : (
-                <p className="text-xs text-center mb-3 text-gold tracking-widest uppercase font-medium">
-                  You&apos;ve unlocked Free Shipping
+                <p className="text-[10px] text-center mb-4 text-gold tracking-widest uppercase font-semibold">
+                  You&apos;ve unlocked Free Shipping!
                 </p>
               )}
-              <div className="w-full h-[2px] bg-[#F5F5F5] rounded-full overflow-hidden">
+              <div className="w-full h-1 bg-[#F5F5F5] overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  className={`h-full ${progress === 100 ? 'bg-gold' : 'bg-rich-black'}`}
-                />
+                  transition={{ duration: 1.5, ease: [0.25, 1, 0.5, 1] }}
+                  className={`h-full relative overflow-hidden ${progress === 100 ? 'bg-gold' : 'bg-rich-black'}`}
+                >
+                  {/* Subtle Shimmer Effect */}
+                  {progress > 0 && progress < 100 && (
+                    <motion.div 
+                      initial={{ x: "-100%" }}
+                      animate={{ x: "200%" }}
+                      transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent w-1/2 skew-x-[-20deg]"
+                    />
+                  )}
+                </motion.div>
               </div>
             </div>
 
