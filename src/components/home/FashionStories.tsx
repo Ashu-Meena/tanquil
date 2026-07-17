@@ -32,36 +32,41 @@ interface Story {
   align: string;
 }
 
-const StoryCard = ({ story }: { story: Story }) => {
+const StoryCard = ({ story, index }: { story: Story, index: number }) => {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
   });
-  const y1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const y1 = useTransform(scrollYProgress, [0, 1], [150, -150]);
   const isMobile = useIsMobile();
   
   return (
     <div 
       ref={containerRef}
-      className={`flex flex-col md:flex-row items-center gap-6 md:gap-12 lg:gap-24 ${story.align === 'right' ? 'md:flex-row-reverse' : ''}`}
+      className={`relative flex flex-col md:flex-row items-center min-h-[80vh] gap-12 lg:gap-32 ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
     >
+      {/* Editorial Number */}
+      <div className={`absolute top-0 ${index % 2 !== 0 ? 'right-0' : 'left-0'} text-[120px] lg:text-[200px] font-serif font-light text-white/5 select-none leading-none z-0`}>
+        0{index + 1}
+      </div>
+
       {/* Image Block */}
       <motion.div 
-        initial={{ opacity: 0, x: story.align === 'left' ? -50 : 50 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className="w-full md:w-1/2 lg:w-3/5"
+        transition={{ duration: 1.2, ease: [0.25, 1, 0.5, 1] }}
+        className="w-full md:w-1/2 relative z-10 flex justify-center"
       >
-        <div className="relative aspect-[4/5] md:aspect-[16/10] overflow-hidden group">
-          <motion.div style={{ y: isMobile ? 0 : y1 }} className="absolute inset-[-15%] w-[130%] h-[130%]">
+        <div className="relative w-full max-w-[500px] aspect-[3/4] md:aspect-[4/5] overflow-hidden rounded-t-[12rem] lg:rounded-t-[18rem] rounded-b-3xl group">
+          <motion.div style={{ y: isMobile ? 0 : y1 }} className="absolute inset-[-20%] w-[140%] h-[140%]">
             <Image 
               src={story.image} 
               alt={story.title} 
               fill 
-              sizes="(max-width: 1024px) 100vw, 60vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-[cubic-bezier(0.25,1,0.5,1)]"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover group-hover:scale-110 transition-transform duration-[2000ms] ease-[cubic-bezier(0.25,1,0.5,1)] filter brightness-90 group-hover:brightness-100"
             />
           </motion.div>
         </div>
@@ -69,25 +74,28 @@ const StoryCard = ({ story }: { story: Story }) => {
 
       {/* Text Block */}
       <motion.div 
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="w-full md:w-1/2 lg:w-2/5 flex flex-col justify-center"
+        transition={{ duration: 1, delay: 0.3, ease: [0.25, 1, 0.5, 1] }}
+        className="w-full md:w-1/2 flex flex-col justify-center z-10"
       >
-        <span className="text-gold text-[10px] md:text-xs uppercase tracking-[0.2em] md:tracking-[0.3em] font-medium mb-2 md:mb-6 block">Editorial</span>
-        <h3 className="font-serif text-3xl md:text-3xl lg:text-5xl text-rich-black mb-2 md:mb-6 leading-tight">
+        <div className="flex items-center gap-4 mb-8">
+          <span className="w-12 h-[1px] bg-gold"></span>
+          <span className="text-gold text-xs uppercase tracking-[0.3em] font-medium">Editorial</span>
+        </div>
+        <h3 className="font-serif text-4xl md:text-5xl lg:text-7xl text-white mb-8 leading-[1.1]">
           {story.title}
         </h3>
-        <p className="text-neutral-500 leading-relaxed mb-6 md:mb-10 text-sm md:text-lg">
+        <p className="text-neutral-400 leading-relaxed mb-12 text-sm md:text-lg max-w-xl font-light">
           {story.description}
         </p>
         <Link 
           href="/collections/editorial" 
-          className="inline-flex items-center gap-1.5 md:gap-3 text-rich-black uppercase tracking-wider md:tracking-widest text-[8px] md:text-sm font-medium hover:text-gold transition-colors group self-start"
+          className="inline-flex items-center gap-4 text-white uppercase tracking-[0.2em] text-xs font-medium hover:text-gold transition-colors group self-start pb-2 border-b border-white/20 hover:border-gold"
         >
           Read The Story 
-          <ArrowRight className="w-3 h-3 md:w-5 md:h-5 group-hover:translate-x-2 transition-transform" />
+          <ArrowRight className="w-4 h-4 group-hover:translate-x-3 transition-transform duration-500" />
         </Link>
       </motion.div>
     </div>
@@ -98,31 +106,32 @@ export default function FashionStories({ stories: initialStories }: { stories?: 
   const displayStories = initialStories && initialStories.length > 0 ? initialStories : defaultStories;
 
   return (
-    <section className="py-16 md:py-32 bg-white overflow-hidden">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="text-center mb-20">
+    <section className="py-24 md:py-40 bg-rich-black overflow-hidden relative">
+      <div className="container mx-auto px-6 lg:px-16">
+        <div className="text-center mb-32 relative z-10">
           <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4"
+            transition={{ duration: 1, ease: [0.25, 1, 0.5, 1] }}
+            className="font-serif text-4xl md:text-5xl lg:text-7xl text-white mb-6"
           >
-            Fashion Stories
+            The Editorials
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="font-serif italic text-xl text-neutral-500"
+            transition={{ delay: 0.2, duration: 1 }}
+            className="font-serif italic text-xl lg:text-2xl text-neutral-400 max-w-2xl mx-auto"
           >
-            Editorial inspiration and curations
+            Curated narratives and seasonal inspirations from our design house.
           </motion.p>
         </div>
 
-        <div className="space-y-16 md:space-y-32">
-          {displayStories.map((story) => (
-            <StoryCard key={story.id} story={story} />
+        <div className="space-y-32 md:space-y-48">
+          {displayStories.map((story, index) => (
+            <StoryCard key={story.id} story={story} index={index} />
           ))}
         </div>
       </div>
