@@ -12,6 +12,7 @@ import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import ToastContainer from "@/components/ui/ToastContainer";
 import AnalyticsWrapper from "@/components/analytics/AnalyticsWrapper";
 import CookieConsent from "@/components/ui/CookieConsent";
+import CartSync from "@/components/cart/CartSync";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -57,6 +58,7 @@ export default async function RootLayout({
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
         {/* Website designed and developed by Samvix Technologies */}
+        <CartSync />
         <Preloader />
         <Header />
         <main className="flex-1">{children}</main>

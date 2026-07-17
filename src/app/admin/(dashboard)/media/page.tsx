@@ -469,8 +469,7 @@ export default function MediaLibraryPage() {
                           <Film className="w-2.5 h-2.5" /> VIDEO
                         </div>
                       </>
-                    ) : (
-                      /* eslint-disable-next-line @next/next/no-img-element */
+                    ) : ({/* eslint-disable-next-line  */}
                       <img
                         src={url}
                         alt={file.name}

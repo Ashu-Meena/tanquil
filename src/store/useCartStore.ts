@@ -25,6 +25,9 @@ interface CartState {
   clearCart: () => void;
   syncToSupabase: () => Promise<void>;
   sessionId: string;
+  userId: string | null;
+  setUserId: (id: string | null) => void;
+  fetchCartFromDb: () => Promise<void>;
 }
 
 const supabase = createClient();
@@ -35,9 +38,74 @@ export const useCartStore = create<CartState>()(
       isOpen: false,
       items: [],
       sessionId: uuidv4(),
+      userId: null,
+      
+      setUserId: (id) => {
+        const state = get();
+        if (id === null && state.userId !== null) {
+          // Logging out: clear cart and create new guest session
+          set({ userId: null, items: [], sessionId: uuidv4() });
+        } else if (id !== null && state.userId !== id) {
+          // Logging in as a new user
+          set({ userId: id });
+          get().fetchCartFromDb();
+        }
+      },
+
+      fetchCartFromDb: async () => {
+        const state = get();
+        if (!state.userId) return;
+        
+        try {
+          const { data: cartData } = await supabase
+            .from('carts')
+            .select('id')
+            .eq('user_id', state.userId)
+            .single();
+
+          if (!cartData) {
+            set({ items: [] });
+            return;
+          }
+
+          const { data: cartItems, error } = await supabase
+            .from('cart_items')
+            .select(`
+              quantity,
+              product_id,
+              products ( name, price, images ),
+              product_variants ( color_name, size )
+            `)
+            .eq('cart_id', cartData.id);
+
+          if (error) {
+            console.error("Error fetching cart items:", error);
+            return;
+          }
+
+          if (cartItems) {
+            const mappedItems: CartItem[] = cartItems.map((item: any) => ({
+              id: item.product_id,
+              name: item.products?.name || 'Unknown',
+              price: item.products?.price || 0,
+              image: item.products?.images?.[0] || '',
+              color: item.product_variants?.color_name || '',
+              size: item.product_variants?.size || '',
+              quantity: item.quantity
+            }));
+            set({ items: mappedItems });
+          } else {
+            set({ items: [] });
+          }
+        } catch (err) {
+          console.error("Error fetching cart from DB:", err);
+        }
+      },
+
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      
       addItem: (newItem) => {
         set((state) => {
           const existingItem = state.items.find(
@@ -54,12 +122,14 @@ export const useCartStore = create<CartState>()(
         });
         get().syncToSupabase();
       },
+      
       removeItem: (id, color, size) => {
         set((state) => ({
           items: state.items.filter(item => !(item.id === id && item.color === color && item.size === size))
         }));
         get().syncToSupabase();
       },
+      
       updateQuantity: (id, color, size, quantity) => {
         set((state) => ({
           items: state.items.map(item =>
@@ -68,19 +138,26 @@ export const useCartStore = create<CartState>()(
         }));
         get().syncToSupabase();
       },
+      
       clearCart: () => {
         set({ items: [] });
         get().syncToSupabase();
       },
+      
       syncToSupabase: async () => {
         const state = get();
-        if (!state.sessionId) return;
         
         try {
+          const isUser = !!state.userId;
+          const matchField = isUser ? 'user_id' : 'session_id';
+          const matchValue = isUser ? state.userId : state.sessionId;
+
+          if (!matchValue) return;
+
           // 1. Ensure cart exists
           const { error: cartError } = await supabase
             .from('carts')
-            .upsert({ session_id: state.sessionId }, { onConflict: 'session_id' });
+            .upsert({ [matchField]: matchValue }, { onConflict: matchField });
             
           if (cartError) {
             console.error('Error upserting cart:', cartError);
@@ -91,7 +168,7 @@ export const useCartStore = create<CartState>()(
           const { data: cartData } = await supabase
             .from('carts')
             .select('id')
-            .eq('session_id', state.sessionId)
+            .eq(matchField, matchValue)
             .single();
 
           if (!cartData) return;

@@ -857,37 +857,65 @@ function AccountContent() {
                   <span className="mx-2 text-neutral-400">/</span>
                   <span className="text-rich-black">Your Wishlist</span>
                 </div>
-                <h2 className="font-serif text-2xl md:text-3xl text-rich-black mb-6 md:mb-8">My Wishlist</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+                <div className="flex items-center justify-between mb-6 md:mb-10">
+                  <h2 className="font-serif text-2xl md:text-3xl text-rich-black">My Wishlist</h2>
+                  <span className="text-xs uppercase tracking-widest text-neutral-500">{wishlist.length} Items</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
                   {wishlist.length === 0 ? (
-                    <div className="col-span-2 md:col-span-3 text-center py-12 border border-dashed border-border-light">
-                      <Heart className="w-12 h-12 text-border-light mx-auto mb-4" />
-                      <p className="text-neutral-500">Your wishlist is currently empty.</p>
-                      <button onClick={() => router.push('/collections/all')} className="mt-4 text-rich-black font-medium hover:text-gold underline underline-offset-4">Discover Pieces</button>
+                    <div className="col-span-2 sm:col-span-3 lg:col-span-4 xl:col-span-5 text-center py-16 sm:py-24 border border-dashed border-border-light bg-ivory/30">
+                      <Heart className="w-10 h-10 sm:w-12 sm:h-12 text-border-light mx-auto mb-4 sm:mb-6" />
+                      <p className="text-neutral-500 text-sm sm:text-base font-medium mb-4">Your wishlist is currently empty.</p>
+                      <button onClick={() => router.push('/collections/all')} className="mt-2 inline-flex items-center justify-center border border-rich-black px-6 sm:px-8 py-2.5 sm:py-3 text-[10px] sm:text-xs uppercase tracking-[0.2em] font-medium hover:bg-rich-black hover:text-white transition-colors duration-300">
+                        Discover Pieces
+                      </button>
                     </div>
                   ) : (
                     wishlist.map(item => (
-                      <div key={item.id} className="group flex flex-col h-full">
-                        <div className="relative aspect-[3/4] overflow-hidden bg-ivory mb-3 sm:mb-4">
-                          <Image src={item.products?.product_images?.[0]?.url || 'https://via.placeholder.com/400x500'} alt={item.products?.name} fill sizes="(max-width: 768px) 50vw, 33vw" priority={true} className="object-cover" />
-                          <button onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} className="absolute top-2 right-2 sm:top-3 sm:right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-rich-black hover:text-sale hover:bg-white transition-all shadow-sm">
+                      <div key={item.id} className="group flex flex-col h-full bg-white transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                        <div className="relative aspect-[3/4] overflow-hidden bg-ivory">
+                          <Image 
+                            src={item.products?.product_images?.[0]?.url || 'https://via.placeholder.com/400x500'} 
+                            alt={item.products?.name} 
+                            fill 
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw" 
+                            priority={true} 
+                            className="object-cover transition-transform duration-700 ease-out group-hover:scale-110" 
+                          />
+                          <button 
+                            onClick={() => handleRemoveFromWishlist(item.id, item.product_id)} 
+                            className="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-neutral-400 hover:text-red-500 hover:bg-white transition-all shadow-sm opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                            aria-label="Remove from Wishlist"
+                          >
                             <Trash2 className="w-4 h-4" />
                           </button>
                           
                           {/* Desktop Hover Action */}
-                          <div className="hidden md:block absolute bottom-0 left-0 w-full p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20">
-                            <button onClick={() => handleMoveToCart(item)} className="w-full bg-white/90 backdrop-blur-md text-rich-black hover:bg-gold hover:text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors">
+                          <div className="hidden md:flex absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out z-20 bg-gradient-to-t from-black/50 to-transparent">
+                            <button 
+                              onClick={() => handleMoveToCart(item)} 
+                              className="w-full bg-white text-rich-black hover:bg-rich-black hover:text-white py-3 text-[10px] sm:text-xs uppercase tracking-widest font-bold transition-colors shadow-lg"
+                            >
                               Move to Cart
                             </button>
                           </div>
                         </div>
-                        <Link href={`/products/${item.products?.slug}`} className="font-medium text-xs sm:text-sm md:text-base text-rich-black hover:text-gold transition-colors mb-1 line-clamp-2 leading-snug">{item.products?.name}</Link>
-                        <span className="text-[11px] sm:text-xs md:text-sm text-neutral-500 mb-3">₹{item.products?.price?.toLocaleString('en-IN')}</span>
-                        
-                        {/* Mobile Action Button (always visible) */}
-                        <button onClick={() => handleMoveToCart(item)} className="mt-auto md:hidden w-full bg-ivory border border-border-light text-rich-black py-2.5 text-[10px] uppercase tracking-widest font-medium hover:bg-rich-black hover:text-white transition-colors">
-                          Move to Cart
-                        </button>
+                        <div className="flex flex-col flex-1 p-3 sm:p-4 border border-t-0 border-border-light/50 group-hover:border-transparent transition-colors">
+                          <Link href={`/products/${item.products?.slug}`} className="font-serif text-sm sm:text-base md:text-lg text-rich-black hover:text-gold transition-colors mb-1.5 line-clamp-2 leading-snug">
+                            {item.products?.name}
+                          </Link>
+                          <span className="text-xs sm:text-sm font-medium text-neutral-600 mb-3 mt-auto">
+                            ₹{item.products?.price?.toLocaleString('en-IN')}
+                          </span>
+                          
+                          {/* Mobile Action Button (always visible) */}
+                          <button 
+                            onClick={() => handleMoveToCart(item)} 
+                            className="mt-2 md:hidden w-full bg-rich-black text-white py-2.5 text-[10px] uppercase tracking-widest font-medium hover:bg-gold transition-colors"
+                          >
+                            Move to Cart
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
