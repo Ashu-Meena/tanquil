@@ -123,7 +123,7 @@ export default function ContactPage() {
       <div className="w-full h-[420px] lg:h-[500px] relative bg-neutral-100">
         <iframe
           title="The Tranquil Store — Google Maps"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3781.0964851155713!2d73.79283517704756!3d18.61472952118593!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2b98f33a39231%3A0x5c6df33e6df1ffcf!2sTranquil%20Designer%20Dresses!5e0!3m2!1sen!2sin!4v1784272885336!5m2!1sen!2sin"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3781.096484112954!2d73.7951311746543!3d18.614729566292294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2b98f33a39231%3A0x5c6df33e6df1ffcf!2sTranquil%20Designer%20Dresses!5e0!3m2!1sen!2sin!4v1784273092132!5m2!1sen!2sin"
           width="100%"
           height="100%"
           style={{ border: 0 }}
