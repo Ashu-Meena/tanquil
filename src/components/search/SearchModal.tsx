@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import FocusLock from "react-focus-lock";
 
+import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
 interface SearchProduct {
@@ -21,16 +22,17 @@ interface SearchProduct {
 export default function SearchModal() {
   const { isOpen, closeSearch } = useSearchStore();
   const [query, setQuery] = useState("");
+  const router = useRouter();
 
   const [results, setResults] = useState<SearchProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const trendingSearches = [
-    "Satin Dresses",
-    "Co-ord Sets",
-    "Vacation Outfits",
-    "Party Wear",
-    "Sequin Tops"
+    "Dress",
+    "Set",
+    "Top",
+    "Bloom",
+    "Boho"
   ];
 
   useEffect(() => {
@@ -148,6 +150,12 @@ export default function SearchModal() {
                   placeholder="What are you looking for?" 
                   value={query}
                   onChange={e => setQuery(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter" && query.trim().length > 0) {
+                      closeSearch();
+                      router.push(`/collections/all?search=${encodeURIComponent(query)}`);
+                    }
+                  }}
                   className="flex-1 text-xl md:text-5xl font-serif bg-transparent outline-none placeholder:text-border-light placeholder:font-serif transition-all"
                   autoFocus
                 />
