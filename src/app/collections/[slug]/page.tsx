@@ -15,8 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return { title, description: `Shop the latest ${category?.name || "collection"} at Tranquil.` };
 }
 
-export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CollectionPage({ params, searchParams }: { params: Promise<{ slug: string }>, searchParams: Promise<{ search?: string }> }) {
   const { slug } = await params;
+  const { search } = await searchParams;
   const supabase = await createClient();
 
   // Fetch products and their categories
@@ -24,6 +25,10 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     .from("products")
     .select("*, product_categories!inner(category_id, categories(name, slug)), product_images(url, color_name), product_variants(color_name, size)")
     .eq("status", "active");
+
+  if (search) {
+    query = query.ilike("name", `%${search}%`);
+  }
 
   // If not "all", "new", "sale", "bestsellers" etc, filter by slug
   if (slug !== "all" && slug !== "new" && slug !== "sale" && slug !== "bestsellers") {
@@ -89,5 +94,5 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     };
   }) || [];
 
-  return <CollectionClient slug={slug} initialProducts={mappedProducts} />;
+  return <CollectionClient slug={slug} initialProducts={mappedProducts} search={search} />;
 }

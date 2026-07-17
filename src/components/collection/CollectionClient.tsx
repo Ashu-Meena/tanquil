@@ -47,8 +47,12 @@ const getColorStyle = (name: string) => {
 
 const PAGE_SIZE = 12;
 
-export default function CollectionClient({ slug, initialProducts }: { slug: string, initialProducts: Product[] }) {
-  const collectionName = slug === 'all' ? 'All Edits' : slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+export default function CollectionClient({ slug, initialProducts, search }: { slug: string, initialProducts: Product[], search?: string }) {
+  const collectionName = search 
+    ? `Results for "${search}"` 
+    : slug === 'all' 
+      ? 'All Edits' 
+      : slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
   const [sortBy, setSortBy] = useState("featured");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
