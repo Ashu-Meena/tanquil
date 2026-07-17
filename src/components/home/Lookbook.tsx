@@ -33,10 +33,16 @@ const isVideo = (url: string) => {
   return baseUrl.match(/\.(mp4|mov|webm|ogg|m4v)$/i) !== null;
 };
 
+const isInstagramPost = (url: string) => {
+  if (!url) return false;
+  return url.includes('instagram.com/p/') || url.includes('instagram.com/reel/');
+};
+
 const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const video = isVideo(item.url);
+  const isInstaPost = isInstagramPost(item.url);
 
   const handleMouseEnter = () => {
     // We autoPlay now, so no need to play on hover
@@ -62,7 +68,14 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {video ? (
+      {isInstaPost ? (
+        <iframe
+          src={`${item.url}${item.url.endsWith('/') ? '' : '/'}embed`}
+          className="absolute inset-0 w-full h-full border-0 pointer-events-none"
+          scrolling="no"
+          allowTransparency
+        />
+      ) : video ? (
         <>
           <video
             ref={videoRef}
@@ -90,7 +103,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
       )}
 
       <a
-        href={item.link}
+        href={item.link !== 'https://instagram.com/tranquil.co.in' ? item.link : item.url}
         target="_blank"
         rel="noreferrer"
         className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center z-10"
