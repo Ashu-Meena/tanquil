@@ -14,6 +14,7 @@ export async function proxy(request: NextRequest) {
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
+    frame-src 'self' https://www.openstreetmap.org https://maps.google.com https://www.google.com;
     connect-src 'self' https://*.supabase.co;
   `.replace(/\s{2,}/g, ' ').trim()
 
