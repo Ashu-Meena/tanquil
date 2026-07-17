@@ -156,16 +156,16 @@ export default function SearchModal() {
                       router.push(`/collections/all?search=${encodeURIComponent(query)}`);
                     }
                   }}
-                  className="flex-1 text-xl md:text-5xl font-serif bg-transparent outline-none placeholder:text-border-light placeholder:font-serif transition-all"
+                  className="flex-1 min-w-0 text-lg md:text-5xl font-serif bg-transparent outline-none placeholder:text-border-light placeholder:font-serif transition-all"
                   autoFocus
                 />
                 {query && (
-                  <button onClick={() => setQuery("")} className="p-1 md:p-2 text-neutral-400 hover:text-rich-black transition-colors" aria-label="Clear search">
+                  <button onClick={() => setQuery("")} className="p-1 md:p-2 flex-shrink-0 text-neutral-400 hover:text-rich-black transition-colors" aria-label="Clear search">
                     <X className="w-4 h-4 md:w-6 md:h-6" />
                   </button>
                 )}
-                <div className="w-[1px] h-6 md:h-10 bg-border-light mx-2 md:mx-4"></div>
-                <button onClick={closeSearch} className="text-xs uppercase tracking-widest font-medium text-neutral-500 hover:text-rich-black transition-colors">
+                <div className="w-[1px] h-6 md:h-10 bg-border-light mx-2 md:mx-4 flex-shrink-0"></div>
+                <button onClick={closeSearch} className="text-[10px] md:text-xs uppercase tracking-widest font-medium text-neutral-500 hover:text-rich-black transition-colors flex-shrink-0">
                   Close
                 </button>
               </div>
