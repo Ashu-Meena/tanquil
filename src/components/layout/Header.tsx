@@ -191,42 +191,42 @@ export default function Header() {
               className="fixed inset-0 bg-black/60 z-[60] backdrop-blur-sm cursor-pointer"
             />
             <motion.div
-              initial={{ opacity: 0, x: "-100%" }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: "-100%" }}
-              transition={{ type: "tween", duration: 0.4, ease: "circOut" }}
-              className="fixed top-0 left-0 bottom-0 w-[85vw] max-w-sm z-[70] bg-white text-rich-black flex flex-col shadow-2xl"
+              initial={{ opacity: 0, y: "10%" }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: "10%" }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-0 z-[70] bg-ivory text-rich-black flex flex-col"
               role="dialog"
               aria-modal="true"
               aria-label="Mobile Navigation Menu"
             >
               <FocusLock returnFocus className="flex flex-col h-full w-full">
-              <div className="flex items-center justify-between p-6 border-b border-border-light">
+              <div className="flex items-center justify-between p-6">
                 <span className="font-serif text-2xl tracking-widest uppercase">Tranquil</span>
-                <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="hover:rotate-90 transition-transform">
+                <button onClick={() => setIsMobileMenuOpen(false)} aria-label="Close menu" className="hover:rotate-90 transition-transform bg-white/50 backdrop-blur-md rounded-full p-2">
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto">
-                <nav className="flex flex-col p-8 gap-8 mt-4">
+              <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col justify-center">
+                <nav className="flex flex-col gap-6">
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1, duration: 0.4 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-2xl tracking-wide hover:text-gold transition-colors inline-block">All Clothing</Link>
+                    <Link href="/collections/all" onClick={() => setIsMobileMenuOpen(false)} className="font-serif text-[42px] leading-none tracking-wide hover:text-gold transition-colors inline-block">All Clothing</Link>
                   </motion.div>
                   {categories.map((cat, i) => (
                     <motion.div
                       key={cat.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.15 + (i * 0.05), duration: 0.4 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15 + (i * 0.08), duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                     >
                       <Link 
                         href={`/collections/${cat.slug}`} 
                         onClick={() => setIsMobileMenuOpen(false)} 
-                        className="font-serif text-2xl tracking-wide hover:text-gold transition-colors inline-block"
+                        className="font-serif text-[42px] leading-none tracking-wide text-neutral-400 hover:text-rich-black transition-colors inline-block"
                       >
                         {cat.name}
                       </Link>
@@ -234,18 +234,25 @@ export default function Header() {
                   ))}
                 </nav>
               </div>
-              <div className="mt-auto p-8 bg-ivory border-t border-border-light flex justify-between items-center">
-                <div className="flex gap-8">
-                  <Link href="/account" className="flex items-center gap-3 text-sm tracking-widest uppercase text-neutral-500 hover:text-rich-black transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                    <User className="w-5 h-5" />
-                    Account
-                  </Link>
-                </div>
-                <Link href="/account?tab=wishlist" className="flex items-center gap-3 text-sm tracking-widest uppercase text-neutral-500 hover:text-rich-black transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Heart className="w-5 h-5" />
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="mt-auto p-6 flex justify-between items-center pb-safe"
+              >
+                <Link href="/account" className="flex flex-col items-center gap-1 text-[10px] tracking-widest uppercase text-neutral-500 hover:text-rich-black transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <User className="w-5 h-5 mb-1 text-rich-black" strokeWidth={1.5} />
+                  Account
+                </Link>
+                <Link href="/account?tab=wishlist" className="flex flex-col items-center gap-1 text-[10px] tracking-widest uppercase text-neutral-500 hover:text-rich-black transition-colors" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Heart className="w-5 h-5 mb-1 text-rich-black" strokeWidth={1.5} />
                   Wishlist
                 </Link>
-              </div>
+                <button onClick={() => { setIsMobileMenuOpen(false); openSearch(); }} className="flex flex-col items-center gap-1 text-[10px] tracking-widest uppercase text-neutral-500 hover:text-rich-black transition-colors">
+                  <Search className="w-5 h-5 mb-1 text-rich-black" strokeWidth={1.5} />
+                  Search
+                </button>
+              </motion.div>
               </FocusLock>
             </motion.div>
           </>

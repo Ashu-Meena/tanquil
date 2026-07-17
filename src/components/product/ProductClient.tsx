@@ -272,11 +272,11 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
               
               {/* Pagination Dots */}
               {activeImages.length > 1 && (
-                <div className="absolute bottom-4 left-0 w-full flex justify-center gap-2 z-10">
+                <div className="absolute bottom-6 left-0 w-full flex justify-center gap-1.5 z-10">
                   {activeImages.map((img, i) => (
                     <div 
                       key={i} 
-                      className={`h-1 transition-all duration-300 ${selectedImage === img ? 'w-4 bg-rich-black' : 'w-1.5 bg-black/30'}`}
+                      className={`h-[3px] rounded-full transition-all duration-500 ease-out ${selectedImage === img ? 'w-8 bg-rich-black' : 'w-2 bg-rich-black/20'}`}
                     />
                   ))}
                 </div>
