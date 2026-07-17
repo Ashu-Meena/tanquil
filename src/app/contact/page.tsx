@@ -130,7 +130,7 @@ export default function ContactPage() {
           allowFullScreen
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          className="absolute inset-0 w-full h-full filter grayscale contrast-125 opacity-90"
+          className="absolute inset-0 w-full h-full"
         />
         {/* Overlay badge */}
         <a
