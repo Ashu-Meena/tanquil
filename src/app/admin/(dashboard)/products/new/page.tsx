@@ -12,7 +12,7 @@ export default function AddProductPage() {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
-  const [mountTime] = useState(Date.now());
+  const [mountTime] = useState(() => Date.now());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [categories, setCategories] = useState<any[]>([]);
   

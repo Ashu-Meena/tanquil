@@ -16,7 +16,7 @@ export default function EditProductPage() {
   
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [mountTime] = useState(Date.now());
+  const [mountTime] = useState(() => Date.now());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [categories, setCategories] = useState<any[]>([]);
   
