@@ -16,6 +16,7 @@ export default function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isShopHovered, setIsShopHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [categories, setCategories] = useState<{ id: string; name: string; slug: string }[]>([]);
   const cartItems = useCartStore((state) => state.items);
@@ -73,7 +74,6 @@ export default function Header() {
           }`}
         >
         <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between">
-          {/* Left: Mobile Menu Toggle / Desktop Menu */}
           <div className="flex-1 flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -82,33 +82,14 @@ export default function Header() {
             >
               <Menu className="w-6 h-6" />
             </button>
-            <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium relative group">
+            <nav className="hidden lg:flex gap-8 items-center text-sm tracking-wide font-medium">
               <Link href="/collections/all" className="whitespace-nowrap hover:text-gold transition-colors uppercase tracking-widest text-[11px] py-4">All Clothing</Link>
-              <div className="relative py-4 group/menu">
-                <span className="whitespace-nowrap hover:text-gold transition-colors uppercase tracking-widest text-[11px] cursor-pointer">Shop</span>
-                
-                {/* Mega Menu Dropdown */}
-                <div className="absolute top-[100%] left-0 w-[600px] bg-white border border-border-light shadow-2xl opacity-0 translate-y-4 invisible group-hover/menu:opacity-100 group-hover/menu:translate-y-0 group-hover/menu:visible transition-all duration-300 ease-out flex text-rich-black">
-                  <div className="flex-1 p-8">
-                    <h3 className="font-serif text-lg mb-4 text-gold">Categories</h3>
-                    <div className="flex flex-col gap-3">
-                      {categories.map((cat) => (
-                        <Link key={cat.id} href={`/collections/${cat.slug}`} className="hover:translate-x-2 transition-transform hover:text-gold">
-                          {cat.name}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="w-[250px] bg-ivory relative p-6 flex flex-col justify-end">
-                    <div className="absolute inset-0 z-0">
-                      <Image src="/images/placeholder-landscape.jpg" alt="Featured" fill sizes="250px" className="object-cover opacity-80" />
-                    </div>
-                    <div className="relative z-10 bg-white/90 backdrop-blur-sm p-4 text-center">
-                      <p className="font-serif text-lg">New Arrivals</p>
-                      <Link href="/collections/all" className="text-xs uppercase tracking-widest mt-2 hover:text-gold inline-block">Shop Now &rarr;</Link>
-                    </div>
-                  </div>
-                </div>
+              <div 
+                className="py-4"
+                onMouseEnter={() => setIsShopHovered(true)}
+                onMouseLeave={() => setIsShopHovered(false)}
+              >
+                <Link href="/collections/all" className="whitespace-nowrap hover:text-gold transition-colors uppercase tracking-widest text-[11px] cursor-pointer">Shop</Link>
               </div>
             </nav>
           </div>
@@ -139,6 +120,59 @@ export default function Header() {
                 </span>
               )}
             </button>
+          </div>
+        </div>
+
+        {/* Full-Width Mega Menu Dropdown */}
+        <div 
+          className={`absolute top-full left-0 w-full bg-white/95 backdrop-blur-3xl border-t border-border-light shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${isShopHovered ? 'max-h-[500px] opacity-100 visible' : 'max-h-0 opacity-0 invisible'}`}
+          onMouseEnter={() => setIsShopHovered(true)}
+          onMouseLeave={() => setIsShopHovered(false)}
+        >
+          <div className="container mx-auto px-6 lg:px-12 flex">
+            {/* Categories Grid */}
+            <div className="flex-1 py-12 pr-12 grid grid-cols-2 gap-8">
+              <div>
+                <h3 className="font-serif text-2xl mb-6 text-rich-black">Categories</h3>
+                <div className="flex flex-col gap-4">
+                  {categories.slice(0, Math.ceil(categories.length / 2)).map((cat) => (
+                    <Link key={cat.id} href={`/collections/${cat.slug}`} className="text-neutral-500 hover:text-gold hover:translate-x-2 transition-all text-sm uppercase tracking-widest font-medium">
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <h3 className="font-serif text-2xl mb-6 text-rich-black opacity-0">More</h3>
+                <div className="flex flex-col gap-4">
+                  {categories.slice(Math.ceil(categories.length / 2)).map((cat) => (
+                    <Link key={cat.id} href={`/collections/${cat.slug}`} className="text-neutral-500 hover:text-gold hover:translate-x-2 transition-all text-sm uppercase tracking-widest font-medium">
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Campaign Images */}
+            <div className="w-[500px] bg-ivory relative p-8 flex gap-4 border-l border-border-light">
+              <Link href="/collections/editorial" className="relative flex-1 h-[300px] group overflow-hidden block">
+                <Image src="/images/fashion-1.jpg" alt="Campaign 1" fill sizes="250px" className="object-cover group-hover:scale-110 transition-transform duration-[2s] ease-[cubic-bezier(0.25,1,0.5,1)]" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <p className="text-white font-serif text-2xl mb-1">Summer Edit</p>
+                  <p className="text-white/80 text-[10px] uppercase tracking-widest">Explore Campaign &rarr;</p>
+                </div>
+              </Link>
+              <Link href="/collections/new" className="relative flex-1 h-[300px] group overflow-hidden block">
+                <Image src="/images/fashion-2.jpg" alt="Campaign 2" fill sizes="250px" className="object-cover group-hover:scale-110 transition-transform duration-[2s] ease-[cubic-bezier(0.25,1,0.5,1)]" />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <p className="text-white font-serif text-2xl mb-1">Vintage Core</p>
+                  <p className="text-white/80 text-[10px] uppercase tracking-widest">Shop Collection &rarr;</p>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
         </div>

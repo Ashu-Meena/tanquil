@@ -14,6 +14,9 @@ import AnalyticsWrapper from "@/components/analytics/AnalyticsWrapper";
 import CookieConsent from "@/components/ui/CookieConsent";
 import CartSync from "@/components/cart/CartSync";
 
+import SmoothScroll from "@/components/providers/SmoothScroll";
+import NoiseOverlay from "@/components/ui/NoiseOverlay";
+
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
@@ -53,21 +56,23 @@ export default async function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${playfair.variable} ${cormorantGaramond.variable} ${montserrat.variable} h-full antialiased`}
-      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
         {/* Website designed and developed by Samvix Technologies */}
-        <CartSync />
-        <Preloader />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <MobileBottomNav />
-        <CartDrawer />
-        <SearchModal />
-        <ToastContainer />
-        <CookieConsent />
+        <SmoothScroll>
+          <NoiseOverlay />
+          <CartSync />
+          <Preloader />
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <MobileBottomNav />
+          <CartDrawer />
+          <SearchModal />
+          <ToastContainer />
+          <CookieConsent />
+        </SmoothScroll>
       </body>
       <AnalyticsWrapper 
         gaId={process.env.NEXT_PUBLIC_GA_ID || "G-04SKZSZQ0E"} 
