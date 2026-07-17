@@ -60,11 +60,11 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.1, duration: 0.6 }}
-      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-[75vw] sm:w-[45vw] lg:w-full flex-shrink-0 snap-center bg-border-light`}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ delay: index * 0.1, duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
+      className={`relative group overflow-hidden break-inside-avoid aspect-[9/16] w-[75vw] sm:w-[45vw] lg:w-full flex-shrink-0 snap-center bg-neutral-100 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-700 ease-out ${index % 2 !== 0 ? 'lg:translate-y-12' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -88,7 +88,7 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
           />
           <button 
             onClick={toggleMute}
-            className="absolute top-4 right-4 z-20 bg-black/50 p-2 rounded-full text-white md:hidden"
+            className="absolute top-6 right-6 z-20 bg-white/20 backdrop-blur-md p-3 rounded-full text-white md:hidden hover:bg-white/40 transition-colors"
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
@@ -102,19 +102,17 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
         />
       )}
 
+      {/* Floating Instagram Overlay */}
       <a
         href={item.link !== 'https://instagram.com/tranquil.co.in' ? item.link : item.url}
         target="_blank"
         rel="noreferrer"
-        className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center z-10"
+        className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-center items-center z-10"
         aria-label={`View on Instagram`}
       >
-        <div className="bg-white text-rich-black hover:bg-gold hover:text-white rounded-full p-4 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-          <InstagramIcon className="w-5 h-5" />
+        <div className="bg-white/90 backdrop-blur-sm text-rich-black hover:bg-gold hover:text-white rounded-full p-5 shadow-xl transform translate-y-8 group-hover:translate-y-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]">
+          <InstagramIcon className="w-6 h-6" />
         </div>
-        <span className="text-white mt-3 font-medium uppercase tracking-widest text-xs transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 delay-75">
-          View Post
-        </span>
       </a>
     </motion.div>
   );
@@ -123,31 +121,31 @@ const MediaItem = ({ item, index }: { item: LookbookItem, index: number }) => {
 export default function Lookbook({ items }: { items?: LookbookItem[] }) {
   const displayItems = items && items.length > 0 ? items : defaultItems;
   return (
-    <section className="py-12 md:py-24 bg-ivory">
+    <section className="py-20 md:py-32 bg-ivory overflow-hidden">
       <div className="container mx-auto px-6 lg:px-12">
-        <div className="text-center mb-16">
+        <div className="text-center mb-20">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl lg:text-5xl text-rich-black mb-4 flex justify-center items-center gap-3"
+            className="font-serif text-3xl md:text-5xl lg:text-6xl text-rich-black mb-6 flex justify-center items-center gap-4"
           >
-            <InstagramIcon className="w-8 h-8 md:w-10 md:h-10 text-gold" />
-            Instagram Gallery
+            <InstagramIcon className="w-8 h-8 md:w-12 md:h-12 text-gold" />
+            Join The Journey
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-neutral-500 uppercase tracking-widest text-sm"
+            className="text-neutral-500 uppercase tracking-[0.2em] text-sm font-medium"
           >
             @tranquil.co.in
           </motion.p>
         </div>
 
-        {/* Layout */}
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-8 -mx-6 px-6 lg:mx-0 lg:px-0 lg:pb-0 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        {/* Staggered Layout */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-12 -mx-6 px-6 lg:mx-0 lg:px-0 lg:pb-16 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {displayItems.map((item, index) => (
             <MediaItem key={item.id} item={item} index={index} />
           ))}
