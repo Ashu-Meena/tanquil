@@ -253,7 +253,7 @@ export default function ProductClient({ product, relatedProducts }: ProductClien
             {/* Mobile Swipeable Gallery (Edge-to-Edge) */}
             <div className="relative w-screen -mx-6 md:hidden">
               <div 
-                className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar"
+                className="flex overflow-x-auto no-scrollbar"
                 onScroll={(e) => {
                   const scrollLeft = (e.target as HTMLElement).scrollLeft;
                   const width = (e.target as HTMLElement).clientWidth;

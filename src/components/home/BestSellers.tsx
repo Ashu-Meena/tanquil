@@ -64,7 +64,7 @@ export default function BestSellers({ products }: { products: Product[] }) {
           </Link>
         </div>
 
-        <div className="flex overflow-x-auto gap-4 md:gap-6 pb-10 no-scrollbar snap-x">
+        <div className="flex overflow-x-auto gap-4 md:gap-6 pb-10 no-scrollbar">
           {products.map((product, index) => (
             <motion.div
               key={product.id}
@@ -72,7 +72,7 @@ export default function BestSellers({ products }: { products: Product[] }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.1 }}
               transition={{ delay: index * 0.1, duration: 0.6 }}
-              className="w-[45vw] sm:w-[40vw] md:w-[260px] lg:w-[280px] snap-start flex-shrink-0"
+              className="w-[45vw] sm:w-[40vw] md:w-[260px] lg:w-[280px] flex-shrink-0"
             >
               <ProductCard product={product} />
             </motion.div>

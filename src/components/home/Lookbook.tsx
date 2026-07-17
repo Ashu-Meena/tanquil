@@ -145,7 +145,7 @@ export default function Lookbook({ items }: { items?: LookbookItem[] }) {
         </div>
 
         {/* Staggered Layout */}
-        <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-12 -mx-6 px-6 lg:mx-0 lg:px-0 lg:pb-16 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="flex overflow-x-auto gap-6 pb-12 -mx-6 px-6 lg:mx-0 lg:px-0 lg:pb-16 lg:grid lg:grid-cols-4 lg:gap-8 lg:overflow-visible" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           {displayItems.map((item, index) => (
             <MediaItem key={item.id} item={item} index={index} />
           ))}

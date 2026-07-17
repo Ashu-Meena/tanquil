@@ -55,17 +55,17 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${playfair.variable} ${cormorantGaramond.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${inter.variable} ${playfair.variable} ${cormorantGaramond.variable} ${montserrat.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
+      <body suppressHydrationWarning className="min-h-screen flex flex-col font-sans bg-background text-foreground overflow-x-hidden">
         {/* Website designed and developed by Samvix Technologies */}
         <SmoothScroll>
           <NoiseOverlay />
           <CartSync />
           <Preloader />
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 w-full relative">{children}</main>
           <Footer />
           <MobileBottomNav />
           <CartDrawer />

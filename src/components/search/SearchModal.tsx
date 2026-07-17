@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import FocusLock from "react-focus-lock";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
 interface SearchProduct {
@@ -23,6 +23,7 @@ export default function SearchModal() {
   const { isOpen, closeSearch } = useSearchStore();
   const [query, setQuery] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
 
   const [results, setResults] = useState<SearchProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -114,6 +115,14 @@ export default function SearchModal() {
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
+
+  // Close search on pathname change to prevent scroll lock bugs when navigating away
+  useEffect(() => {
+    if (isOpen) {
+      closeSearch();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <AnimatePresence>

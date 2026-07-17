@@ -42,7 +42,15 @@ export default function CartDrawer() {
       fetchShippingSettings();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen]); // Removed exhaustive-deps comment by accepting the missing dependency, or we could wrap fetchShippingSettings in useCallback. But since fetchShippingSettings uses state setters, it's stable enough.
+  }, [isOpen]);
+
+  // Close cart on pathname change to prevent scroll lock bugs when navigating away
+  useEffect(() => {
+    if (isOpen) {
+      closeCart();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

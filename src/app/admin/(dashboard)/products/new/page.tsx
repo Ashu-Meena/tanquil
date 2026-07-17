@@ -8,12 +8,11 @@ import { createClient } from "@/utils/supabase/client";
 import { toast } from "@/store/useToastStore";
 import VariantsEditor, { ColorGroup, groupsToVariantPayloads, groupsToImagePayloads } from "@/components/admin/VariantsEditor";
 
-
-
 export default function AddProductPage() {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
+  const [mountTime] = useState(Date.now());
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [categories, setCategories] = useState<any[]>([]);
   
@@ -103,6 +102,13 @@ export default function AddProductPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Prevent auto-submission by aggressive browser extensions (e.g. within 1 second of mount)
+    if (Date.now() - mountTime < 1000) {
+      console.log("Prevented auto-submit");
+      return;
+    }
+
     if (!formData.name) return toast.error("Product name is required");
     
     setLoading(true);
@@ -169,7 +175,7 @@ export default function AddProductPage() {
 
   return (
     <div className="max-w-5xl mx-auto pb-20">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off" data-lpignore="true" data-1p-ignore="true">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 sticky top-0 z-40 bg-ivory/90 backdrop-blur-md pb-4 pt-6 md:pt-8 -mt-6 md:-mt-8 -mx-4 px-4 md:-mx-6 md:px-6">
           <div className="flex items-center gap-4">
             <Link href="/admin/products" className="p-2 bg-white border border-border-light rounded-sm hover:bg-ivory transition-colors">

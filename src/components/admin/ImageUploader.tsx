@@ -56,12 +56,14 @@ export default function ImageUploader({ value, onChange, label = "Upload Image",
             )}
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
               <button 
+                type="button"
                 onClick={(e) => { e.stopPropagation(); setIsModalOpen(true); }}
                 className="bg-white text-black px-4 py-2 text-sm font-medium rounded-sm hover:bg-ivory transition-colors"
               >
                 Change
               </button>
               <button 
+                type="button"
                 onClick={handleRemove}
                 className="bg-red-500 text-white px-4 py-2 text-sm font-medium rounded-sm hover:bg-red-600 transition-colors"
               >

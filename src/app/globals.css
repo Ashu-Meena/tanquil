@@ -40,7 +40,6 @@
 
 /* Base resets & custom scrollbar for luxury feel */
 html, body {
-  scroll-behavior: smooth;
   line-height: 1.6;
 }
 

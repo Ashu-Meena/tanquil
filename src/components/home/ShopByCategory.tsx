@@ -49,7 +49,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
         </div>
 
         {/* Circular Avatars Layout */}
-        <div className="flex overflow-x-auto justify-start md:justify-center gap-6 md:gap-10 pb-8 pt-4 px-2 no-scrollbar snap-x">
+        <div className="flex overflow-x-auto justify-start md:justify-center gap-6 md:gap-10 pb-8 pt-4 px-2 no-scrollbar">
           {categories.map((category, index) => {
             const isHovered = hoveredIndex === index;
             const isNotHovered = hoveredIndex !== null && !isHovered;
@@ -61,7 +61,7 @@ export default function ShopByCategory({ categories }: { categories: Category[] 
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05, duration: 0.5, ease: "easeOut" }}
-                className="snap-center flex-shrink-0"
+                className="flex-shrink-0"
               >
                 <Link
                   href={category.link}

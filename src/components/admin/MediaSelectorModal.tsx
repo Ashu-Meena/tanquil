@@ -133,7 +133,7 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
         {/* Header */}
         <div className="bg-white p-4 border-b border-border-light flex justify-between items-center shrink-0">
           <h2 className="font-serif text-2xl text-rich-black">Select Media</h2>
-          <button onClick={onClose} className="text-neutral-400 hover:text-rich-black transition-colors p-2">
+          <button type="button" onClick={onClose} className="text-neutral-400 hover:text-rich-black transition-colors p-2">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -159,6 +159,7 @@ export function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaSelectorM
               className="hidden" 
             />
             <button 
+              type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
               className="flex items-center gap-2 bg-rich-black text-white px-4 py-2.5 text-sm font-medium hover:bg-gold transition-colors rounded-sm disabled:opacity-50"
@@ -249,6 +250,7 @@ function PasteUrlSection({ onSelect, onClose }: { onSelect: (url: string) => voi
   return (
     <div className="bg-white border-b border-border-light px-4 shrink-0">
       <button
+        type="button"
         onClick={() => setExpanded(v => !v)}
         className="w-full flex items-center justify-between py-3 text-sm text-neutral-500 hover:text-rich-black transition-colors"
       >
@@ -267,6 +269,7 @@ function PasteUrlSection({ onSelect, onClose }: { onSelect: (url: string) => voi
             autoFocus
           />
           <button
+            type="button"
             onClick={handleUse}
             disabled={!url.trim()}
             className="bg-gold text-white px-4 py-2 text-sm font-medium rounded-sm hover:bg-[#b8926b] transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"

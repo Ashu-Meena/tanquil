@@ -9,7 +9,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
       animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
       exit={{ opacity: 0, y: -20, filter: "blur(8px)" }}
       transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      className="w-full h-full"
+      className="w-full"
     >
       {children}
     </motion.div>
